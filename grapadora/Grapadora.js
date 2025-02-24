@@ -1,4 +1,3 @@
-//hola
 import * as THREE from 'three'
 
 class Grapadora extends THREE.Object3D {
