@@ -1,0 +1,58 @@
+# ⬇ Archivos y carpetas de Python ⬇
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+*.dist-info/
+*.pyo
+*.pyd
+
+# ⬇ Entornos virtuales ⬇
+venv/
+.env/
+.venv/
+Pipfile
+Pipfile.lock
+poetry.lock
+
+# ⬇ Archivos de configuración y dependencias ⬇
+*.log
+*.sqlite3
+db.sqlite3
+instance/
+.env
+.envrc
+*.ini
+*.cfg
+
+# ⬇ Archivos de caché y compilación ⬇
+*.DS_Store
+*.swp
+*.swo
+*.bak
+*.tmp
+*.~*
+Thumbs.db
+.npm/
+node_modules/
+
+# ⬇ Archivos de compilación para front-end ⬇
+dist/
+build/
+*.min.js
+*.map
+
+# ⬇ Archivos de herramientas y editores ⬇
+.vscode/
+.idea/
+*.iml
+*.sublime-project
+*.sublime-workspace
+
+# ⬇ Git y control de versiones ⬇
+.git/
+*.orig
+*.rej
+
+# ⬇ Archivos de deployment (si usas Docker, etc.) ⬇
+docker-compose.override.yml
