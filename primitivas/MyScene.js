@@ -236,6 +236,8 @@ class MyScene extends THREE.Scene {
     
     // Se actualiza el resto del modelo
     this.boxModel.update();
+
+    this.pyramidModel.update();
     
     // Le decimos al renderizador "visualiza la escena que te indico usando la cámara que te estoy pasando"
     this.renderer.render (this, this.getCamera());
