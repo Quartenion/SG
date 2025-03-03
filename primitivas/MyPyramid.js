@@ -11,10 +11,7 @@ class MyPyramid extends THREE.Object3D {
     this.add(pyramid);
     this.pyramid = pyramid;
 
-    pyramid.position.y = 0.5;
-    pyramid.rotateY(Math.PI/4);
-    
-
+    pyramid.position.y = 0.5;    
   }
 
   createPyramid(resolution) {
@@ -88,7 +85,6 @@ class MyPyramid extends THREE.Object3D {
     this.pyramid = this.createPyramid(this.guiControls.resolution);
     this.add(this.pyramid); // Agregar la nueva pirámide
     this.pyramid.position.y = 0.5;
-    this.pyramid.rotateY(Math.PI / 4);
   }
   
   update() {

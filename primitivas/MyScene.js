@@ -38,19 +38,37 @@ class MyScene extends THREE.Scene {
     // Tendremos una cámara con un control de movimiento con el ratón
     this.createCamera ();
     
-    // Y unos ejes. Imprescindibles para orientarnos sobre dónde están las cosas
-    // Todas las unidades están en metros
-    this.axis = new THREE.AxesHelper (10);
-    this.add (this.axis);
+    // CAJA
+    this.boxAxis = new THREE.AxesHelper (3);
+    this.add (this.boxAxis);
     
-    // Por último creamos el modelo.
-    // El modelo puede incluir su parte de la interfaz gráfica de usuario. Le pasamos la referencia a 
-    // la gui y el texto bajo el que se agruparán los controles de la interfaz que añada el modelo.
     this.boxModel = new MyBox(this.gui, "Controles de la Caja");
     this.add (this.boxModel);
 
+    // PIRAMIDE
+    this.pyramidAxis = new THREE.AxesHelper (3);
+    this.pyramidAxis.position.set(5, 0, 0);  
+    this.add (this.pyramidAxis);
+
     this.pyramidModel = new MyPyramid(this.gui, "Controles de la Pirámide");
+    this.pyramidModel.position.set(5, 0, 0);
     this.add (this.pyramidModel);
+
+    // TOROIDE
+    this.toroidAxis = new THREE.AxesHelper (3);
+    this.toroidAxis.position.set(0, 0, 5);  
+    this.add (this.toroidAxis);
+
+    // CILINDRO
+    this.cylinderAxis = new THREE.AxesHelper (3);
+    this.cylinderAxis.position.set(0, 5, 0);  
+    this.add (this.cylinderAxis);
+
+    // ESFERA
+    this.sphereAxis = new THREE.AxesHelper (3);
+    this.sphereAxis.position.set(5, 0, 5);
+    this.add (this.sphereAxis);
+
   }
   
   initStats() {
