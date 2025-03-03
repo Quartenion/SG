@@ -7,8 +7,9 @@ class MyPyramid extends THREE.Object3D {
     this.createGUI(gui, titleGui);
 
     // Crear la pirámide y añadirla a la escena
-    var pyramid = this.createPyramid();
+    var pyramid = this.createPyramid(this.guiControls.resolution);
     this.add(pyramid);
+    this.pyramid = pyramid;
 
     pyramid.position.y = 0.5;
     pyramid.rotateY(Math.PI/4);
@@ -16,11 +17,10 @@ class MyPyramid extends THREE.Object3D {
 
   }
 
-  createPyramid() {
-    var pyramidGeom = new THREE.ConeGeometry(1, 1, 4); // Tamaño base: radio = 1, altura = 2
+  createPyramid(resolution) {
+    var pyramidGeom = new THREE.ConeGeometry(1, 1, resolution); // Tamaño base: radio = 1, altura = 2
     var pyramidMat = new THREE.MeshNormalMaterial();
-    var pyramid = new THREE.Mesh(pyramidGeom, pyramidMat);
-    return pyramid;
+    return new THREE.Mesh(pyramidGeom, pyramidMat);
   }
   
   createGUI(gui, titleGui) {
@@ -36,6 +36,8 @@ class MyPyramid extends THREE.Object3D {
       posX: 0.0,
       posY: 0.0,
       posZ: 0.0,
+
+      resolution: 3,
       
       reset: () => {
         this.guiControls.sizeX = 1.0;
@@ -49,6 +51,16 @@ class MyPyramid extends THREE.Object3D {
         this.guiControls.posX = 0.0;
         this.guiControls.posY = 0.0;
         this.guiControls.posZ = 0.0;
+
+        this.visible = true; // Asegurarse de que el objeto no está oculto
+
+        this.guiControls.resolution = 3;
+
+        this.updatePyramid();
+      },
+
+      hide : () => {
+        this.visible = !this.visible; // Alternar visibilidad del objeto hijo (la caja)
       }
     } 
     
@@ -64,8 +76,19 @@ class MyPyramid extends THREE.Object3D {
     folder.add (this.guiControls, 'posX', -20.0, 20.0, 0.01).name ('Posición X : ').listen();
     folder.add (this.guiControls, 'posY', 0.0, 10.0, 0.01).name ('Posición Y : ').listen();
     folder.add (this.guiControls, 'posZ', -20.0, 20.0, 0.01).name ('Posición Z : ').listen();
+
+    folder.add(this.guiControls, 'resolution', 3, 10, 1).name('Resolución : ').listen().onChange(() => this.updatePyramid());
     
     folder.add (this.guiControls, 'reset').name ('[ Reset ]');
+    folder.add(this.guiControls, 'hide').name('[ Mostrar/Ocultar ]'); // Botón para alternar visibilidad
+  }
+
+  updatePyramid() {
+    this.remove(this.pyramid); // Eliminar la pirámide actual
+    this.pyramid = this.createPyramid(this.guiControls.resolution);
+    this.add(this.pyramid); // Agregar la nueva pirámide
+    this.pyramid.position.y = 0.5;
+    this.pyramid.rotateY(Math.PI / 4);
   }
   
   update() {
