@@ -30,7 +30,7 @@ class MyPyramid extends THREE.Object3D {
       rotY: 0.0,
       rotZ: 0.0,
 
-      posX: 0.0,
+      posX: 5.0,
       posY: 0.0,
       posZ: 0.0,
 
@@ -45,7 +45,7 @@ class MyPyramid extends THREE.Object3D {
         this.guiControls.rotY = 0.0;
         this.guiControls.rotZ = 0.0;
 
-        this.guiControls.posX = 0.0;
+        this.guiControls.posX = 5.0;
         this.guiControls.posY = 0.0;
         this.guiControls.posZ = 0.0;
 
