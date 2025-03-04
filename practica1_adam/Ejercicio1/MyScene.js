@@ -9,6 +9,8 @@ import  Stats from '../../libs/stats.module.js'
 // Clases del proyecto
 
 import { Box } from './Models/Box.js'
+import {Cone} from "./Models/Cone.js";
+import {Cylinder} from "./Models/Cylinder.js";
 
 
 
@@ -20,7 +22,7 @@ class MyScene extends THREE.Scene {
     this.renderer = this.createRenderer(myCanvas);
     this.gui = this.createGUI();
     this.initStats();
-    this.createLights();
+    // this.createLights();
     this.createCamera();
 
     this.createModelGroup();
@@ -51,7 +53,7 @@ class MyScene extends THREE.Scene {
     this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 50);
     // Recuerda: Todas las unidades están en metros
     // También se indica dónde se coloca
-    this.camera.position.set(4, 2, 4);
+    this.camera.position.set(13, 6, 13);
     // Y hacia dónde mira
     var look = new THREE.Vector3(0, 0, 0);
     this.camera.lookAt(look);
@@ -98,15 +100,16 @@ class MyScene extends THREE.Scene {
     // Se definen mediante un objeto de control
     // En este caso la intensidad de la luz y si se muestran o no los ejes
     this.guiControls = {
-      // En el contexto de una función   this   alude a la función
-      lightPower: 500.0,  // La potencia de esta fuente de luz se mide en lúmenes
-      ambientIntensity: 0.5,
+
+      //lightPower: 500.0,  // La potencia de esta fuente de luz se mide en lúmenes
+      //ambientIntensity: 0.5,
       axisOnOff: true
     }
 
     // Se crea una sección para los controles de esta clase
     var folder = gui.addFolder('Luz y Ejes');
 
+    /*
     // Se le añade un control para la potencia de la luz puntual
     folder.add(this.guiControls, 'lightPower', 0, 1000, 20)
         .name('Luz puntual : ')
@@ -116,6 +119,7 @@ class MyScene extends THREE.Scene {
     folder.add(this.guiControls, 'ambientIntensity', 0, 1, 0.05)
         .name('Luz ambiental: ')
         .onChange((value) => this.setAmbientIntensity(value));
+    */
 
     // Y otro para mostrar u ocultar los ejes
     folder.add(this.guiControls, 'axisOnOff')
@@ -218,6 +222,9 @@ class MyScene extends THREE.Scene {
 
     // Se actualiza el resto del modelo
     this.box.update();
+    this.cone.update();
+    this.cylinder.update();
+
 
     // Le decimos al renderizador "visualiza la escena que te indico usando la cámara que te estoy pasando"
     this.renderer.render(this, this.getCamera());
@@ -250,6 +257,10 @@ class MyScene extends THREE.Scene {
     this.axisDod.position.set(5, 0, 0);
     this.add (this.axisDod);
 
+    this.cone = new Cone(this.gui, "Controles del Cono");
+    this.cone.position.set(5, 0, 0);
+    this.add (this.cone);
+
     // Modelo del torus
     this.axisTorus = new THREE.AxesHelper (2);
     this.axisTorus.position.set(0, 0, 5);
@@ -269,6 +280,10 @@ class MyScene extends THREE.Scene {
     this.axisCylinder = new THREE.AxesHelper (2);
     this.axisCylinder.position.set(0, 5, 5);
     this.add (this.axisCylinder);
+
+    this.cylinder = new Cylinder(this.gui, "Controles del Cilindro");
+    this.cylinder.position.set(0, 5, 0);
+    this.add (this.cylinder);
 
     // Modelo del lathe
     this.axisLathe = new THREE.AxesHelper (2);
