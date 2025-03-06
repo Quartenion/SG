@@ -30,11 +30,9 @@ class MyPyramid extends THREE.Object3D {
       rotY: 0.0,
       rotZ: 0.0,
 
-      posX: 5.0,
-      posY: 0.0,
-      posZ: 0.0,
-
       resolution: 3,
+
+      flatShading : true,
       
       reset: () => {
         this.guiControls.sizeX = 1.0;
@@ -45,10 +43,6 @@ class MyPyramid extends THREE.Object3D {
         this.guiControls.rotY = 0.0;
         this.guiControls.rotZ = 0.0;
 
-        this.guiControls.posX = 5.0;
-        this.guiControls.posY = 0.0;
-        this.guiControls.posZ = 0.0;
-
         this.visible = true; // Asegurarse de que el objeto no está oculto
 
         this.guiControls.resolution = 3;
@@ -58,6 +52,10 @@ class MyPyramid extends THREE.Object3D {
 
       hide : () => {
         this.visible = !this.visible; // Alternar visibilidad del objeto hijo (la caja)
+      },
+
+      flatShading : () => {
+        this.flatShading = !this.flatShading;
       }
     } 
     
@@ -69,13 +67,10 @@ class MyPyramid extends THREE.Object3D {
     folder.add (this.guiControls, 'rotX', 0.0, Math.PI/2, 0.01).name ('Rotación X : ').listen();
     folder.add (this.guiControls, 'rotY', 0.0, Math.PI/2, 0.01).name ('Rotación Y : ').listen();
     folder.add (this.guiControls, 'rotZ', 0.0, Math.PI/2, 0.01).name ('Rotación Z : ').listen();
-    
-    folder.add (this.guiControls, 'posX', -20.0, 20.0, 0.01).name ('Posición X : ').listen();
-    folder.add (this.guiControls, 'posY', 0.0, 10.0, 0.01).name ('Posición Y : ').listen();
-    folder.add (this.guiControls, 'posZ', -20.0, 20.0, 0.01).name ('Posición Z : ').listen();
 
     folder.add(this.guiControls, 'resolution', 3, 10, 1).name('Resolución : ').listen().onChange(() => this.updatePyramid());
     
+    folder.add (this.guiControls, 'flatShading').name('[ flatShading ]');
     folder.add (this.guiControls, 'reset').name ('[ Reset ]');
     folder.add(this.guiControls, 'hide').name('[ Mostrar/Ocultar ]'); // Botón para alternar visibilidad
   }
@@ -88,7 +83,6 @@ class MyPyramid extends THREE.Object3D {
   }
   
   update() {
-    this.position.set (this.guiControls.posX,this.guiControls.posY,this.guiControls.posZ);
     this.rotation.set (this.guiControls.rotX,this.guiControls.rotY,this.guiControls.rotZ);
     this.scale.set (this.guiControls.sizeX,this.guiControls.sizeY,this.guiControls.sizeZ);
   }
