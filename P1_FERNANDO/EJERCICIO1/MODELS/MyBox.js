@@ -1,4 +1,4 @@
-import * as THREE from '../libs/three.module.js'
+import * as THREE from '../../../libs/three.module.js'
  
 class MyBox extends THREE.Object3D {
   constructor(gui,titleGui) {
@@ -39,8 +39,6 @@ class MyBox extends THREE.Object3D {
       rotX : 0.0,
       rotY : 0.0,
       rotZ : 0.0,
-
-      flatShading : true,
   
       reset : () => {
         this.guiControls.sizeX = 1.0;
@@ -53,15 +51,10 @@ class MyBox extends THREE.Object3D {
 
         this.visible = true; // Asegurarse de que el objeto no está oculto
 
-        this.flatShading = true;
       },
   
       hide : () => {
         this.visible = !this.visible; // Alternar visibilidad del objeto hijo (la caja)
-      },
-
-      flatShading : () => {
-        this.cubo.material.flatShading = !this.flatShading;
       }
     } 
   
@@ -74,7 +67,6 @@ class MyBox extends THREE.Object3D {
     folder.add(this.guiControls, 'rotY', 0.0, Math.PI/2, 0.01).name('Rotación Y : ').listen();
     folder.add(this.guiControls, 'rotZ', 0.0, Math.PI/2, 0.01).name('Rotación Z : ').listen();
     
-    folder.add (this.guiControls, 'flatShading').name('[ flatShading ]');
     folder.add(this.guiControls, 'reset').name('[ Reset ]');
     folder.add(this.guiControls, 'hide').name('[ Mostrar/Ocultar ]'); // Botón para alternar visibilidad
   }

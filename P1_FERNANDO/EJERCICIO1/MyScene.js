@@ -1,15 +1,18 @@
 
 // Clases de la biblioteca
 
-import * as THREE from '../libs/three.module.js'
-import { GUI } from '../libs/dat.gui.module.js'
-import { TrackballControls } from '../libs/TrackballControls.js'
-import  Stats from '../libs/stats.module.js'
+import * as THREE from '../../libs/three.module.js'
+import { GUI } from '../../libs/dat.gui.module.js'
+import { TrackballControls } from '../../libs/TrackballControls.js'
+import  Stats from '../../libs/stats.module.js'
 
 // Clases de mi proyecto
 
-import { MyBox } from './MyBox.js'
-import { MyPyramid } from './MyPyramid.js'
+import { MyBox } from './MODELS/MyBox.js'
+import { MyCylinder } from './MODELS/MyCylinder.js'
+import { MySphere } from './MODELS/MySphere.js'
+import { MyTorus } from './MODELS/MyTorus.js'
+import { MyPyramid } from './MODELS/MyPyramid.js'
 
  
 /// La clase fachada del modelo
@@ -39,36 +42,19 @@ class MyScene extends THREE.Scene {
     this.createCamera ();
     
     // CAJA
-    this.boxAxis = new THREE.AxesHelper (3);
-    this.add (this.boxAxis);
+    this.axis = new THREE.AxesHelper (2);
+    this.add (this.axis);
     
-    this.boxModel = new MyBox(this.gui, "Controles de la Caja");
-    this.add (this.boxModel);
-
-    // PIRAMIDE
-    this.pyramidAxis = new THREE.AxesHelper (3);
-    this.pyramidAxis.position.set(5, 0, 0);  
-    this.add (this.pyramidAxis);
-
-    this.pyramidModel = new MyPyramid(this.gui, "Controles de la Pirámide");
-    this.pyramidModel.position.set(5, 0, 0);
-    this.add (this.pyramidModel);
-
-    // TOROIDE
-    this.toroidAxis = new THREE.AxesHelper (3);
-    this.toroidAxis.position.set(0, 0, 5);  
-    this.add (this.toroidAxis);
+    this.model = new MyBox(this.gui, "Controles de la Caja");
+    this.add (this.model);
 
     // CILINDRO
-    this.cylinderAxis = new THREE.AxesHelper (3);
-    this.cylinderAxis.position.set(0, 5, 0);  
+    this.cylinderAxis = new THREE.AxesHelper (2);
+    this.cylinderAxis.position.set(5, 0, 0);
     this.add (this.cylinderAxis);
 
-    // ESFERA
-    this.sphereAxis = new THREE.AxesHelper (3);
-    this.sphereAxis.position.set(5, 0, 5);
-    this.add (this.sphereAxis);
-
+    this.cylinderModel = new MyCylinder(this.gui, "Controles del Cilindro");
+    this.add (this.cylinderModel);
   }
   
   initStats() {
@@ -109,27 +95,6 @@ class MyScene extends THREE.Scene {
     this.cameraControl.panSpeed = 0.5;
     // Debe orbitar con respecto al punto de mira de la cámara
     this.cameraControl.target = look;
-  }
-  
-  createGround () {
-    // El suelo es un Mesh, necesita una geometría y un material.
-    
-    // La geometría es una caja con muy poca altura
-    var geometryGround = new THREE.BoxGeometry (10,0.2,10);
-    
-    // El material se hará con una textura de madera
-    var texture = new THREE.TextureLoader().load('../../imgs/wood.jpg');
-    var materialGround = new THREE.MeshStandardMaterial ({map: texture});
-    
-    // Ya se puede construir el Mesh
-    var ground = new THREE.Mesh (geometryGround, materialGround);
-    
-    // Todas las figuras se crean centradas en el origen.
-    // El suelo lo bajamos la mitad de su altura para que el origen del mundo se quede en su lado superior
-    ground.position.y = -0.1;
-    
-    // Que no se nos olvide añadirlo a la escena, que en este caso es  this
-    this.add (ground);
   }
   
   createGUI () {
@@ -249,9 +214,7 @@ class MyScene extends THREE.Scene {
     this.cameraControl.update();
     
     // Se actualiza el resto del modelo
-    this.boxModel.update();
-
-    this.pyramidModel.update();
+    this.model.update();
     
     // Le decimos al renderizador "visualiza la escena que te indico usando la cámara que te estoy pasando"
     this.renderer.render (this, this.getCamera());
