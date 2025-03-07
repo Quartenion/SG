@@ -29,6 +29,8 @@ class MyScene extends THREE.Scene {
 
     // Elementos para el raycasting
     this.raycaster = new THREE.Raycaster();
+    this.raycaster.layers.disableAll();
+    this.raycaster.layers.enable(1);
     this.mouse = new THREE.Vector2();
   }
 
@@ -252,58 +254,67 @@ class MyScene extends THREE.Scene {
 
     // Modelo de la caja
     this.axisBox = new THREE.AxesHelper (2);
-    // this.axis.position.set(0, 0, 0);
+    this.axisBox.layers.set(0);
     this.add (this.axisBox);
 
     this.box = new Box(this.gui, "Controles de la Caja");
-    this.box.name = "Caja";
+    this.box.layers.set(1);
     this.add (this.box);
 
     // Modelo del dodecahedro
     this.axisDod = new THREE.AxesHelper (2);
     this.axisDod.position.set(5, 0, 0);
+    this.axisDod.layers.set(0);
     this.add (this.axisDod);
 
     this.cone = new Cone(this.gui, "Controles del Cono");
     this.cone.position.set(5, 0, 0);
-    this.cone.name = "cono";
+    this.cone.layers.set(1);
     this.add (this.cone);
+
 
     // Modelo del torus
     this.axisTorus = new THREE.AxesHelper (2);
     this.axisTorus.position.set(0, 0, 5);
+    this.axisTorus.layers.set(0);
     this.add (this.axisTorus);
 
     // Modelo de la esfera
     this.axisSphere = new THREE.AxesHelper (2);
     this.axisSphere.position.set(0, 5, 0);
+    this.axisSphere.layers.set(0);
     this.add (this.axisSphere);
 
     // Modelo del cono
     this.axisCone = new THREE.AxesHelper (2);
     this.axisCone.position.set(5, 5, 0);
+    this.axisCone.layers.set(0);
     this.add (this.axisCone);
+
+
 
     // Modelo del cilindro
     this.axisCylinder = new THREE.AxesHelper (2);
     this.axisCylinder.position.set(0, 5, 5);
+    this.axisCylinder.layers.set(0);
     this.add (this.axisCylinder);
 
     this.cylinder = new Cylinder(this.gui, "Controles del Cilindro");
     this.cylinder.position.set(0, 5, 5);
-    this.cylinder.name = "cilindro";
+    this.cylinder.layers.set(1);
     this.add (this.cylinder);
 
     // Modelo del lathe
     this.axisLathe = new THREE.AxesHelper (2);
     this.axisLathe.position.set(0, -5, 0);
+    this.axisLathe.layers.set(0);
     this.add (this.axisLathe);
 
   }
 
-  onMouseClick(event) {
-    this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    this.mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+  onMouseClick(MouseEvent) {
+    this.mouse.x = (MouseEvent.clientX / window.innerWidth) * 2 - 1;
+    this.mouse.y = - (MouseEvent.clientY / window.innerHeight) * 2 + 1;
 
     // Actualizamos el raycaster con la posición del ratón y la cámara
 
@@ -333,7 +344,7 @@ $(function () {
 
   // Se añaden los listener de la aplicación. En este caso, el que va a comprobar cuándo se modifica el tamaño de la ventana de la aplicación.
   window.addEventListener ('resize', () => scene.onWindowResize());
-  window.addEventListener ('click', (event) => scene.onMouseClick(event));
+  window.addEventListener ('click', (MouseEvent) => scene.onMouseClick(MouseEvent));
   
   // Que no se nos olvide, la primera visualización.
   scene.update();
