@@ -42,11 +42,11 @@ class MyScene extends THREE.Scene {
     this.createCamera ();
     
     // CAJA
-    this.axis = new THREE.AxesHelper (2);
-    this.add (this.axis);
+    this.boxAxis = new THREE.AxesHelper (2);
+    this.add (this.boxAxis);
     
-    this.model = new MyBox(this.gui, "Controles de la Caja");
-    this.add (this.model);
+    this.boxModel = new MyBox(this.gui, "Controles de la Caja");
+    this.add (this.boxModel);
 
     // CILINDRO
     this.cylinderAxis = new THREE.AxesHelper (2);
@@ -54,7 +54,35 @@ class MyScene extends THREE.Scene {
     this.add (this.cylinderAxis);
 
     this.cylinderModel = new MyCylinder(this.gui, "Controles del Cilindro");
+    this.cylinderModel.position.set(5, 0, 0);
     this.add (this.cylinderModel);
+
+    // ESFERA
+    this.sphereAxis = new THREE.AxesHelper (2);
+    this.sphereAxis.position.set(0, 0, 5);
+    this.add (this.sphereAxis);
+
+    this.sphereModel = new MySphere(this.gui, "Controles de la Esfera");
+    this.sphereModel.position.set(0, 0, 5);
+    this.add (this.sphereModel);
+
+    // TORO
+    this.torusAxis = new THREE.AxesHelper (2);
+    this.torusAxis.position.set(0, 5, 0);
+    this.add (this.torusAxis);
+
+    this.torusModel = new MyTorus(this.gui, "Controles del Toro");
+    this.torusModel.position.set(0, 5, 0);
+    this.add (this.torusModel);
+
+    // PIRAMIDE
+    this.pyramidAxis = new THREE.AxesHelper (2);
+    this.pyramidAxis.position.set(5, 0, 5);
+    this.add (this.pyramidAxis);
+
+    this.pyramidModel = new MyPyramid(this.gui, "Controles de la Pirámide");
+    this.pyramidModel.position.set(5, 0, 5);
+    this.add (this.pyramidModel);
   }
   
   initStats() {
@@ -214,7 +242,11 @@ class MyScene extends THREE.Scene {
     this.cameraControl.update();
     
     // Se actualiza el resto del modelo
-    this.model.update();
+    this.boxModel.update();
+    this.cylinderModel.update();
+    this.sphereModel.update();
+    this.torusModel.update();
+    this.pyramidModel.update();
     
     // Le decimos al renderizador "visualiza la escena que te indico usando la cámara que te estoy pasando"
     this.renderer.render (this, this.getCamera());
