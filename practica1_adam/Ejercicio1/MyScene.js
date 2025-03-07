@@ -29,8 +29,6 @@ class MyScene extends THREE.Scene {
 
     // Elementos para el raycasting
     this.raycaster = new THREE.Raycaster();
-    this.raycaster.layers.disableAll();
-    this.raycaster.layers.enable(1);
     this.mouse = new THREE.Vector2();
   }
 
@@ -252,43 +250,38 @@ class MyScene extends THREE.Scene {
 
   createModelGroup(){
 
+
+    // todo usar this.axisGroup = new THREE.Group(); this.axisGroup.add()
     // Modelo de la caja
     this.axisBox = new THREE.AxesHelper (2);
-    this.axisBox.layers.set(0);
     this.add (this.axisBox);
 
     this.box = new Box(this.gui, "Controles de la Caja");
-    this.box.layers.set(1);
     this.add (this.box);
 
     // Modelo del dodecahedro
     this.axisDod = new THREE.AxesHelper (2);
     this.axisDod.position.set(5, 0, 0);
-    this.axisDod.layers.set(0);
     this.add (this.axisDod);
 
     this.cone = new Cone(this.gui, "Controles del Cono");
     this.cone.position.set(5, 0, 0);
-    this.cone.layers.set(1);
     this.add (this.cone);
 
 
     // Modelo del torus
     this.axisTorus = new THREE.AxesHelper (2);
     this.axisTorus.position.set(0, 0, 5);
-    this.axisTorus.layers.set(0);
     this.add (this.axisTorus);
 
     // Modelo de la esfera
     this.axisSphere = new THREE.AxesHelper (2);
     this.axisSphere.position.set(0, 5, 0);
-    this.axisSphere.layers.set(0);
     this.add (this.axisSphere);
 
     // Modelo del cono
     this.axisCone = new THREE.AxesHelper (2);
     this.axisCone.position.set(5, 5, 0);
-    this.axisCone.layers.set(0);
     this.add (this.axisCone);
 
 
@@ -296,18 +289,15 @@ class MyScene extends THREE.Scene {
     // Modelo del cilindro
     this.axisCylinder = new THREE.AxesHelper (2);
     this.axisCylinder.position.set(0, 5, 5);
-    this.axisCylinder.layers.set(0);
     this.add (this.axisCylinder);
 
     this.cylinder = new Cylinder(this.gui, "Controles del Cilindro");
     this.cylinder.position.set(0, 5, 5);
-    this.cylinder.layers.set(1);
     this.add (this.cylinder);
 
     // Modelo del lathe
     this.axisLathe = new THREE.AxesHelper (2);
     this.axisLathe.position.set(0, -5, 0);
-    this.axisLathe.layers.set(0);
     this.add (this.axisLathe);
 
   }
@@ -318,15 +308,17 @@ class MyScene extends THREE.Scene {
 
     // Actualizamos el raycaster con la posición del ratón y la cámara
 
-    this.raycaster.setFromCamera(this.mouse, this.camera);
+    this.raycaster.setFromCamera(this.mouse, this.camera, THREE.Mesh);
+    let intersects = this.raycaster.intersectObjects(this.children,true);
+    let meshIntersects = intersects.filter(intersect => intersect.object instanceof THREE.Mesh);
 
-    let intersects = this.raycaster.intersectObjects(this.children);
-
-    if (intersects.length > 0) {
-      let object = intersects[0].object;
-
-      this.camera.lookAt(object.position);
-      this.cameraControl.target = object.position;
+    if (meshIntersects.length > 0) {
+      console.log(meshIntersects)
+      let object = meshIntersects[0].object;
+      this.camera.lookAt(object.parent.position);
+      this.cameraControl.target = object.parent.position;
+      object.material = new THREE.MeshBasicMaterial({color: 0xff0000});
+      object.material.needsUpdate = true;
     }
   }
 
