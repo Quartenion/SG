@@ -308,7 +308,7 @@ class MyScene extends THREE.Scene {
 
     // Actualizamos el raycaster con la posición del ratón y la cámara
 
-    this.raycaster.setFromCamera(this.mouse, this.camera, THREE.Mesh);
+    this.raycaster.setFromCamera(this.mouse, this.camera);
     let intersects = this.raycaster.intersectObjects(this.children,true);
     let meshIntersects = intersects.filter(intersect => intersect.object instanceof THREE.Mesh);
 
@@ -317,8 +317,8 @@ class MyScene extends THREE.Scene {
       let object = meshIntersects[0].object;
       this.camera.lookAt(object.parent.position);
       this.cameraControl.target = object.parent.position;
-      object.material = new THREE.MeshBasicMaterial({color: 0xff0000});
-      object.material.needsUpdate = true;
+      //object.material = new THREE.MeshBasicMaterial({color: 0xff0000});
+      //object.material.needsUpdate = true;
     }
   }
 
