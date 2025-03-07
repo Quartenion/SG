@@ -1,4 +1,4 @@
-import * as THREE from '../libs/three.module.js'
+import * as THREE from '../../../libs/three.module.js'
  
 class MyBox extends THREE.Object3D {
   constructor(gui,titleGui) {
@@ -22,7 +22,7 @@ class MyBox extends THREE.Object3D {
     // Un Mesh se compone de geometría y material
     var boxGeom = new THREE.BoxGeometry (1,1,1);
     // Como material se crea uno a partir de un color
-    var boxMat = new THREE.MeshNormalMaterial();
+    var boxMat = new THREE.MeshNormalMaterial({flatShading: true});
     
     // Ya podemos construir el Mesh
     var box = new THREE.Mesh (boxGeom, boxMat);
@@ -39,10 +39,6 @@ class MyBox extends THREE.Object3D {
       rotX : 0.0,
       rotY : 0.0,
       rotZ : 0.0,
-      
-      posX : 0.0,
-      posY : 0.0,
-      posZ : 0.0,
   
       reset : () => {
         this.guiControls.sizeX = 1.0;
@@ -52,12 +48,9 @@ class MyBox extends THREE.Object3D {
         this.guiControls.rotX = 0.0;
         this.guiControls.rotY = 0.0;
         this.guiControls.rotZ = 0.0;
-        
-        this.guiControls.posX = 0.0;
-        this.guiControls.posY = 0.0;
-        this.guiControls.posZ = 0.0;
 
         this.visible = true; // Asegurarse de que el objeto no está oculto
+
       },
   
       hide : () => {
@@ -74,10 +67,6 @@ class MyBox extends THREE.Object3D {
     folder.add(this.guiControls, 'rotY', 0.0, Math.PI/2, 0.01).name('Rotación Y : ').listen();
     folder.add(this.guiControls, 'rotZ', 0.0, Math.PI/2, 0.01).name('Rotación Z : ').listen();
     
-    folder.add(this.guiControls, 'posX', -20.0, 20.0, 0.01).name('Posición X : ').listen();
-    folder.add(this.guiControls, 'posY', 0.0, 10.0, 0.01).name('Posición Y : ').listen();
-    folder.add(this.guiControls, 'posZ', -20.0, 20.0, 0.01).name('Posición Z : ').listen();
-    
     folder.add(this.guiControls, 'reset').name('[ Reset ]');
     folder.add(this.guiControls, 'hide').name('[ Mostrar/Ocultar ]'); // Botón para alternar visibilidad
   }
@@ -91,7 +80,6 @@ class MyBox extends THREE.Object3D {
     // Luego, la rotación en X
     // Y por último la traslación
    
-    this.position.set (this.guiControls.posX,this.guiControls.posY,this.guiControls.posZ);
     this.rotation.set (this.guiControls.rotX,this.guiControls.rotY,this.guiControls.rotZ);
     this.scale.set (this.guiControls.sizeX,this.guiControls.sizeY,this.guiControls.sizeZ);
   }
