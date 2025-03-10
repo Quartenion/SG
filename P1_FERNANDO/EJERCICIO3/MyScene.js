@@ -11,6 +11,7 @@ import { Base } from './MODELS/Base.js'
 import { Heart } from './MODELS/Heart.js'
 import { Spade } from './MODELS/Spade.js'
 import { Club } from './MODELS/Club.js'
+import { Diamond } from './MODELS/Diamond.js'
 
 /// La clase fachada del modelo
 /**
@@ -59,7 +60,12 @@ class MyScene extends THREE.Scene {
 
     this.club = new Club();
     this.club.position.set(0, 0, 0);
-    this.add(this.club);
+    //this.add(this.club);
+
+    this.diamond = new Diamond();
+    this.diamond.drawSolid();
+    this.add(this.diamond);
+    
   }
   
   initStats() {

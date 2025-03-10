@@ -18,7 +18,6 @@ class Spade extends THREE.Object3D {
 
         this.add(this.base);
         this.add(this.heart);
-
     }
 }
 
