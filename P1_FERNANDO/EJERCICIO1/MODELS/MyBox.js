@@ -15,7 +15,6 @@ class MyBox extends THREE.Object3D {
     // Las geometrías se crean centradas en el origen.
     // Como queremos que el sistema de referencia esté en la base,
     // subimos el Mesh de la caja la mitad de su altura
-    cubo.position.y = 0.5;
   }
 
   createBox () {

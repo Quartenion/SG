@@ -14,14 +14,16 @@ class MyCylinder extends THREE.Object3D {
 
   createCylinder(resolution) {
     var cylinderGeom = new THREE.CylinderGeometry(1, 1, 2, resolution); // Radio superior e inferior: 1, altura: 2
-    var cylinderMat = new THREE.MeshNormalMaterial();
+    var cylinderMat = new THREE.MeshNormalMaterial({
+      flatShading: this.guiControls.flatShading
+    });
     return new THREE.Mesh(cylinderGeom, cylinderMat);
   }
   
   createGUI(gui, titleGui) {
     this.guiControls = {
-      height: 2.0, // Ajustar la altura del cilindro
-      radius: 1.0, // Ajustar el radio del cilindro
+      height: 0.5, // Ajustar la altura del cilindro
+      radius: 0.5, // Ajustar el radio del cilindro
 
       rotX: 0.0,
       rotY: 0.0,
@@ -32,8 +34,8 @@ class MyCylinder extends THREE.Object3D {
       flatShading : true,
       
       reset: () => {
-        this.guiControls.height = 2.0;
-        this.guiControls.radius = 1.0;
+        this.guiControls.height = 0.5;
+        this.guiControls.radius = 0.5;
 
         this.guiControls.rotX = 0.0;
         this.guiControls.rotY = 0.0;
@@ -42,8 +44,10 @@ class MyCylinder extends THREE.Object3D {
         this.visible = true; // Asegurarse de que el objeto no está oculto
 
         this.guiControls.resolution = 8;
+        this.guiControls.flatShading = true;
 
         this.updateCylinder();
+        this.updateShading();
       },
 
       hide : () => {
@@ -52,8 +56,8 @@ class MyCylinder extends THREE.Object3D {
     } 
     
     var folder = gui.addFolder(titleGui);
-    folder.add (this.guiControls, 'height', 0.1, 5.0, 0.1).name ('Height : ').listen();
-    folder.add (this.guiControls, 'radius', 0.1, 2.0, 0.1).name ('Radius : ').listen();
+    folder.add (this.guiControls, 'height', 0.1, 1.0, 0.1).name ('Height : ').listen();
+    folder.add (this.guiControls, 'radius', 0.1, 1.0, 0.1).name ('Radius : ').listen();
     
     folder.add (this.guiControls, 'rotX', 0.0, Math.PI/2, 0.01).name ('Rotation X : ').listen();
     folder.add (this.guiControls, 'rotY', 0.0, Math.PI/2, 0.01).name ('Rotation Y : ').listen();
