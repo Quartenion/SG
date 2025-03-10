@@ -7,14 +7,16 @@ class MyTorus extends THREE.Object3D {
     this.createGUI(gui, titleGui);
 
     // Crear el toroide y añadirlo a la escena
-    var torus = this.createTorus(this.guiControls.resolution);
+    var torus = this.createTorus(this.guiControls.radius, this.guiControls.tube, this.guiControls.resolution);
     this.add(torus);
     this.torus = torus;
+
+    torus.rotateX(Math.PI/2); // Rotar el toroide para que se vea de frente
   }
 
-  createTorus(resolution) {
+  createTorus(radius, tube, resolution) {
     // Crear geometría del toroide con el radio y resolución definidos
-    var torusGeom = new THREE.TorusGeometry(this.guiControls.radius, this.guiControls.tube, resolution, resolution); 
+    var torusGeom = new THREE.TorusGeometry(radius, tube, resolution, resolution); 
     // Crear material con sombreado plano
     var torusMat = new THREE.MeshNormalMaterial({
       flatShading: this.guiControls.flatShading  // Aplica flatShading al material desde el principio
@@ -46,6 +48,9 @@ class MyTorus extends THREE.Object3D {
 
         this.guiControls.resolution = 16;
 
+        this.guiControls.flatShading = true;
+
+        this.updateShading();
         this.updateTorus();  // Actualizar el toroide al restablecer
       },
 
@@ -55,13 +60,13 @@ class MyTorus extends THREE.Object3D {
     };
 
     var folder = gui.addFolder(titleGui);
-    folder.add(this.guiControls, 'radius', 0.1, 5.0, 0.1).name('Radio del toroide : ').listen();
-    folder.add(this.guiControls, 'tube', 0.1, 2.0, 0.1).name('Radio del tubo : ').listen();
+    folder.add(this.guiControls, 'radius', 0.1, 1.0, 0.1).name('Radio del toroide : ').listen();
+    folder.add(this.guiControls, 'tube', 0.1, 1.0, 0.1).name('Radio del tubo : ').listen().onChange(() => this.updateTorus()); // Asegurarse de que al cambiar el tubo se actualice el toroide
     folder.add(this.guiControls, 'rotX', 0.0, Math.PI/2, 0.01).name('Rotación X : ').listen();
     folder.add(this.guiControls, 'rotY', 0.0, Math.PI/2, 0.01).name('Rotación Y : ').listen();
     folder.add(this.guiControls, 'rotZ', 0.0, Math.PI/2, 0.01).name('Rotación Z : ').listen();
 
-    folder.add(this.guiControls, 'resolution', 3, 50, 1).name('Resolución : ').listen().onChange(() => this.updateTorus());
+    folder.add(this.guiControls, 'resolution', 3, 50, 5).name('Resolución : ').listen().onChange(() => this.updateTorus());
     
     folder.add(this.guiControls, 'flatShading').listen().onChange(() => this.updateShading());
     folder.add(this.guiControls, 'reset').name('[ Reset ]');
@@ -71,9 +76,10 @@ class MyTorus extends THREE.Object3D {
   updateTorus() {
     // Eliminar el toroide actual
     this.remove(this.torus); 
-    // Crear un nuevo toroide con el sombreado plano actualizado
-    this.torus = this.createTorus(this.guiControls.resolution);
+    // Crear un nuevo toroide con los parámetros actualizados
+    this.torus = this.createTorus(this.guiControls.radius, this.guiControls.tube, this.guiControls.resolution);
     // Agregar el nuevo toroide a la escena
+    this.torus.rotateX(Math.PI/2); // Rotar el toroide para que se vea de frente
     this.add(this.torus); 
   }
 

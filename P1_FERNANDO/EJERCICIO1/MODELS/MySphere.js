@@ -16,7 +16,7 @@ class MySphere extends THREE.Object3D {
     // Crear geometría de la esfera con el radio y resolución definidos
     var sphereGeom = new THREE.SphereGeometry(this.guiControls.radius, resolution, resolution); 
     // Crear material con sombreado plano
-    var sphereMat = new THREE.MeshStandardMaterial({
+    var sphereMat = new THREE.MeshNormalMaterial({
       flatShading: this.guiControls.flatShading  // Aplica flatShading al material desde el principio
     });
     return new THREE.Mesh(sphereGeom, sphereMat);
@@ -24,7 +24,7 @@ class MySphere extends THREE.Object3D {
   
   createGUI(gui, titleGui) {
     this.guiControls = {
-      radius: 1.0,  // Radio de la esfera
+      radius: 0.8,  // Radio de la esfera
 
       rotX: 0.0,
       rotY: 0.0,
@@ -43,7 +43,9 @@ class MySphere extends THREE.Object3D {
         this.visible = true; // Asegurarse de que el objeto no está oculto
 
         this.guiControls.resolution = 16;
+        this.guiControls.flatShading = true;
 
+        this.updateShading();
         this.updateSphere();  // Actualizar la esfera al restablecer
       },
 
@@ -53,7 +55,7 @@ class MySphere extends THREE.Object3D {
     };
 
     var folder = gui.addFolder(titleGui);
-    folder.add(this.guiControls, 'radius', 0.1, 5.0, 0.1).name('Radio : ').listen();
+    folder.add(this.guiControls, 'radius', 0.1, 1.0, 0.1).name('Radio : ').listen();
     folder.add(this.guiControls, 'rotX', 0.0, Math.PI/2, 0.01).name('Rotación X : ').listen();
     folder.add(this.guiControls, 'rotY', 0.0, Math.PI/2, 0.01).name('Rotación Y : ').listen();
     folder.add(this.guiControls, 'rotZ', 0.0, Math.PI/2, 0.01).name('Rotación Z : ').listen();

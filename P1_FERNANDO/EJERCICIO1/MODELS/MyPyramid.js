@@ -14,7 +14,9 @@ class MyPyramid extends THREE.Object3D {
 
   createPyramid(resolution) {
     var pyramidGeom = new THREE.ConeGeometry(1, 1, resolution); // Tamaño base: radio = 1, altura = 2
-    var pyramidMat = new THREE.MeshNormalMaterial();
+    var pyramidMat = new THREE.MeshNormalMaterial({
+      flatShading: this.guiControls.flatShading
+    });
     return new THREE.Mesh(pyramidGeom, pyramidMat);
   }
   
@@ -42,7 +44,9 @@ class MyPyramid extends THREE.Object3D {
         this.visible = true; // Asegurarse de que el objeto no está oculto
 
         this.guiControls.resolution = 3;
+        this.guiControls.flatShading = true;
 
+        this.updateShading();
         this.updatePyramid();
       },
 
@@ -52,8 +56,8 @@ class MyPyramid extends THREE.Object3D {
     } 
     
     var folder = gui.addFolder(titleGui);
-    folder.add (this.guiControls, 'height', 0.1, 2.0, 0.1).name ('height : ').listen();
-    folder.add (this.guiControls, 'radius', 0.1, 2.0, 0.1).name ('radius : ').listen();
+    folder.add (this.guiControls, 'height', 0.1, 1.0, 0.1).name ('height : ').listen();
+    folder.add (this.guiControls, 'radius', 0.1, 1.0, 0.1).name ('radius : ').listen();
     
     folder.add (this.guiControls, 'rotX', 0.0, Math.PI/2, 0.01).name ('Rotación X : ').listen();
     folder.add (this.guiControls, 'rotY', 0.0, Math.PI/2, 0.01).name ('Rotación Y : ').listen();
