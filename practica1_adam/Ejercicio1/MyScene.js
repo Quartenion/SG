@@ -13,6 +13,7 @@ import {Cone} from "./Models/Cone.js";
 import {Cylinder} from "./Models/Cylinder.js";
 import {Dodecahedron} from "./Models/Dodecahedron.js";
 import {Sphere} from "./Models/Sphere.js";
+import {Torus} from "./Models/Torus.js";
 
 
 class MyScene extends THREE.Scene {
@@ -232,6 +233,8 @@ class MyScene extends THREE.Scene {
     this.cone.update();
     this.cylinder.update();
     this.dod.update();
+    this.sphere.update();
+    this.torus.update();
 
 
     // Le decimos al renderizador "visualiza la escena que te indico usando la cámara que te estoy pasando"
@@ -274,6 +277,10 @@ class MyScene extends THREE.Scene {
     this.axisTorus.position.set(0, 0, 5);
     this.add (this.axisTorus);
 
+    this.torus = new Torus(this.gui, "Controles del Torus");
+    this.torus.position.set(0, 0, 5);
+    this.add (this.torus);
+
     // Modelo de la esfera
     this.axisSphere = new THREE.AxesHelper (2);
     this.axisSphere.position.set(0, 5, 0);
@@ -314,10 +321,13 @@ class MyScene extends THREE.Scene {
     let meshIntersects = intersects.filter(intersect => intersect.object instanceof THREE.Mesh);
 
     if (meshIntersects.length > 0) {
-      console.log(meshIntersects)
       let object = meshIntersects[0].object;
-      this.camera.lookAt(object.parent.position);
-      this.cameraControl.target = object.parent.position;
+      let pos = new THREE.Vector3();
+      object.getWorldPosition(pos);
+
+      console.log(pos);
+      this.camera.lookAt(object.getWorldPosition(pos));
+      this.cameraControl.target = object.getWorldPosition(pos);
       //object.material = new THREE.MeshBasicMaterial({color: 0xff0000});
       //object.material.needsUpdate = true;
     }
