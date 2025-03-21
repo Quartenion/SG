@@ -7,10 +7,10 @@ class Diamond extends THREE.Object3D {
         this.diamondShape = new THREE.Shape();
 
         this.diamondShape.moveTo(0, 0, 0);
-        this.diamondShape.quadraticCurveTo(0, 0.5, 0.5, 1);
-        this.diamondShape.quadraticCurveTo(0, 1.5, 0, 2);
-        this.diamondShape.quadraticCurveTo(0, 1.5, -0.5, 1);
-        this.diamondShape.quadraticCurveTo(0, 0.5, 0, 0);
+        this.diamondShape.lineTo(0.8, 1);
+        this.diamondShape.lineTo(0, 2);
+        this.diamondShape.lineTo(-0.8, 1);
+        this.diamondShape.lineTo( 0, 0);
 
     }
 

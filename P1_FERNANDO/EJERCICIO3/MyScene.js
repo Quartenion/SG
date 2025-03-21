@@ -39,11 +39,6 @@ class MyScene extends THREE.Scene {
     // Tendremos una cámara con un control de movimiento con el ratón
     this.createCamera ();
 
-    //EJE
-    this.secondAxis = new THREE.AxesHelper (2);
-    this.secondAxis.position.set(0,0,0);
-    this.add (this.secondAxis);
-
     const redMaterial = new THREE.MeshStandardMaterial({ 
       color: 0xff0000,  // Red color
       metalness: 0.2,   // Slight metallic effect
@@ -53,17 +48,18 @@ class MyScene extends THREE.Scene {
   
     this.heart = new Heart(redMaterial);
     this.heart.position.set(0, -3.6, 0);
-    //this.add(this.heart);
+    this.add(this.heart);
 
     this.spade = new Spade();
-    //this.add(this.spade);
+    this.add(this.spade);
 
     this.club = new Club();
-    this.club.position.set(0, 0, 0);
-    //this.add(this.club);
+    this.club.position.set(2, -2, 0);
+    this.add(this.club);
 
     this.diamond = new Diamond();
     this.diamond.drawSolid();
+    this.diamond.position.set(2,0,-0.05);
     this.add(this.diamond);
     
   }
