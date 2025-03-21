@@ -11,7 +11,9 @@ import  Stats from '../../libs/stats.module.js'
 import { Box } from './Models/Box.js'
 import {Cone} from "./Models/Cone.js";
 import {Cylinder} from "./Models/Cylinder.js";
-
+import {Dodecahedron} from "./Models/Dodecahedron.js";
+import {Sphere} from "./Models/Sphere.js";
+import {Torus} from "./Models/Torus.js";
 
 
 class MyScene extends THREE.Scene {
@@ -230,6 +232,9 @@ class MyScene extends THREE.Scene {
     this.box.update();
     this.cone.update();
     this.cylinder.update();
+    this.dod.update();
+    this.sphere.update();
+    this.torus.update();
 
 
     // Le decimos al renderizador "visualiza la escena que te indico usando la cámara que te estoy pasando"
@@ -250,8 +255,6 @@ class MyScene extends THREE.Scene {
 
   createModelGroup(){
 
-
-    // todo usar this.axisGroup = new THREE.Group(); this.axisGroup.add()
     // Modelo de la caja
     this.axisBox = new THREE.AxesHelper (2);
     this.add (this.axisBox);
@@ -264,9 +267,9 @@ class MyScene extends THREE.Scene {
     this.axisDod.position.set(5, 0, 0);
     this.add (this.axisDod);
 
-    this.cone = new Cone(this.gui, "Controles del Cono");
-    this.cone.position.set(5, 0, 0);
-    this.add (this.cone);
+    this.dod = new Dodecahedron(this.gui, "Controles del Dodecahedro")
+    this.dod.position.set(5, 0, 0);
+    this.add (this.dod);
 
 
     // Modelo del torus
@@ -274,17 +277,27 @@ class MyScene extends THREE.Scene {
     this.axisTorus.position.set(0, 0, 5);
     this.add (this.axisTorus);
 
+    this.torus = new Torus(this.gui, "Controles del Torus");
+    this.torus.position.set(0, 0, 5);
+    this.add (this.torus);
+
     // Modelo de la esfera
     this.axisSphere = new THREE.AxesHelper (2);
     this.axisSphere.position.set(0, 5, 0);
     this.add (this.axisSphere);
+
+    this.sphere = new Sphere(this.gui, "Controles de la Esfera");
+    this.sphere.position.set(0, 5, 0);
+    this.add (this.sphere);
 
     // Modelo del cono
     this.axisCone = new THREE.AxesHelper (2);
     this.axisCone.position.set(5, 5, 0);
     this.add (this.axisCone);
 
-
+    this.cone = new Cone(this.gui, "Controles del Cono");
+    this.cone.position.set(5, 5, 0);
+    this.add (this.cone);
 
     // Modelo del cilindro
     this.axisCylinder = new THREE.AxesHelper (2);
@@ -294,11 +307,6 @@ class MyScene extends THREE.Scene {
     this.cylinder = new Cylinder(this.gui, "Controles del Cilindro");
     this.cylinder.position.set(0, 5, 5);
     this.add (this.cylinder);
-
-    // Modelo del lathe
-    this.axisLathe = new THREE.AxesHelper (2);
-    this.axisLathe.position.set(0, -5, 0);
-    this.add (this.axisLathe);
 
   }
 
@@ -313,10 +321,13 @@ class MyScene extends THREE.Scene {
     let meshIntersects = intersects.filter(intersect => intersect.object instanceof THREE.Mesh);
 
     if (meshIntersects.length > 0) {
-      console.log(meshIntersects)
       let object = meshIntersects[0].object;
-      this.camera.lookAt(object.parent.position);
-      this.cameraControl.target = object.parent.position;
+      let pos = new THREE.Vector3();
+      object.getWorldPosition(pos);
+
+      console.log(pos);
+      this.camera.lookAt(object.getWorldPosition(pos));
+      this.cameraControl.target = object.getWorldPosition(pos);
       //object.material = new THREE.MeshBasicMaterial({color: 0xff0000});
       //object.material.needsUpdate = true;
     }
