@@ -7,11 +7,12 @@ import { TrackballControls } from '../../libs/TrackballControls.js'
 import  Stats from '../../libs/stats.module.js'
 
 // Clases de mi proyecto
-import { Base } from './MODELS/Base.js'
 import { Heart } from './MODELS/Heart.js'
 import { Spade } from './MODELS/Spade.js'
 import { Club } from './MODELS/Club.js'
 import { Diamond } from './MODELS/Diamond.js'
+import { LongHeart } from './MODELS/LongHeart.js'
+import { LongDiamond } from './MODELS/LongDiamond.js'
 
 /// La clase fachada del modelo
 /**
@@ -45,6 +46,13 @@ class MyScene extends THREE.Scene {
       roughness: 0.4,   // Some smoothness
       side: THREE.DoubleSide // Render both sides
      });
+
+     const greenMaterial = new THREE.MeshStandardMaterial({
+      color: 0x00AA00,  // Green color
+      metalness: 0.2,   // Slight metallic effect
+      roughness: 0.4,   // Some smoothness
+      side: THREE.DoubleSide // Render both sides
+     });
   
     this.heart = new Heart(redMaterial);
     this.heart.position.set(0, -3.6, 0);
@@ -61,6 +69,12 @@ class MyScene extends THREE.Scene {
     this.diamond.drawSolid();
     this.diamond.position.set(2,0,-0.05);
     this.add(this.diamond);
+
+    this.longheart = new LongHeart(greenMaterial);
+    this.longheart.position.set(-2.5, -2, 0);
+    this.add(this.longheart);
+
+    this.longdiamond = new LongDiamond(greenMaterial);
     
   }
   
