@@ -35,7 +35,7 @@ class Beetle extends THREE.Object3D {
 
     updateGeometry(){
         this.beetle.geometry.dispose();
-        this.beetle.geometry = new THREE.LatheGeometry(this.bshape.getShapePoints());
+        this.beetle.geometry = new THREE.LatheGeometry(this.bshape.getShapePoints(), this.guiControls.resolution);
     }
 
     update() {}
