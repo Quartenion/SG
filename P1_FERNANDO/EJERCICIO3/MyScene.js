@@ -75,6 +75,8 @@ class MyScene extends THREE.Scene {
     this.add(this.longheart);
 
     this.longdiamond = new LongDiamond(greenMaterial);
+    this.longdiamond.position.set(4.5, -2, 0);
+    this.add(this.longdiamond);
     
   }
   
