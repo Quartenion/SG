@@ -10,6 +10,7 @@ import  Stats from '../../libs/stats.module.js'
 
 import {Beetle_shape} from "./Models/Beetle_shape.js";
 import {Beetle} from "./Models/Beetle.js";
+import {BeetleRev} from "./Models/Beetle_rev.js";
 
 class MyScene extends THREE.Scene {
   constructor(myCanvas) {
@@ -24,22 +25,29 @@ class MyScene extends THREE.Scene {
 
 
     // Shape
-    this.axisShape = new THREE.AxesHelper (2);
+    this.axisShape = new THREE.AxesHelper (3);
     this.axisShape.position.set(-3,0,0);
     this.add (this.axisShape);
 
-    this.beetle_shape = new Beetle_shape();
-    this.beetle_shape.position.set(-3,0,0);
-    this.add (this.beetle_shape);
+    this.beetleShape = new Beetle_shape();
+    this.beetleShape.position.set(-3,0,0);
+    this.add (this.beetleShape);
 
     // Beetle
-    this.axisBeetle = new THREE.AxesHelper (2);
+    this.axisBeetle = new THREE.AxesHelper (3);
     this.axisBeetle.position.set(3,0,0);
     this.add (this.axisBeetle);
 
-    this.beetle = new Beetle();
+    this.beetle = new Beetle(this.gui, "Beetle");
     this.beetle.position.set(3,0,0);
     this.add (this.beetle);
+
+    // Beetle rev
+    this.axisBeetleRev = new THREE.AxesHelper (3);
+    this.add (this.axisBeetleRev);
+
+    this.beetleRev = new BeetleRev(this.gui, "BeetleRev");
+    this.add (this.beetleRev);
   }
 
   /********************************************************************************************************************/
@@ -120,12 +128,10 @@ class MyScene extends THREE.Scene {
       //lightPower: 500.0,  // La potencia de esta fuente de luz se mide en lúmenes
       //ambientIntensity: 0.5,
       axisOnOff: true,
-      resolution : 10
     }
 
     // Se crea una sección para los controles de esta clase
     var folder = gui.addFolder('Luz y Ejes');
-    let folderBeetle = gui.addFolder ('Revolution control');
 
     /*
     // Se le añade un control para la potencia de la luz puntual
@@ -138,12 +144,6 @@ class MyScene extends THREE.Scene {
         .name('Luz ambiental: ')
         .onChange((value) => this.setAmbientIntensity(value));
     */
-
-    folderBeetle.add(this.guiControls, 'resolution', 3, 20, 1)
-        .name('Resolution : ')
-        .listen()
-        .onChange((value) => this.beetle.updateGeometry(value));
-
 
     // Y otro para mostrar u ocultar los ejes
     folder.add(this.guiControls, 'axisOnOff')
@@ -186,6 +186,8 @@ class MyScene extends THREE.Scene {
   // Modificar visibilidad de los ejes
   setAxisVisible(valor) {
     this.axisShape.visible = valor;
+    this.axisBeetle.visible = valor;
+    this.axisBeetleRev.visible = valor;
   }
 
   createRenderer(myCanvas) {
@@ -239,7 +241,9 @@ class MyScene extends THREE.Scene {
     this.cameraControl.update();
 
     // Se actualiza el resto del modelo
-
+    this.beetleShape.update();
+    this.beetle.update();
+    this.beetleRev.update();
 
     // Le decimos al renderizador "visualiza la escena que te indico usando la cámara que te estoy pasando"
     this.renderer.render(this, this.getCamera());
