@@ -8,9 +8,9 @@ import  Stats from '../../libs/stats.module.js'
 
 // Clases del proyecto
 
-import {Beetle_shape} from "./Models/Beetle_shape.js";
-import {Beetle} from "./Models/Beetle.js";
-import {BeetleRev} from "./Models/Beetle_rev.js";
+import {Beetle_shape} from "../Ejercicio3-Revolucion/Models/Beetle_shape.js";
+import {Beetle} from "../Ejercicio3-Revolucion/Models/Beetle.js";
+import {BeetleRev} from "../Ejercicio3-Revolucion/Models/Beetle_rev.js";
 
 class MyScene extends THREE.Scene {
   constructor(myCanvas) {
