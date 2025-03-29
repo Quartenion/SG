@@ -27,9 +27,9 @@ class MyScene extends THREE.Scene {
     this.initStats();
     
     // Construimos los distinos elementos que tendremos en la escena
-    this.secondAxis = new THREE.AxesHelper (2);
-    this.secondAxis.position.set(0,0,0);
-    this.add (this.secondAxis);
+    this.axis = new THREE.AxesHelper (2);
+    this.axis.position.set(0,0,0);
+    this.add (this.axis);
 
     this.taza = new Taza();
     this.add (this.taza);

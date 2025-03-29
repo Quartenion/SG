@@ -38,10 +38,7 @@ class Emoji extends THREE.Object3D {
         const geometry = new THREE.ExtrudeGeometry(this.emojiShape, extrudeSettings);
         geometry.computeVertexNormals();
 
-        const material = new THREE.MeshStandardMaterial({ 
-            flatShading: false,
-            color: 0xffff00
-        });
+        const material = new THREE.MeshNormalMaterial();
             
         const mesh = new THREE.Mesh(geometry, material);
         this.add(mesh);
