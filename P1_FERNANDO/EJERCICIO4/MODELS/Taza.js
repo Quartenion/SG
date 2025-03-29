@@ -14,9 +14,13 @@ class Taza extends THREE.Object3D {
         var cuerpoIntGeo = new THREE.CylinderGeometry(0.4, 0.4, 1.05, 32);
         var mangoGeo = new THREE.TorusGeometry(0.3, 0.07, 16, 100);
 
-        cuerpoExtGeo.position.y = 0.5;
-        cuerpoIntGeo.position.y = 0.53;
-        mangoGeo.position.set(0.5, 0.5, 0);
+        // Colocar el mango
+        
+        mangoGeo.translate(0.5, 0.5, 0);
+        // Colocar el cuerpo interior
+        cuerpoExtGeo.translate(0, 0.5, 0);
+        cuerpoIntGeo.translate(0, 0.6, 0);
+
 
         // Hacemos el booleano de las incisiones con la taza
         let cuerpoExtBrush = new CSG.Brush(cuerpoExtGeo, material);
