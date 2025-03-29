@@ -9,6 +9,7 @@ import  Stats from '../../libs/stats.module.js'
 // Clases del proyecto
 
 import {Tuerca} from "./Models/Tuerca.js";
+import {Pieza1} from "./Models/Pieza1.js";
 
 class MyScene extends THREE.Scene {
   constructor(myCanvas) {
@@ -22,11 +23,22 @@ class MyScene extends THREE.Scene {
     this.createCamera();
 
     // Creamos la tuerca
-    this.axisTuerca = new THREE.AxesHelper(2);
+    this.axisTuerca = new THREE.AxesHelper(4);
+    this.axisTuerca.position.set(-7,0,0);
     this.add(this.axisTuerca);
 
     this.tuerca = new Tuerca();
+    this.tuerca.position.set(-7,0,0);
     this.add(this.tuerca);
+
+    // Creamos la pieza 1
+    this.axisPieza1 = new THREE.AxesHelper(4);
+    this.axisPieza1.position.set(0,0,0);
+    this.add(this.axisPieza1);
+
+    this.pieza1 = new Pieza1();
+    this.pieza1.position.set(0,0,0);
+    this.add(this.pieza1);
   }
 
   /********************************************************************************************************************/

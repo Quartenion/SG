@@ -1,4 +1,6 @@
 import * as THREE from '../../../libs/three.module.js'
+import * as CSG from '../../../libs/three-bvh-csg.js'
+
 
 class Tuerca extends THREE.Object3D {
     constructor() {
@@ -13,29 +15,27 @@ class Tuerca extends THREE.Object3D {
 
         const extrudeSettings = {
             depth: 2,
-            bevelEnabled: false
+            bevelEnabled: true,
+            bevelSize: 0.05,
         };
 
 
         // Creamos la forma exterior de la tuerca con un agujero en el centro
-        const hole = new THREE.Shape();
-        hole.absarc(x, y, hole_radius, 0, Math.PI * 2);
+
         shape.moveTo(x+radius,y);
-        shape.lineTo(x+radius/2,y+radius);
-        shape.lineTo(x-(radius/2),y+radius);
+        shape.lineTo(x+radius/2,y+radius*0.866); // El numero se saca por el triangulo pitagoras
+        shape.lineTo(x-(radius/2),y+radius*0.866);
         shape.lineTo(x-(radius),y);
-        shape.lineTo(x-(radius/2),y-(radius));
-        shape.lineTo(x+radius/2,y-(radius));
+        shape.lineTo(x-(radius/2),y-(radius*0.866));
+        shape.lineTo(x+radius/2,y-(radius*0.866));
         shape.lineTo(x+radius,y);
 
+        const hole = new THREE.Shape();
+        hole.absarc(x, y, hole_radius, 0, Math.PI * 2);
         shape.holes.push(hole);
 
-        let geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+        let tuercaGeometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
         let material = new THREE.MeshNormalMaterial();
-        let tuerca = new THREE.Mesh(geometry, material);
-
-        this.add(tuerca);
-
 
 
 
@@ -46,10 +46,10 @@ class Tuerca extends THREE.Object3D {
         smallCircleShape.absarc(x,y,radius,0,Math.PI * 2);
 
         const points = [];
-        const numPoints = 200;
+        const numPoints = 100;
         radius = hole_radius;
-        const height = 1.9;
-        const turns = 6;
+        const height = 2;
+        const turns = 10;
 
         for (let i = 0; i <= numPoints; i++) {
             const t = i / numPoints;
@@ -68,16 +68,26 @@ class Tuerca extends THREE.Object3D {
         };
 
         let extrudeGeometry = new THREE.ExtrudeGeometry(smallCircleShape, extrudePathSettings);
-        let extrudeMesh = new THREE.Mesh(extrudeGeometry, material);
-        this.add(extrudeMesh);
+
+
+        // Hacemos el booleano de las incisiones con la tuerca
+        let brush1 = new CSG.Brush(tuercaGeometry, material);
+        let brush2 = new CSG.Brush(extrudeGeometry, material);
+        let evaluator = new CSG.Evaluator();
+        let baseTuerca = evaluator.evaluate(brush1, brush2, CSG.SUBTRACTION);
 
 
         // Creamos la esfera de mismo radio que nos permitirá darle bordes redondeados a
         // la tuerca
         let sphereGeometry = new THREE.SphereGeometry(3);
-        let sphereMesh = new THREE.Mesh(sphereGeometry, material);
+        sphereGeometry.translate(0,0,1); // Se translada el ancho de la tuerca
 
 
+        // Hacemos el booleano con la esfera
+        brush2 = new CSG.Brush(sphereGeometry, material);
+        let tuercaFinal = evaluator.evaluate(baseTuerca, brush2, CSG.INTERSECTION);
+
+        this.add(tuercaFinal);
     }
 
     update() {}
