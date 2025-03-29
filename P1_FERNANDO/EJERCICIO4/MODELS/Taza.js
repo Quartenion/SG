@@ -1,4 +1,6 @@
 import * as THREE from '../../../libs/three.module.js';
+import * as CSG from '../../../libs/three-bvh-csg.js';
+
 
 class Taza extends THREE.Object3D {
     constructor() {
@@ -12,24 +14,22 @@ class Taza extends THREE.Object3D {
         var cuerpoIntGeo = new THREE.CylinderGeometry(0.4, 0.4, 1.05, 32);
         var mangoGeo = new THREE.TorusGeometry(0.3, 0.07, 16, 100);
 
-        // Crear mallas base
-        var cuerpoExtMesh = new THREE.Mesh(cuerpoExtGeo, material);
-        var cuerpoIntMesh = new THREE.Mesh(cuerpoIntGeo, material);
-        var mangoMesh = new THREE.Mesh(mangoGeo, material);
+        cuerpoExtGeo.position.y = 0.5;
+        cuerpoIntGeo.position.y = 0.53;
+        mangoGeo.position.set(0.5, 0.5, 0);
 
-        cuerpoExtMesh.position.y = 0.5;
-        cuerpoIntMesh.position.y = 0.53;
-        mangoMesh.position.set(0.5, 0.5, 0);
+        // Hacemos el booleano de las incisiones con la taza
+        let cuerpoExtBrush = new CSG.Brush(cuerpoExtGeo, material);
+        let cuerpoIntBrush = new CSG.Brush(cuerpoIntGeo, material);
+        let mangoBrush = new CSG.Brush(mangoGeo, material);
 
-        // Crear la taza
-        const tazaMesh = new THREE.Group();
-        tazaMesh.add(cuerpoExtMesh);
-        tazaMesh.add(cuerpoIntMesh);
-        tazaMesh.add(mangoMesh);
+        let evaluator = new CSG.Evaluator();
+        let tazaMango = evaluator.evaluate(cuerpoExtBrush, mangoBrush, CSG.ADDITION);
+        let taza = evaluator.evaluate(tazaMango, cuerpoIntBrush, CSG.SUBTRACTION);
         
 
         // Agregar la taza al objeto
-        this.add(tazaMesh);
+        this.add(taza);
     }
 }
 
