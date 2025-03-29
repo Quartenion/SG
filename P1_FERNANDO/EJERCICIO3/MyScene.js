@@ -13,6 +13,7 @@ import { Club } from './MODELS/Club.js'
 import { Diamond } from './MODELS/Diamond.js'
 import { LongHeart } from './MODELS/LongHeart.js'
 import { LongDiamond } from './MODELS/LongDiamond.js'
+import { Emoji } from './MODELS/Emoji.js'
 
 /// La clase fachada del modelo
 /**
@@ -53,7 +54,7 @@ class MyScene extends THREE.Scene {
       roughness: 0.4,   // Some smoothness
       side: THREE.DoubleSide // Render both sides
      });
-  
+     
     this.heart = new Heart(redMaterial);
     this.heart.position.set(0, -3.6, 0);
     this.add(this.heart);
@@ -77,6 +78,10 @@ class MyScene extends THREE.Scene {
     this.longdiamond = new LongDiamond(greenMaterial);
     this.longdiamond.position.set(4.5, -2, 0);
     this.add(this.longdiamond);
+
+    this.emoji = new Emoji();
+    this.emoji.position.set(1, 3, 0);
+    this.add(this.emoji);
     
   }
   
@@ -193,7 +198,7 @@ class MyScene extends THREE.Scene {
     var renderer = new THREE.WebGLRenderer();
     
     // Se establece un color de fondo en las imágenes que genera el render
-    renderer.setClearColor(new THREE.Color(0xEEEEEE), 1.0);
+    renderer.setClearColor(new THREE.Color(0x000000), 1.0);
     
     // Se establece el tamaño, se aprovecha la totalidad de la ventana del navegador
     renderer.setSize(window.innerWidth, window.innerHeight);
