@@ -1,5 +1,5 @@
-import * as THREE from '../../../libs/three.module.js';
-import * as CSG from '../../../libs/three-bvh-csg.js';
+import * as THREE from '../../../libs/three.module.js'
+import * as CSG from '../../../libs/three-bvh-csg.js'
 
 
 class Taza extends THREE.Object3D {
@@ -15,7 +15,6 @@ class Taza extends THREE.Object3D {
         var mangoGeo = new THREE.TorusGeometry(0.3, 0.07, 16, 100);
 
         // Colocar el mango
-        
         mangoGeo.translate(0.5, 0.5, 0);
         // Colocar el cuerpo interior
         cuerpoExtGeo.translate(0, 0.5, 0);
