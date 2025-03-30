@@ -9,9 +9,8 @@ import  Stats from '../../libs/stats.module.js'
 // Clases de mi proyecto
 import { Taza } from './MODELS/Taza.js'
 import { Tuerca } from './MODELS/Tuerca.js'
-import { Soporte } from './MODELS/Soporte.js'
-import { Tubo } from './MODELS/Tubo.js'
 import { Aparato } from './MODELS/Aparato.js'
+import { Auricular } from './MODELS/Auricular.js'
 
 /// La clase fachada del modelo
 /**
@@ -42,10 +41,14 @@ class MyScene extends THREE.Scene {
 
     this.tuerca = new Tuerca();
     this.add (this.tuerca);
-    */
+    
 
     this.aparato = new Aparato();
     this.add (this.aparato);
+    */
+
+    this.auricular = new Auricular();
+    this.add (this.auricular);
     
     // Todo elemento que se desee sea tenido en cuenta en el renderizado de la escena debe pertenecer a esta. Bien como hijo de la escena (this en esta clase) o como hijo de un elemento que ya esté en la escena.
     // Tras crear cada elemento se añadirá a la escena con   this.add(variable)
