@@ -54,8 +54,8 @@ class Pieza1 extends THREE.Object3D {
 
 
         const hole = new THREE.Shape();
-        hole.absarc(x, y-0.9, hole_radius, 0, Math.PI * 2);
-        hole.absarc(x, y+0.9, hole_radius, 0, Math.PI * 2);
+        hole.absarc(x, y-0.9, hole_radius, 0, Math.PI * 2-0.01, false);
+        hole.absarc(x, y+0.9, hole_radius, 0, Math.PI * 2-0.01, false);
 
         shape.holes.push(hole);
 

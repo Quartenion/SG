@@ -35,7 +35,7 @@ class Martillo extends THREE.Object3D {
 
         let mango = evaluator.evaluate(mango1, mango2, CSG.ADDITION);
 
-        //this.add(mango);
+        this.add(mango);
         return mango;
     }
 
@@ -66,14 +66,46 @@ class Martillo extends THREE.Object3D {
         cilindro.rotateZ(270*(Math.PI/180));
         cilindro.translate(-1.6,0,0.35);
 
+        this.add (new THREE.Mesh(cilindro, this.material));
+
         let brush2 = new CSG.Brush(cilindro, this.material);
         let brush1 = new CSG.Brush(tailGeometry, this.material);
         let evaluator = new CSG.Evaluator();
         let parteTrasera = evaluator.evaluate(brush1, brush2, CSG.SUBTRACTION);
 
-        this.add(parteTrasera);
+
 
         // Hacemos el cuerpo principal
+        let cube = new THREE.BoxGeometry(1.5, 1.2, 0.7);
+
+        brush1 = new CSG.Brush(cube, this.material);
+        parteTrasera.geometry.translate(-0.75, 0.3, -0.35);
+        let semiBody = evaluator.evaluate(parteTrasera, brush1, CSG.ADDITION);
+        semiBody.geometry.translate(0,0.6,0);
+
+        cilindro = new THREE.CylinderGeometry(0.4,0.4,3);
+        cilindro.rotateX(90*(Math.PI/180));
+        cilindro.translate(-0.65,0.3,0);
+        brush1 = new CSG.Brush(cilindro, this.material);
+        semiBody = evaluator.evaluate(semiBody, brush1, CSG.SUBTRACTION);
+
+
+        cilindro = new THREE.CylinderGeometry(0.4,0.4,3);
+        cilindro.rotateX(90*(Math.PI/180));
+        cilindro.translate(+0.65,0.3,0);
+        brush1 = new CSG.Brush(cilindro, this.material);
+        semiBody = evaluator.evaluate(semiBody, brush1, CSG.SUBTRACTION);
+
+
+        semiBody.geometry.translate(0,2,0);
+
+
+
+        this.add(semiBody);
+
+
+        // Hacemos la pieza de union entre mango y cabeza
+
 
 
     }
