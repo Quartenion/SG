@@ -4,56 +4,6 @@ class Extrusion extends THREE.Object3D {
     constructor() {
         super();
 
-
-
-        /*
-        CURVAS PARA LA EXTRUSIÓN
-
-        const curve = new THREE.CatmullRomCurve3([
-              new THREE.Vector3(0, 0, 0),
-              new THREE.Vector3(0, 0, 0),
-              new THREE.Vector3(0, 0, 0),
-              new THREE.Vector3(0, 0, 0),
-              new THREE.Vector3(0, 0, 0),
-              new THREE.Vector3(0, 0, 0),
-              new THREE.Vector3(0, 0, 0),
-              new THREE.Vector3(0, 0, 0),
-              new THREE.Vector3(0, 0, 0),
-              new THREE.Vector3(0, 0, 0),
-              new THREE.Vector3(0, 0, 0),
-              new THREE.Vector3(0, 0, 0),
-              new THREE.Vector3(0, 0, 0),
-              new THREE.Vector3(0, 0, 0),
-              new THREE.Vector3(0, 0, 0),
-              new THREE.Vector3(0, 0, 0),
-              new THREE.Vector3(0, 0, 0),
-        ])
-
-        const extrudeSettings = {
-          curveSegments: 12,
-          extrudePath: curve,
-        }
-
-        let hola = new THREE.ExtrudeGeometry(geometry, extrudeSettings);
-        */
-
-        /*
-        let shape = new THREE.Shape();
-
-        // lo creas
-        shape.moveTo(0,0);
-        shape.lineTo(1,0);
-        shape.lineTo(1,1);
-        shape.lineTo(0,1);
-        shape.lineTo(0,0);
-
-
-        let geom = new THREE.BufferGeometry().setFromPoints(shape.getPoints());
-        let material = new THREE.LineBasicMaterial({ color: 0x000000 });
-        let lines = new THREE.Line(geom, material);
-        this.add(lines);
-        */
-
         // SHAPE
         this.extrusionShape = new THREE.Shape();
         this.extrusionShape.moveTo(0, 0);
@@ -99,3 +49,51 @@ class Extrusion extends THREE.Object3D {
 }
 
 export { Extrusion };
+
+/*
+    CURVAS PARA LA EXTRUSIÓN
+
+    const curve = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(0, 0, 0),
+        new THREE.Vector3(0, 0, 0),
+        new THREE.Vector3(0, 0, 0),
+        new THREE.Vector3(0, 0, 0),
+        new THREE.Vector3(0, 0, 0),
+        new THREE.Vector3(0, 0, 0),
+        new THREE.Vector3(0, 0, 0),
+        new THREE.Vector3(0, 0, 0),
+        new THREE.Vector3(0, 0, 0),
+        new THREE.Vector3(0, 0, 0),
+        new THREE.Vector3(0, 0, 0),
+        new THREE.Vector3(0, 0, 0),
+        new THREE.Vector3(0, 0, 0),
+        new THREE.Vector3(0, 0, 0),
+        new THREE.Vector3(0, 0, 0),
+        new THREE.Vector3(0, 0, 0),
+        new THREE.Vector3(0, 0, 0),
+    ])
+
+    const extrudeSettings = {
+        curveSegments: 12,
+        extrudePath: curve,
+    }
+
+    let hola = new THREE.ExtrudeGeometry(geometry, extrudeSettings);
+    */
+
+    /*
+    let shape = new THREE.Shape();
+
+    // lo creas
+    shape.moveTo(0,0);
+    shape.lineTo(1,0);
+    shape.lineTo(1,1);
+    shape.lineTo(0,1);
+    shape.lineTo(0,0);
+
+
+    let geom = new THREE.BufferGeometry().setFromPoints(shape.getPoints());
+    let material = new THREE.LineBasicMaterial({ color: 0x000000 });
+    let lines = new THREE.Line(geom, material);
+    this.add(lines);
+*/
