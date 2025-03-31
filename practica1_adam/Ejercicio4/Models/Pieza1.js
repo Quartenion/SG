@@ -17,7 +17,7 @@ class Pieza1 extends THREE.Object3D {
         // Vamos a imaginar que cada borde de curva son 0.4, la mitad 0.2
 
         const extrudeSettings = {
-            steps: 2,
+            steps: 100,
             depth: 0.5,
             bevelEnabled: true,
             bevelSize: 0.2,
@@ -76,7 +76,7 @@ class Pieza1 extends THREE.Object3D {
         cShape.lineTo(x, y+cheight);
         cShape.lineTo(x, y);
 
-        let cilinderGeometry = new THREE.LatheGeometry(cShape.getPoints(50), 50);
+        let cilinderGeometry = new THREE.LatheGeometry(cShape.getPoints(100), 100);
         cilinderGeometry.rotateX(90*(Math.PI/180));
         cilinderGeometry.translate(0,0,0.688);
 
@@ -86,7 +86,7 @@ class Pieza1 extends THREE.Object3D {
         let evaluator = new CSG.Evaluator();
         let piezaCompuesta = evaluator.evaluate(brush1, brush2, CSG.ADDITION);
 
-        let insideCG = new THREE.CylinderGeometry(0.25, 0.25, 6, 50);
+        let insideCG = new THREE.CylinderGeometry(0.25, 0.25, 6, 100, 100);
         insideCG.rotateX(90*(Math.PI/180));
         brush1 = new CSG.Brush(insideCG, material);
 

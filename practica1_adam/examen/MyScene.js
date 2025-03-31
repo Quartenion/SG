@@ -156,7 +156,6 @@ class MyScene extends THREE.Scene {
 
   // Modificar visibilidad de los ejes
   setAxisVisible(valor) {
-    this.axisTuerca.visible = valor;
   }
 
   createRenderer(myCanvas) {
