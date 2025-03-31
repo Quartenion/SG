@@ -33,12 +33,12 @@ class Destornillador extends THREE.Object3D {
     // Punta
     var Punta = new THREE.BoxGeometry(0.2, 0.2, 0.2);
     Punta.rotateX(Math.PI / 7);
-    Punta.translate(0, -0.95, 0.12);
+    Punta.translate(0, -1.3, 0.12);
 
     // Punta2
     var Punta2 = new THREE.BoxGeometry(0.2, 0.2, 0.2);
     Punta2.rotateX(-Math.PI / 7);
-    Punta2.translate(0, -0.95, -0.12);
+    Punta2.translate(0, -1.3, -0.12);
 
     // --- 2. Crear los Brushes a partir de las geometrías ya transformadas ---
     let materialBrush = material; // Reutilizamos el mismo material
@@ -53,26 +53,12 @@ class Destornillador extends THREE.Object3D {
 
     // --- 3. Unir (ADD) o restar (SUBTRACTION) de manera coherente ---
     let evaluator = new CSG.Evaluator();
-
-    // Unir cuerpo superior e inferior
     let Cuerpo = evaluator.evaluate(CuerpoSuperiorBrush, CuerpoInferiorBrush, CSG.ADDITION);
-
-    // Añadir Soporte al cuerpo
     let SoporteCuerpo = evaluator.evaluate(Cuerpo, SoporteBrush, CSG.ADDITION);
-
-    // Añadir Brazo
     let BrazoSoporte = evaluator.evaluate(SoporteCuerpo, BrazoBrush, CSG.ADDITION);
-
-    // Añadir Agarre
     let AgarreBrazo = evaluator.evaluate(BrazoSoporte, AgarreBrush, CSG.ADDITION);
-
-    // Restar la primera Punta
     let PrimeraPunta = evaluator.evaluate(AgarreBrazo, PuntaBrush, CSG.SUBTRACTION);
-
-    // Restar la segunda Punta
     let Destornillador = evaluator.evaluate(PrimeraPunta, Punta2Brush, CSG.SUBTRACTION);
-
-    // --- 4. Agregar el resultado final a la escena ---
     this.add(Destornillador);
   }
 }
