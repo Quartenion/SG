@@ -31,7 +31,7 @@ class Aparato extends THREE.Object3D {
         var AgujeroGeo = new THREE.CylinderGeometry(0.2, 0.2, 2, 32);
         var BaseGeo = new THREE.BoxGeometry(3, 0.5, 3);
 
-        TuboGeo.translate(0, 0.2, 0);
+        TuboGeo.translate(0, 0.199, 0);
         AgujeroGeo.translate(0, 0.1, 0);
         BaseGeo.translate(0, -0.25, 0);
 

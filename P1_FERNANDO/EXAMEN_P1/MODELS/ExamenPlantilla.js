@@ -1,5 +1,5 @@
-import * as THREE from '../../libs/three.module.js'
-import * as CSG from '../../libs/three-bvh-csg.js';
+import * as THREE from '../../../libs/three.module.js'
+import * as CSG from '../../../libs/three-bvh-csg.js';
 import { Revolucion } from './RevolucionPlantilla.js';
 import { Extrusion } from './ExtrusionPlantilla.js';
 
