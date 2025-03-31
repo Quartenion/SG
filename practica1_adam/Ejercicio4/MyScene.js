@@ -10,6 +10,7 @@ import  Stats from '../../libs/stats.module.js'
 
 import {Tuerca} from "./Models/Tuerca.js";
 import {Pieza1} from "./Models/Pieza1.js";
+import {Martillo} from "./Models/Martillo.js";
 
 class MyScene extends THREE.Scene {
   constructor(myCanvas) {
@@ -33,12 +34,21 @@ class MyScene extends THREE.Scene {
 
     // Creamos la pieza 1
     this.axisPieza1 = new THREE.AxesHelper(4);
-    this.axisPieza1.position.set(0,0,0);
+    this.axisPieza1.position.set(0,0,-7);
     this.add(this.axisPieza1);
 
     this.pieza1 = new Pieza1();
-    this.pieza1.position.set(0,0,0);
+    this.pieza1.position.set(0,0,-7);
     this.add(this.pieza1);
+
+    // Creamos el martillo
+    this.axisMartillo = new THREE.AxesHelper(4);
+    this.axisMartillo.position.set(0,0,0);
+    this.add(this.axisMartillo);
+
+    this.martillo = new Martillo();
+    this.martillo.position.set(0,0,0);
+    this.add(this.martillo);
   }
 
   /********************************************************************************************************************/

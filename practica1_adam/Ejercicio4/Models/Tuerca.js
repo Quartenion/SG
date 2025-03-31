@@ -35,7 +35,8 @@ class Tuerca extends THREE.Object3D {
         shape.holes.push(hole);
 
         let tuercaGeometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-        let material = new THREE.MeshNormalMaterial();
+        let material = new THREE.MeshNormalMaterial({transparent: true,
+                                                                              opacity: 0.5});
 
 
 
@@ -89,6 +90,25 @@ class Tuerca extends THREE.Object3D {
 
         this.add(tuercaFinal);
     }
+
+    shape2CatmullRomCurve3 ( aShape , res = 6) {
+        let v2 = aShape.extractPoints(res).shape ; // Extraemos puntos 2D del shape
+        let v3 = [ ] ;
+
+        v2.forEach ( ( v ) => {
+            v3.push (new THREE.Vector3 ( v.x , v.y , 0) ); // Creamos puntos 3D
+            } ) ;
+        return new THREE. CatmullRomCurve3 ( v3 ); // Construimos e l CatmullRomCurve3
+    }
+    rotateShape ( aShape , angle , res = 6 , center = new THREE. Vector2 (0 ,0) ) {
+        let points = aShape.extractPoints(res).shape; // Extraemos los puntos 2D del shape
+        points.forEach ( ( p ) => {
+        p.rotateAround ( center , angle ) ; // Los giramos
+        } ) ;
+        return new THREE.Shape ( points ) ; // Construimos y devolvemos un nuevo shape
+    }
+
+
 
     update() {}
 }
