@@ -1,13 +1,16 @@
 
 // Clases de la biblioteca
 
-import * as THREE from '../../libs/three.module.js'
-import { GUI } from '../../libs/dat.gui.module.js'
-import { TrackballControls } from '../../libs/TrackballControls.js'
-import  Stats from '../../libs/stats.module.js'
+import * as THREE from '../../../libs/three.module.js'
+import { GUI } from '../../../libs/dat.gui.module.js'
+import { TrackballControls } from '../../../libs/TrackballControls.js'
+import  Stats from '../../../libs/stats.module.js'
 
 // Clases de mi proyecto
 import { Examen } from './MODELS/ExamenPlantilla.js'
+import { Extrusion } from './MODELS/ExtrusionPlantilla.js'
+import { Revolucion } from './MODELS/RevolucionPlantilla.js'
+import { Coleta } from './MODELS/Coleta.js'
 
 
 /// La clase fachada del modelo
@@ -32,9 +35,19 @@ class MyScene extends THREE.Scene {
     this.axis.position.set(0,0,0);
     this.add (this.axis);
 
+    /*
+    this.extrusion = new Extrusion();
+    this.add(this.extrusion);
+    */
+
     this.examen = new Examen();
     this.add(this.examen);
 
+    
+
+    
+
+    
     
     // Todo elemento que se desee sea tenido en cuenta en el renderizado de la escena debe pertenecer a esta. Bien como hijo de la escena (this en esta clase) o como hijo de un elemento que ya esté en la escena.
     // Tras crear cada elemento se añadirá a la escena con   this.add(variable)

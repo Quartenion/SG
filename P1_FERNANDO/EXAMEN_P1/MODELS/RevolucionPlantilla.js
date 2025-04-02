@@ -1,4 +1,4 @@
-import * as THREE from '../../../libs/three.module.js'
+import * as THREE from '../../libs/three.module.js'
 
 class Revolucion extends THREE.Object3D {
     constructor() {
@@ -9,7 +9,7 @@ class Revolucion extends THREE.Object3D {
         this.revolucionShape.lineTo(0.5, 0);
         this.revolucionShape.lineTo(0.5, 1);
         this.revolucionShape.lineTo(0, 1);
-        this.drawSolid();
+        this.drawLines();
     }
 
     drawLines() {
