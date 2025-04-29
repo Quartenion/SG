@@ -5,9 +5,8 @@ class Tablero extends THREE.Object3D {
     super();
 
     const size = 0.1; 
-    const rojo = new THREE.Color(0xff0000);   // rojo fuerte
+    const rojo = new THREE.Color(0x000000);   // negro 
     const blanco = new THREE.Color(0xffffff); // blanco
-    const rosa = new THREE.Color(0xffcccc);    // rosita claro
     const mantel = 8;
 
     for (let i = 0; i < mantel; i++) {       
@@ -16,9 +15,9 @@ class Tablero extends THREE.Object3D {
 
         let color;
         if (i % 2 === 0) { // Fila par (0, 2, 4, 6)
-          color = (j % 2 === 0) ? rojo : rosa;
+          color = (j % 2 === 0) ? rojo : blanco;
         } else {           // Fila impar (1, 3, 5, 7)
-          color = (j % 2 === 0) ? rosa : blanco;
+          color = (j % 2 === 0) ? blanco : rojo;
         }
 
         const material = new THREE.MeshLambertMaterial({ color: color });
