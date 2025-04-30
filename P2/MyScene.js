@@ -37,11 +37,13 @@ class MyScene extends THREE.Scene {
     this.add (this.gameBoard);
 
     this.suelo = new Suelo();
-    this.add (this.suelo)
+    this.add (this.suelo);
 
+  }
 
-
-
+  // Función que llamará y hará lo necesario en la creación de una partida
+  newGame(){
+    this.gameBoard.startGame ();
   }
 
 
@@ -101,8 +103,13 @@ class MyScene extends THREE.Scene {
     this.guiControls = {
       // En el contexto de una función   this   alude a la función
       lightPower : 500.0,  // La potencia de esta fuente de luz se mide en lúmenes
-      ambientIntensity : 0.5,   
-      axisOnOff : true
+      ambientIntensity : 0.5,
+      axisOnOff : true,
+
+      startGame : () => {
+        this.newGame();
+      }
+
     }
 
     // Se crea una sección para los controles de esta clase
@@ -122,7 +129,11 @@ class MyScene extends THREE.Scene {
     folder.add (this.guiControls, 'axisOnOff')
       .name ('Mostrar ejes : ')
       .onChange ( (value) => this.setAxisVisible (value) );
-    
+
+
+    let folderGame = gui.addFolder ('GameBoard');
+    folderGame.add (this.guiControls, 'startGame').name ('[ Start Game ]');
+
     return gui;
   }
   

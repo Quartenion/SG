@@ -9,13 +9,33 @@ class GameBoard extends THREE.Object3D {
         // matriz que contiene el tablero con las posiciones en el espacio de las casillas
         this.tablero = new Tablero();
         this.add(this.tablero);
+    }
 
-        // Ejecutamos la creación del juego
+    startGame(){
+        // Ejecutamos la creación de las fichas
         this.setUpNewGameBoard();
     }
 
-
     setUpNewGameBoard(){
+
+        // Si no es la primera vez que se ejecuta se borran todas las piezas
+        if (this.blancas) {
+            console.log("Eliminando los objetos porque ya es la segunda vez")
+            this.blancas.traverse(function (child) {
+                if (child instanceof THREE.Mesh) {
+                    child.geometry.dispose();
+                    child.material.dispose();
+                }
+            });
+
+            this.negras.traverse(function (child) {
+                if (child instanceof THREE.Mesh) {
+                    child.geometry.dispose();
+                    child.material.dispose();
+                }
+            });
+        }
+
         // Creamos nueva matriz del tablero con los objetos donde ocurre el juego
         this.tableroPiezas = [
             [new Hormiga("xN1"), new Hormiga("xN2"), new Hormiga("xN3"), new Hormiga("xN4"),
@@ -65,15 +85,6 @@ class GameBoard extends THREE.Object3D {
         let filaIndex  = this.tableroPiezas.findIndex(fila => fila.find(hormiga => hormiga.name === 'pN1'));
         console.log(fila.find(hormiga => hormiga.name === 'pN1'));
         console.log(`${filaIndex} ${fila.findIndex(hormiga => hormiga.name === 'pN1')}`);
-    }
-
-    // Función que devuelve una referencia para que se pueda hacer el pick del objeto
-    getBlancas(){
-        return this.blancas;
-    }
-
-    getNegras(){
-        return this.negras;
     }
 
     selectPiece(name){
