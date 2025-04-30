@@ -37,6 +37,10 @@ class Hormiga extends THREE.Object3D {
 
         this.add(this.latheMesh);
     }
+
+    update(){
+        // console.log(`updating hormiga: ${this.name}`)
+    }
 }
 
 export { Hormiga };

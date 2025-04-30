@@ -39,12 +39,63 @@ class MyScene extends THREE.Scene {
     this.suelo = new Suelo();
     this.add (this.suelo);
 
+    // Elementos para el raycasting
+    this.raycaster = new THREE.Raycaster();
+    this.mouse = new THREE.Vector2();
+
+    this.gameStarted = false;
+    this.canPick = false;
   }
 
   // Función que llamará y hará lo necesario en la creación de una partida
   newGame(){
-    this.gameBoard.startGame ();
+    this.gameBoard.startGame();
+    this.camera.position.set(this.whiteCameraPosition.x, this.whiteCameraPosition.y, this.whiteCameraPosition.z);
+    this.gameStarted = true;
+    this.canPick = false;
   }
+
+
+  onMouseClick(MouseEvent) {
+    if (this.gameStarted)
+    {
+      if (this.canPick) {
+        if (this.lastObject) {
+          this.lastObject.material = this.lastMaterial;
+          this.lastObject.material.needsUpdate = true;
+        }
+        this.mouse.x = (MouseEvent.clientX / window.innerWidth) * 2 - 1;
+        this.mouse.y = -(MouseEvent.clientY / window.innerHeight) * 2 + 1;
+
+        // Actualizamos el raycaster con la posición del ratón y la cámara
+        this.raycaster.setFromCamera(this.mouse, this.camera);
+        let intersects = this.raycaster.intersectObjects(this.gameBoard.turnColor.children, true);
+
+
+        if (intersects.length > 0) {
+          let object = intersects[0].object;
+          let pos = new THREE.Vector3();
+          object.getWorldPosition(pos);
+
+          //console.log(pos);
+          //this.camera.lookAt(object.getWorldPosition(pos));
+          //this.cameraControl.target = object.getWorldPosition(pos);
+
+          this.lastObject = object;
+          this.lastMaterial = object.material;
+
+          object.material = new THREE.MeshBasicMaterial({color: 0xff0000});
+          object.material.needsUpdate = true;
+
+        }
+      }
+      else{
+        this.canPick = true;
+      }
+    }
+  }
+
+
 
 
   initStats() {
@@ -108,8 +159,19 @@ class MyScene extends THREE.Scene {
 
       startGame : () => {
         this.newGame();
-      }
+      },
 
+      nextTurn : () => {
+        if (this.gameStarted) {
+          this.gameBoard.nextTurn();
+          if (this.gameBoard.currentTurn === "black") {
+            this.camera.position.set(this.blackCameraPosition.x, this.blackCameraPosition.y, this.blackCameraPosition.z);
+          }
+          else{
+            this.camera.position.set(this.whiteCameraPosition.x, this.whiteCameraPosition.y, this.whiteCameraPosition.z);
+          }
+        }
+      }
     }
 
     // Se crea una sección para los controles de esta clase
@@ -133,6 +195,7 @@ class MyScene extends THREE.Scene {
 
     let folderGame = gui.addFolder ('GameBoard');
     folderGame.add (this.guiControls, 'startGame').name ('[ Start Game ]');
+    folderGame.add (this.guiControls, 'nextTurn').name ('[ Next Turn ]');
 
     return gui;
   }
@@ -217,15 +280,14 @@ class MyScene extends THREE.Scene {
     
     // Actualizamos la cámara
     this.cameraControl.update();
-    
+
     // Se actualiza el resto del modelo   
-    
-    // Le decimos al renderizador "visualiza la escena que te indico usando la cámara que te estoy pasando"
+    this.gameBoard.update();
+
+    // Configuramos el render con la cámara
     this.renderer.render (this, this.getCamera());
 
-    // Este método debe ser llamado cada vez que queramos visualizar la escena de nuevo.
-    // Literalmente le decimos al navegador: "La próxima vez que haya que refrescar la pantalla, llama al método que te indico".
-    // Si no existiera esta línea,  update()  se ejecutaría solo la primera vez.
+    // Configuramos la actualización automatica del update
     requestAnimationFrame(() => this.update())
   }
 }
@@ -238,7 +300,8 @@ $(function () {
 
   // Se añaden los listener de la aplicación. En este caso, el que va a comprobar cuándo se modifica el tamaño de la ventana de la aplicación.
   window.addEventListener ("resize", () => scene.onWindowResize());
-  
+  window.addEventListener ('click', (MouseEvent) => scene.onMouseClick(MouseEvent));
+
   // Que no se nos olvide, la primera visualización.
   scene.update();
 });

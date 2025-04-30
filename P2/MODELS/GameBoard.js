@@ -14,21 +14,23 @@ class GameBoard extends THREE.Object3D {
     startGame(){
         // Ejecutamos la creación de las fichas
         this.setUpNewGameBoard();
+        this.currentTurn = null;
+        this.nextTurn();
     }
 
     setUpNewGameBoard(){
 
         // Si no es la primera vez que se ejecuta se borran todas las piezas
-        if (this.blancas) {
+        if (this.white) {
             console.log("Eliminando los objetos porque ya es la segunda vez")
-            this.blancas.traverse(function (child) {
+            this.white.traverse(function (child) {
                 if (child instanceof THREE.Mesh) {
                     child.geometry.dispose();
                     child.material.dispose();
                 }
             });
 
-            this.negras.traverse(function (child) {
+            this.black.traverse(function (child) {
                 if (child instanceof THREE.Mesh) {
                     child.geometry.dispose();
                     child.material.dispose();
@@ -58,33 +60,55 @@ class GameBoard extends THREE.Object3D {
             }
         }
 
-        // Creamos el grupo de las blancas y asignamos las piezas
-        this.blancas = new THREE.Group();
+        // Creamos el grupo de las white y asignamos las piezas
+        this.white = new THREE.Group();
 
         for (let i = 6; i < this.tableroPiezas.length; i++) {
             for (let j = 0; j < this.tableroPiezas[i].length; j++) {
-                this.blancas.add(this.tableroPiezas[i][j]);
+                this.white.add(this.tableroPiezas[i][j]);
             }
         }
 
-        // Creamos el grupo de las negras y asignamos las piezas
-        this.negras = new THREE.Group();
+        // Creamos el grupo de las black y asignamos las piezas
+        this.black = new THREE.Group();
 
         for (let i = 0; i < 2; i++) {
             for (let j = 0; j < this.tableroPiezas[i].length; j++) {
-                this.negras.add(this.tableroPiezas[i][j]);
+                this.black.add(this.tableroPiezas[i][j]);
             }
         }
 
         // Las piezas tienen un nombre único como identificador que luego permite buscarlas
-        this.add(this.blancas);
-        this.add(this.negras);
-
+        this.add(this.white);
+        this.add(this.black);
+        /*
         // todo quitar esto, es solo para probar cosas, pero se puede ver las distintas formas de sacar de la matriz
         let fila = this.tableroPiezas.find(fila => fila.find(hormiga => hormiga.name === 'pN1'));
         let filaIndex  = this.tableroPiezas.findIndex(fila => fila.find(hormiga => hormiga.name === 'pN1'));
         console.log(fila.find(hormiga => hormiga.name === 'pN1'));
         console.log(`${filaIndex} ${fila.findIndex(hormiga => hormiga.name === 'pN1')}`);
+        */
+    }
+
+    // Hace el turno, espera a que se ejecute selectPiece
+    nextTurn(){
+
+        if (this.currentTurn != null) { // Si es white se pone a black y si es black se pone a white
+            (this.currentTurn === "white") ? this.currentTurn = "black" : this.currentTurn = "white";
+        }
+        else{ // Primer turno
+            this.currentTurn = "white";
+        }
+
+        switch(this.currentTurn){
+            case('white'):
+                this.turnColor = this.white;
+                break;
+            case('black'):
+                this.turnColor = this.black;
+                break;
+            default: break;
+        }
     }
 
     selectPiece(name){
@@ -100,6 +124,16 @@ class GameBoard extends THREE.Object3D {
         // El movimiento consiste en dos cosas, cambiar la matriz, poniendo a undefined la casilla origen y asignando
         // la pieza a la casilla destino, y luego la otra cosa es aplicar una animación utilizando las coordenadas origen
         // y destino
+    }
+
+    update(){
+        if (this.tableroPiezas) {
+            for (let i = 0; i < this.tableroPiezas.length; i++) {
+                for (let j = 0; j < this.tableroPiezas[i].length; j++) {
+                    if (this.tableroPiezas[i][j]) this.tableroPiezas[i][j].update();
+                }
+            }
+        }
     }
 
 }
