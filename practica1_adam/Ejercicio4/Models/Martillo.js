@@ -18,6 +18,7 @@ class Martillo extends THREE.Object3D {
         let box = new THREE.BoxGeometry(0.1, 2, 0.5);
         box.translate(0.25, 0, 0);
 
+
         let brush1 = new CSG.Brush(cilinder, this.material);
         let brush2 = new CSG.Brush(box, this.material);
         let evaluator = new CSG.Evaluator();
@@ -66,7 +67,6 @@ class Martillo extends THREE.Object3D {
         cilindro.rotateZ(270*(Math.PI/180));
         cilindro.translate(-1.6,0,0.35);
 
-        this.add (new THREE.Mesh(cilindro, this.material));
 
         let brush2 = new CSG.Brush(cilindro, this.material);
         let brush1 = new CSG.Brush(tailGeometry, this.material);

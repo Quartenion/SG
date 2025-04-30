@@ -12,48 +12,84 @@ import { Hormiga } from './MODELS/Hormiga.js'
 import { Tablero } from './MODELS/Tablero.js'
 import { Suelo } from './MODELS/Suelo.js'
 
-/// La clase fachada del modelo
-/**
- * Usaremos una clase derivada de la clase Scene de Three.js para llevar el control de la escena y de todo lo que ocurre en ella.
- */
 
 class MyScene extends THREE.Scene {
   constructor (myCanvas) {
     super();
-    
-    // Lo primero, crear el visualizador, pasándole el lienzo sobre el que realizar los renderizados.
+
     this.renderer = this.createRenderer(myCanvas);
-    
-    // Se añade a la gui los controles para manipular los elementos de esta clase
     this.gui = this.createGUI ();
-    
     this.initStats();
+    this.createLights ();
+    this.createCamera ();
     
     // Construimos los distinos elementos que tendremos en la escena
     this.axis = new THREE.AxesHelper (2);
     this.axis.position.set(0,0,0);
     this.add (this.axis);
 
-    // Se añade la hormiga a la escena
-    this.hormiga = new Hormiga();
-    this.add (this.hormiga);
 
-    this.Tablero = new Tablero();
-    //this.add (this.Tablero);
+    // Orientación inicial del juego es de +z a -z, que será primero turno de "blancas"
 
-    this.Suelo = new Suelo();
-    //this.add (this.Suelo);
-    
-    // Todo elemento que se desee sea tenido en cuenta en el renderizado de la escena debe pertenecer a esta. Bien como hijo de la escena (this en esta clase) o como hijo de un elemento que ya esté en la escena.
-    // Tras crear cada elemento se añadirá a la escena con   this.add(variable)
-    this.createLights ();
-    
-    // Tendremos una cámara con un control de movimiento con el ratón
-    this.createCamera ();
+    // Creamos el tablero y el suelo que se colocarán uno encima de otro y justo debajo de los ejes (las piezas
+    // se tendrán que mover con un valor de y = 0 siempre y cuando estén justo por encima del eje)
+    this.tablero = new Tablero();
+    this.add (this.tablero);
 
-    
+    this.suelo = new Suelo();
+    this.add (this.suelo);
+
+    // Matriz que representa las posiciones en el espacio.
+    this.boardMatrix =  this.tablero.get_board_positions();
+
+    // Lanzamos el set-up de las tropas
+    this.createAndSetTroops();
   }
-  
+
+  // Created functions
+  createAndSetTroops(){
+    // Creamos el grupo de las piezas blancas
+    this.blancas = new THREE.Group();
+
+    // Las posiciones iniciales de las blancas serán las de las dos últimas filas de boardMatrix
+    // las negras tendrán las 2 primeras filas.
+
+    /* todo hay que hacer la clase GameBoard que será un controller y MyScene será la vista
+       La clase GameBoard no tendrá directamente las piezas, será un tablero que podrá tener las posiciones
+       y los objetos metidos del tablero de juego virtual, es decir, que se creará en MyScene y se le pasará
+       todos los datos desde aqui.
+
+       Entonces en cada turno se accederá al GameBoard que dará las piezas que se tienen
+       y en un Group, luego se hará raycasting para escoger una pieza, en el momento que se tenga pieza seleccionada
+       se mostrará la misma con un resalto y el GameBoard calculará que posibles movimientos tiene la pieza seleccionada
+       entonces se podrá clicar otra pieza o una casilla objetivo, para confirmar será con una tecla no con el clic.
+
+       Una vez está seleccionado y se ha ejecutado un movimiento se le pasa la decisión al gameBoard con algo como:
+       ejecutarMovimiento(pieza, movimiento[2]) asumiendo que por cada pieza lo que se puede obtener es un vector
+       de movimientos o lo que se hace es pasar las coordenadas objetivo. El tablero hará el cambio y devolverá
+       El nuevo tablero con los cambios.
+
+       Otra opción de hacerlo si esa no es muy viable, es que el tablero solo tenga la representación pero las funciones
+       de movimiento las haga el myscene y luego haga los cambios en el board para tener la representación actualizada, de
+       esta forma lo controlan las cosas desde esta clase y puede lanzar las animaciones.
+
+
+       He modificado un pelin la hormiga pero no he hecho nada realmente, era solo para probar
+    */
+
+
+    for (let i = 0; i < 8; i++) {
+      let peonBlanco = new Hormiga();
+      peonBlanco.position.set(this.boardMatrix[6][i][0], 0, this.boardMatrix[6][i][1]);
+      this.blancas.add(peonBlanco);
+    }
+
+    this.blancas.add (this.peonBlanco);
+
+    this.add (this.blancas);
+  }
+
+  // Original functions
   initStats() {
   
     var stats = new Stats();
@@ -75,23 +111,29 @@ class MyScene extends THREE.Scene {
     //   El ángulo del campo de visión en grados sexagesimales
     //   La razón de aspecto ancho/alto
     //   Los planos de recorte cercano y lejano
+
+
     this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 50);
-    // Recuerda: Todas las unidades están en metros
-    // También se indica dónde se coloca
-    this.camera.position.set (4, 2, 4);
-    // Y hacia dónde mira
-    var look = new THREE.Vector3 (0,0,0);
-    this.camera.lookAt(look);
+
+    // Definimos las posiciones fijas (por ahora) de la cámara, la inicial será la de blancas
+    this.whiteCameraPosition = new THREE.Vector3 (0, 1, 1.3);
+    this.blackCameraPosition = new THREE.Vector3 (0, 1, -1.3);
+    this.lookPoint = new THREE.Vector3 (0, 0, 0);
+
+    this.camera.position.set (this.whiteCameraPosition.x, this.whiteCameraPosition.y, this.whiteCameraPosition.z);
+    this.camera.lookAt(this.lookPoint);
     this.add (this.camera);
-    
-    // Para el control de cámara usamos una clase que ya tiene implementado los movimientos de órbita
+
+
+    /*
+    // Por ahora quitado el control del ratón (si se pone hay que descomentar una cosa de update también)
+    // TrackballControls (mover con el ratón)
     this.cameraControl = new TrackballControls (this.camera, this.renderer.domElement);
-    // Se configuran las velocidades de los movimientos
     this.cameraControl.rotateSpeed = 5;
     this.cameraControl.zoomSpeed = -2;
     this.cameraControl.panSpeed = 0.5;
-    // Debe orbitar con respecto al punto de mira de la cámara
-    this.cameraControl.target = look;
+    this.cameraControl.target = this.lookPoint;
+    */
   }
   
   createGUI () {
@@ -207,8 +249,8 @@ class MyScene extends THREE.Scene {
     
     // Se actualizan los elementos de la escena para cada frame
     
-    // Se actualiza la posición de la cámara según su controlador
-    this.cameraControl.update();
+    // Actualizamos la cámara
+    // this.cameraControl.update();
     
     // Se actualiza el resto del modelo   
     

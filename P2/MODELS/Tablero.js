@@ -5,32 +5,64 @@ class Tablero extends THREE.Object3D {
     super();
 
     const size = 0.1; 
-    const rojo = new THREE.Color(0x000000);   // negro 
+    const negro = new THREE.Color(0x000000);  // negro
     const blanco = new THREE.Color(0xffffff); // blanco
-    const mantel = 8;
+    const board_tiles = 8;
+    const board_size = board_tiles * size;
 
-    for (let i = 0; i < mantel; i++) {       
-      for (let j = 0; j < mantel; j++) {      
+    // Posiciones iniciales de la construcción para que no haya que hacer la transformación posterior
+    const x = -board_size/2 + size/2;
+    const z = -board_size/2 + size/2;
+
+    // Representación matricial del tablero, en el bucle for se le asignan los valores de cada casilla
+    this.board = [[[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],
+                  [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],
+                  [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],
+                  [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],
+                  [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],
+                  [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],
+                  [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],
+                  [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]]];
+
+
+    for (let i = 0; i < board_tiles; i++) {
+      for (let j = 0; j < board_tiles; j++) {
         const geometry = new THREE.BoxGeometry(size, 0.01, size);
+        const color = (i % 2 === 0) ? ( (j % 2 === 0) ? blanco : negro ) : ( (j % 2 === 0) ? negro : blanco );
 
-        let color;
+        /* DEPRECATED - Por borrar
+        Esto se hace simplemente con lo de arriba y funciona igual
         if (i % 2 === 0) { // Fila par (0, 2, 4, 6)
-          color = (j % 2 === 0) ? rojo : blanco;
+          color = (j % 2 === 0) ? negro : blanco;
         } else {           // Fila impar (1, 3, 5, 7)
-          color = (j % 2 === 0) ? blanco : rojo;
+          color = (j % 2 === 0) ? blanco : negro;
         }
+        */
 
         const material = new THREE.MeshLambertMaterial({ color: color });
         const cube = new THREE.Mesh(geometry, material);
 
-        cube.position.set(j * size, 0, i * size);
+        this.board[i][j][0] = x + j * size; // Componente x de la casilla
+        this.board[i][j][1] = z + i * size; // Componente z de la casilla
+        cube.position.set(x + j * size, -0.005, z + i * size);
         this.add(cube);
       }
     }
+    /*
+    Sustituido por la posición inicial x y z que ya controlan que se empiece desde una esquina ya que
+    facilita la creación de la representación matricial
 
     this.position.x = -(8 * size) / 2 + size / 2;
     this.position.z = -(8 * size) / 2 + size / 2;
+     */
+
+
+  }
+
+  get_board_positions(){
+    return this.board;
   }
 }
 
 export { Tablero };
+

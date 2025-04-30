@@ -15,7 +15,7 @@ class Suelo extends THREE.Object3D {
 
     var ground = new THREE.Mesh(geometryGround, materialGround);
 
-    ground.position.y = -0.01;
+    ground.position.y = -0.015;
 
     this.add(ground);
   }

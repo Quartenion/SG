@@ -62,6 +62,7 @@ class Pieza1 extends THREE.Object3D {
         let piezaGeometry = new THREE.ExtrudeGeometry(shape,extrudeSettings);
         let material = new THREE.MeshNormalMaterial();
 
+        piezaGeometry.translate(0, 0, -0.25);
 
         // Ahora voy a hacer un cilindro con suavizado por abajo utilizando revolución
         x=y=0;
@@ -78,7 +79,7 @@ class Pieza1 extends THREE.Object3D {
 
         let cilinderGeometry = new THREE.LatheGeometry(cShape.getPoints(100), 100);
         cilinderGeometry.rotateX(90*(Math.PI/180));
-        cilinderGeometry.translate(0,0,0.688);
+        cilinderGeometry.translate(0,0,0.45);
 
         // Hacemos el add
         let brush1 = new CSG.Brush(cilinderGeometry, material);
