@@ -1,11 +1,10 @@
-import * as THREE from '../../../libs/three.module.js';
-import * as CSG from '../../../libs/three-bvh-csg.js'
+import * as THREE from '../../libs/three.module.js';
+import * as CSG from '../../libs/three-bvh-csg.js'
 
 class Hormiga extends THREE.Object3D {
-    constructor() {
+    constructor(name) {
         super();
         this.name = name;
-
 
         this.torsoShape = new THREE.Shape();
         this.torsoShape.quadraticCurveTo(0.6, 0.2, 0.5, 0.5);
@@ -32,8 +31,11 @@ class Hormiga extends THREE.Object3D {
         const points = this.torsoShape.getPoints(50);
 
         this.latheGeometry = new THREE.LatheGeometry(points, 50, 0, Math.PI * 2);
-        this.latheMesgh = new THREE.Mesh(this.latheGeometry, material);
-        this.add(this.latheMesgh);
+        this.latheMesh = new THREE.Mesh(this.latheGeometry, material);
+
+        this.latheMesh.scale.set(0.07, 0.07, 0.07);
+
+        this.add(this.latheMesh);
     }
 }
 
