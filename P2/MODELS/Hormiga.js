@@ -1,9 +1,11 @@
-import * as THREE from '../../../libs/three.module.js';
-import * as CSG from '../../../libs/three-bvh-csg.js'
+import * as THREE from '../../libs/three.module.js';
+import * as CSG from '../../libs/three-bvh-csg.js'
 
 class Hormiga extends THREE.Object3D {
-    constructor() {
+    constructor(name) {
         super();
+        this.name = name;
+
         let material = new THREE.MeshNormalMaterial();
         let radius = 0.035;
 
@@ -14,7 +16,6 @@ class Hormiga extends THREE.Object3D {
         Trasero.translate(0, radius, 0);
 
         let TraseroMesh = new THREE.Mesh(Trasero, material);
-        
         this.add(TraseroMesh);
     }  
 }

@@ -9,8 +9,8 @@ import  Stats from '../libs/stats.module.js'
 // Clases de mi proyecto
 
 import { Hormiga } from './MODELS/Hormiga.js'
-import { Tablero } from './MODELS/Tablero.js'
 import { Suelo } from './MODELS/Suelo.js'
+import { GameBoard } from './MODELS/GameBoard.js'
 
 
 class MyScene extends THREE.Scene {
@@ -33,63 +33,18 @@ class MyScene extends THREE.Scene {
 
     // Creamos el tablero y el suelo que se colocarán uno encima de otro y justo debajo de los ejes (las piezas
     // se tendrán que mover con un valor de y = 0 siempre y cuando estén justo por encima del eje)
-    this.tablero = new Tablero();
-    this.add (this.tablero);
+    this.gameBoard = new GameBoard();
+    this.add (this.gameBoard);
 
     this.suelo = new Suelo();
-    this.add (this.suelo);
+    this.add (this.suelo)
 
-    // Matriz que representa las posiciones en el espacio.
-    this.boardMatrix =  this.tablero.get_board_positions();
 
-    // Lanzamos el set-up de las tropas
-    this.createAndSetTroops();
+
+
   }
 
-  // Created functions
-  createAndSetTroops(){
-    // Creamos el grupo de las piezas blancas
-    this.blancas = new THREE.Group();
 
-    // Las posiciones iniciales de las blancas serán las de las dos últimas filas de boardMatrix
-    // las negras tendrán las 2 primeras filas.
-
-    /* todo hay que hacer la clase GameBoard que será un controller y MyScene será la vista
-       La clase GameBoard no tendrá directamente las piezas, será un tablero que podrá tener las posiciones
-       y los objetos metidos del tablero de juego virtual, es decir, que se creará en MyScene y se le pasará
-       todos los datos desde aqui.
-
-       Entonces en cada turno se accederá al GameBoard que dará las piezas que se tienen
-       y en un Group, luego se hará raycasting para escoger una pieza, en el momento que se tenga pieza seleccionada
-       se mostrará la misma con un resalto y el GameBoard calculará que posibles movimientos tiene la pieza seleccionada
-       entonces se podrá clicar otra pieza o una casilla objetivo, para confirmar será con una tecla no con el clic.
-
-       Una vez está seleccionado y se ha ejecutado un movimiento se le pasa la decisión al gameBoard con algo como:
-       ejecutarMovimiento(pieza, movimiento[2]) asumiendo que por cada pieza lo que se puede obtener es un vector
-       de movimientos o lo que se hace es pasar las coordenadas objetivo. El tablero hará el cambio y devolverá
-       El nuevo tablero con los cambios.
-
-       Otra opción de hacerlo si esa no es muy viable, es que el tablero solo tenga la representación pero las funciones
-       de movimiento las haga el myscene y luego haga los cambios en el board para tener la representación actualizada, de
-       esta forma lo controlan las cosas desde esta clase y puede lanzar las animaciones.
-
-
-       He modificado un pelin la hormiga pero no he hecho nada realmente, era solo para probar
-    */
-
-
-    for (let i = 0; i < 8; i++) {
-      let peonBlanco = new Hormiga();
-      peonBlanco.position.set(this.boardMatrix[6][i][0], 0, this.boardMatrix[6][i][1]);
-      this.blancas.add(peonBlanco);
-    }
-
-    this.blancas.add (this.peonBlanco);
-
-    this.add (this.blancas);
-  }
-
-  // Original functions
   initStats() {
   
     var stats = new Stats();
@@ -124,16 +79,16 @@ class MyScene extends THREE.Scene {
     this.camera.lookAt(this.lookPoint);
     this.add (this.camera);
 
-
     /*
     // Por ahora quitado el control del ratón (si se pone hay que descomentar una cosa de update también)
     // TrackballControls (mover con el ratón)
+    */
     this.cameraControl = new TrackballControls (this.camera, this.renderer.domElement);
     this.cameraControl.rotateSpeed = 5;
     this.cameraControl.zoomSpeed = -2;
     this.cameraControl.panSpeed = 0.5;
     this.cameraControl.target = this.lookPoint;
-    */
+
   }
   
   createGUI () {
@@ -250,7 +205,7 @@ class MyScene extends THREE.Scene {
     // Se actualizan los elementos de la escena para cada frame
     
     // Actualizamos la cámara
-    // this.cameraControl.update();
+    this.cameraControl.update();
     
     // Se actualiza el resto del modelo   
     

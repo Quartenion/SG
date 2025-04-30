@@ -58,10 +58,6 @@ class Tablero extends THREE.Object3D {
 
 
   }
-
-  get_board_positions(){
-    return this.board;
-  }
 }
 
 export { Tablero };
