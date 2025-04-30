@@ -36,13 +36,13 @@ class MyScene extends THREE.Scene {
 
     // Se añade la hormiga a la escena
     this.hormiga = new Hormiga();
-    //this.add (this.hormiga);
+    this.add (this.hormiga);
 
     this.Tablero = new Tablero();
-    this.add (this.Tablero);
+    //this.add (this.Tablero);
 
     this.Suelo = new Suelo();
-    this.add (this.Suelo);
+    //this.add (this.Suelo);
     
     // Todo elemento que se desee sea tenido en cuenta en el renderizado de la escena debe pertenecer a esta. Bien como hijo de la escena (this en esta clase) o como hijo de un elemento que ya esté en la escena.
     // Tras crear cada elemento se añadirá a la escena con   this.add(variable)
