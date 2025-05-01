@@ -14,6 +14,7 @@ import { Auricular } from './MODELS/Auricular.js'
 import { Cascos } from './MODELS/Cascos.js'
 import { Seccion } from './MODELS/Seccion.js'
 import { Destornillador } from './MODELS/Destornillador.js'
+import { Hormiga } from './MODELS/Hormiga/Hormiga.js'
 
 /// La clase fachada del modelo
 /**
@@ -55,10 +56,13 @@ class MyScene extends THREE.Scene {
 
     this.aparato = new Aparato();
     this.add (this.aparato);
-    */
    
     this.tuerca = new Tuerca();
     this.add (this.tuerca);
+     */
+
+    this.hormiga = new Hormiga("Hormiga");
+    this.add (this.hormiga);
 
     
     
@@ -185,7 +189,7 @@ class MyScene extends THREE.Scene {
     var renderer = new THREE.WebGLRenderer();
     
     // Se establece un color de fondo en las imágenes que genera el render
-    renderer.setClearColor(new THREE.Color(0x000000), 1.0);
+    renderer.setClearColor(new THREE.Color(0xffffff), 1.0);
     
     // Se establece el tamaño, se aprovecha la totalidad de la ventana del navegador
     renderer.setSize(window.innerWidth, window.innerHeight);
