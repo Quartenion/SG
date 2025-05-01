@@ -60,10 +60,12 @@ class MyScene extends THREE.Scene {
     if (this.gameStarted)
     {
       if (this.canPick) {
+        /*
         if (this.lastObject) {
           this.lastObject.material = this.lastMaterial;
           this.lastObject.material.needsUpdate = true;
         }
+        */
         this.mouse.x = (MouseEvent.clientX / window.innerWidth) * 2 - 1;
         this.mouse.y = -(MouseEvent.clientY / window.innerHeight) * 2 + 1;
 
@@ -71,6 +73,7 @@ class MyScene extends THREE.Scene {
         this.raycaster.setFromCamera(this.mouse, this.camera);
         let intersects = this.raycaster.intersectObjects(this.gameBoard.turnColor.children, true);
 
+        this.gameBoard.unselectPiece();
 
         if (intersects.length > 0) {
           let object = intersects[0].object;
@@ -81,12 +84,14 @@ class MyScene extends THREE.Scene {
           //this.camera.lookAt(object.getWorldPosition(pos));
           //this.cameraControl.target = object.getWorldPosition(pos);
 
+          this.gameBoard.selectPiece(object);
+          /*
           this.lastObject = object;
           this.lastMaterial = object.material;
 
           object.material = new THREE.MeshBasicMaterial({color: 0xff0000});
           object.material.needsUpdate = true;
-
+          */
         }
       }
       else{

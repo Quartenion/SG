@@ -111,10 +111,19 @@ class GameBoard extends THREE.Object3D {
         }
     }
 
-    selectPiece(name){
-        console.log(`SELECCIONANDO PIEZA ${name}`);
-        this.selectedPiece = name;
-        // Devolvería los movimientos posibles
+    selectPiece(piece){
+        this.lastSelectedPiece = piece; // Registramos la última pieza seleccionada
+        piece.parent.select();          // Dejamos que la pieza haga los cambios pertinentes visuales
+                                        // Mostramos de manera visual los movimientos (También devolver algo
+                                        //                                   para hacer pick de las posiciones)
+
+
+
+    }
+
+    unselectPiece(){
+        if (this.lastSelectedPiece)
+            this.lastSelectedPiece.parent.unselect(); // Lo opuesto, eliminar lo que se pasó
     }
 
     // Recibe un movimiento de los posibles que se han obtenido con selectPiece

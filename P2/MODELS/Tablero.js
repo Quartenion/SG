@@ -30,14 +30,6 @@ class Tablero extends THREE.Object3D {
         const geometry = new THREE.BoxGeometry(size, 0.01, size);
         const color = (i % 2 === 0) ? ( (j % 2 === 0) ? blanco : negro ) : ( (j % 2 === 0) ? negro : blanco );
 
-        /* DEPRECATED - Por borrar
-        Esto se hace simplemente con lo de arriba y funciona igual
-        if (i % 2 === 0) { // Fila par (0, 2, 4, 6)
-          color = (j % 2 === 0) ? negro : blanco;
-        } else {           // Fila impar (1, 3, 5, 7)
-          color = (j % 2 === 0) ? blanco : negro;
-        }
-        */
 
         const material = new THREE.MeshLambertMaterial({ color: color });
         const cube = new THREE.Mesh(geometry, material);
@@ -48,15 +40,6 @@ class Tablero extends THREE.Object3D {
         this.add(cube);
       }
     }
-    /*
-    Sustituido por la posición inicial x y z que ya controlan que se empiece desde una esquina ya que
-    facilita la creación de la representación matricial
-
-    this.position.x = -(8 * size) / 2 + size / 2;
-    this.position.z = -(8 * size) / 2 + size / 2;
-     */
-
-
   }
 }
 
