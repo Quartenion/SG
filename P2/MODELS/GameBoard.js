@@ -123,7 +123,6 @@ class GameBoard extends THREE.Object3D {
         const r  = this.tableroPiezas.findIndex(fila => fila.find(p =>  p !== undefined && p.name === piece.name));
         const c = fila.findIndex(p =>  p !== undefined && p.name === piece.name);
 
-
         // Algoritmo sobre matriz tableroPiezas para ver que posibles movimientos
         this.ableMovements = []; // Los movimientos posibles será un grupo de movimientos
         let tile;
@@ -145,6 +144,8 @@ class GameBoard extends THREE.Object3D {
                         break;
                     }
 
+
+
                     if (r+value > 0 && this.tableroPiezas[r+value][c] === undefined) {
                         // Movimiento inicial de moverse hacia adelante
                         this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
@@ -162,11 +163,9 @@ class GameBoard extends THREE.Object3D {
                             }
                         }
                     }
-                    else{
-                        break;
-                    }
+
                     // Movimiento de Moverse a los lados para comer, por lo que tiene que estár ocupada
-                    if (c+value > 0 && !(this.tableroPiezas[r+value][c+value] === undefined)) {
+                    if (r+value <= 7 && r+value >= 0 && c+value >= 0 && c+value <= 7 && !(this.tableroPiezas[r+value][c+value] === undefined)) {
                         if (this.tableroPiezas[r+value][c+value].team !== piece.team) {
                             this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
                                 return (tile.row === r + value && tile.col === c + value);
@@ -175,8 +174,8 @@ class GameBoard extends THREE.Object3D {
                         }
                     }
 
-                    if (c-value > 0 && !(this.tableroPiezas[r+value][c-value] === undefined)) {
-                        if (this.tableroPiezas[r+value][c+value].team !== piece.team) {
+                    if (r+value <= 7 && r+value >= 0 && c-value >= 0 && c-value <= 7 && !(this.tableroPiezas[r+value][c-value] === undefined)) {
+                        if (this.tableroPiezas[r+value][c-value].team !== piece.team) {
                             this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
                                 return (tile.row === r + value && tile.col === c - value);
                             })[0]);
@@ -209,7 +208,6 @@ class GameBoard extends THREE.Object3D {
         else {
             tile.material = new THREE.MeshBasicMaterial({color: 0xff0000});
         }
-
     }
 
     unsetMoveTiles(){
@@ -240,13 +238,21 @@ class GameBoard extends THREE.Object3D {
             const r  = this.tableroPiezas.findIndex(fila => fila.find(p =>  p !== undefined && p.name === this.lastSelectedPiece.name));
             const c = fila.findIndex(p =>  p !== undefined && p.name === this.lastSelectedPiece.name);
 
+            if (!(this.tableroPiezas[pos["row"]][pos["col"]] === undefined)){
+                if (this.tableroPiezas[pos["row"]][pos["col"]].team === "black")
+                    this.black.remove(this.tableroPiezas[pos["row"]][pos["col"]]);
+                else
+                    this.white.remove(this.tableroPiezas[pos["row"]][pos["col"]]);
+
+                this.tableroPiezas[pos["row"]][pos["col"]].children[0].geometry.dispose;
+                this.tableroPiezas[pos["row"]][pos["col"]].children[0].material.dispose;
+            }
             this.tableroPiezas[pos["row"]][pos["col"]] = this.lastSelectedPiece;
             this.tableroPiezas[pos["row"]][pos["col"]].position.x = (pos["pos"].x);
             this.tableroPiezas[pos["row"]][pos["col"]].position.z = (pos["pos"].z);
             this.tableroPiezas[r][c] = undefined;
         }
     }
-
     update(){
         if (this.tableroPiezas) {
             for (let i = 0; i < this.tableroPiezas.length; i++) {
