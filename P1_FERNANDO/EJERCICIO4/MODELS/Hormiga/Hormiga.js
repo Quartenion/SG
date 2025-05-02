@@ -1,9 +1,10 @@
+import * as TWEEN from '../../../../libs/tween.module.js';
 import * as THREE from '../../../../libs/three.module.js';
-import * as CSG from '../../../../libs/three-bvh-csg.js'
 import { Abdomen } from './Abdomen.js';
 import { Torax } from './Torax.js';
 import { Cabeza } from './Cabeza.js';
 import { Pata } from './Pata.js';
+import { LegAnimator } from './LegAnimator.js';
 
 class Hormiga extends THREE.Object3D {
     constructor(name) {
@@ -43,25 +44,72 @@ class Hormiga extends THREE.Object3D {
         this.add(this.conector2);
 
         // PATAS
-        // PATA FRONTAL
-        this.pata1 = new Pata();
-        this.pata1.scale.set(0.05, 0.05, 0.05);
-        this.pata1.rotateZ(Math.PI / 2);
-        this.add(this.pata1);
+        // PATAS FRONTALES
+        this.pataDcha1 = new Pata();
+        this.pataDcha1.scale.set(0.05, 0.05, 0.05);
+        this.pataDcha1.translateX(0.009);
+        this.pataDcha1.translateY(-0.013);
+        this.pataDcha1.translateZ(0.01);
+        this.pataDcha1.rotateY(Math.PI / 1.5);
+        this.add(this.pataDcha1);
 
-        // PATA CENTRAL
-        this.pata2 = new Pata();
-        this.pata2.scale.set(0.05, 0.05, 0.05);
-        this.pata2.rotateX(Math.PI);
-        this.pata2.translateX(-0.03);
-        this.pata2.translateY(0.02);
-        this.pata2.translateZ(-0.035);
-        this.pata2.rotateX(Math.PI / -4);
-        this.pata2.rotateZ(Math.PI / 3);
-        this.add(this.pata2);
+        this.pataIzq1 = new Pata();
+        this.pataIzq1.scale.set(0.05, 0.05, 0.05);
+        this.pataIzq1.translateX(0.009);
+        this.pataIzq1.translateY(-0.013);
+        this.pataIzq1.translateZ(-0.01);
+        this.pataIzq1.rotateY(Math.PI / -1.5);
+        this.add(this.pataIzq1);
 
-        // PATA TRASERA
+        // PATAS CENTRALES
+        this.pataDcha2 = new Pata();
+        this.pataDcha2.scale.set(0.05, 0.05, 0.05);
+        this.pataDcha2.translateX(-0.03);
+        this.pataDcha2.translateY(-0.02);
+        this.pataDcha2.translateZ(0.03);
+        this.pataDcha2.rotateY(Math.PI / 2);
+        this.pataDcha2.rotateZ(Math.PI / -64);
+        this.add(this.pataDcha2);
 
+        this.pataIzq2 = new Pata();
+        this.pataIzq2.scale.set(0.05, 0.05, 0.05);
+        this.pataIzq2.translateX(-0.03);
+        this.pataIzq2.translateY(-0.02);
+        this.pataIzq2.translateZ(-0.03);
+        this.pataIzq2.rotateY(Math.PI / -2);
+        this.pataIzq2.rotateZ(Math.PI / 64);
+        this.add(this.pataIzq2);
+
+        // PATAS TRASERAS
+        this.pataIzq3 = new Pata();
+        this.pataIzq3.scale.set(0.05, 0.05, 0.05);
+        this.pataIzq3.translateX(-0.045);
+        this.pataIzq3.translateY(-0.01);
+        this.pataIzq3.translateZ(0.035);
+        this.pataIzq3.rotateY(Math.PI / 6);
+        this.pataIzq3.rotateZ(Math.PI / 32);
+        this.add(this.pataIzq3);
+
+        this.pataDer3 = new Pata();
+        this.pataDer3.scale.set(0.05, 0.05, 0.05);
+        this.pataDer3.translateX(-0.045);
+        this.pataDer3.translateY(-0.01);
+        this.pataDer3.translateZ(-0.035);
+        this.pataDer3.rotateY(Math.PI / -6);
+        this.pataDer3.rotateZ(Math.PI / -32);
+        this.add(this.pataDer3);
+
+        const patas = [
+            this.pataDcha1,
+            this.pataIzq1,
+            this.pataDcha2,
+            this.pataIzq2,
+            this.pataIzq3,
+            this.pataDer3
+        ];
+
+        this.legAnimators = patas.map(p => new LegAnimator(p, 'x', Math.PI / 8, 300));
+        this.legAnimators.forEach(anim => anim.start());
     }
 
     select(){

@@ -6,8 +6,8 @@ class Pata extends THREE.Object3D {
         super();
         this.pataShape = new THREE.Shape();
         this.pataShape.lineTo(0, 0.5);
-        this.pataShape.lineTo(0.5, 1);
-        this.pataShape.lineTo(0.5, 1.5);
+        this.pataShape.lineTo(1, 1.5);
+        this.pataShape.lineTo(1, 2);
         this.drawSolid();
     }
 
@@ -35,31 +35,10 @@ class Pata extends THREE.Object3D {
     
         // Crear el tubo
         this.tubeGeometry = new THREE.TubeGeometry(curve, 100, radius, 16, false);
+        this.tubeGeometry.rotateZ(Math.PI / 2);
+        this.tubeGeometry.rotateX(Math.PI);
         const tubeMesh = new THREE.Mesh(this.tubeGeometry, this.OriginalMaterial);
         this.add(tubeMesh);
-    
-        // Crear tapa frontal
-        const start = curve.getPointAt(0);
-        const startNormal = curve.getTangentAt(0);
-        const startCap = new THREE.Mesh(
-            new THREE.CircleGeometry(radius, 16),
-            this.OriginalMaterial
-        );
-        startCap.position.copy(start);
-        startCap.lookAt(start.clone().add(startNormal)); // Orienta la tapa
-        //startCap.rotateY(Math.PI); // Para orientar hacia adentro
-        this.add(startCap);
-    
-        // Crear tapa trasera
-        const end = curve.getPointAt(1);
-        const endNormal = curve.getTangentAt(1);
-        const endCap = new THREE.Mesh(
-            new THREE.CircleGeometry(radius, 16),
-            this.OriginalMaterial
-        );
-        endCap.position.copy(end);
-        endCap.lookAt(end.clone().add(endNormal));
-        this.add(endCap);
     }
 }
 

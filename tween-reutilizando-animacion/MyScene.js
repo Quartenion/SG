@@ -3,6 +3,7 @@
 // import * as THREE from "three"
 
 import * as THREE from '../libs/three.module.js'
+import * as TWEEN from '../libs/tween.module.js'
 import { GUI } from '../libs/dat.gui.module.js'
 import { TrackballControls } from '../libs/TrackballControls.js'
 
@@ -218,6 +219,7 @@ class MyScene extends THREE.Scene {
     // Este método debe ser llamado cada vez que queramos visualizar la escena de nuevo.
     // Literalmente le decimos al navegador: "La próxima vez que haya que refrescar la pantalla, llama al método que te indico".
     // Si no existiera esta línea,  update()  se ejecutaría solo la primera vez.
+    TWEEN.update();
     requestAnimationFrame(() => this.update())
   }
 }
