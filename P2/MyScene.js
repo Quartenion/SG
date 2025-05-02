@@ -43,8 +43,9 @@ class MyScene extends THREE.Scene {
     this.raycaster = new THREE.Raycaster();
     this.mouse = new THREE.Vector2();
 
-    this.gameStarted = false;
-    this.canPick = false;
+    this.gameStarted = false;    // Indica que ha empezado la partida
+    this.canPick = false;        // Permite hacer el pick
+    this.objectSelected = false; // Para detectar cuando hay una pieza elegida
   }
 
   // Función que llamará y hará lo necesario en la creación de una partida
@@ -53,6 +54,7 @@ class MyScene extends THREE.Scene {
     this.camera.position.set(this.whiteCameraPosition.x, this.whiteCameraPosition.y, this.whiteCameraPosition.z);
     this.gameStarted = true;
     this.canPick = false;
+    this.objectSelected = false;
   }
 
 
@@ -60,38 +62,32 @@ class MyScene extends THREE.Scene {
     if (this.gameStarted)
     {
       if (this.canPick) {
-        /*
-        if (this.lastObject) {
-          this.lastObject.material = this.lastMaterial;
-          this.lastObject.material.needsUpdate = true;
-        }
-        */
         this.mouse.x = (MouseEvent.clientX / window.innerWidth) * 2 - 1;
         this.mouse.y = -(MouseEvent.clientY / window.innerHeight) * 2 + 1;
 
         // Actualizamos el raycaster con la posición del ratón y la cámara
         this.raycaster.setFromCamera(this.mouse, this.camera);
+
         let intersects = this.raycaster.intersectObjects(this.gameBoard.turnColor.children, true);
+        let tile_intersects;
 
         this.gameBoard.unselectPiece();
-
-        if (intersects.length > 0) {
-          let object = intersects[0].object;
-          let pos = new THREE.Vector3();
-          object.getWorldPosition(pos);
-
-          //console.log(pos);
-          //this.camera.lookAt(object.getWorldPosition(pos));
-          //this.cameraControl.target = object.getWorldPosition(pos);
-
-          this.gameBoard.selectPiece(object);
-          /*
-          this.lastObject = object;
-          this.lastMaterial = object.material;
-
-          object.material = new THREE.MeshBasicMaterial({color: 0xff0000});
-          object.material.needsUpdate = true;
-          */
+        if (this.objectSelected && intersects.length === 0) {
+          // En caso de que no se haga select de otro object
+          tile_intersects = this.raycaster.intersectObjects(this.gameBoard.ableMovements, true);
+          this.objectSelected = false;
+          if (tile_intersects.length > 0) {
+            let tile = tile_intersects[0].object;
+            let pos ={"pos" : tile.position, "row" : tile.row, "col" : tile.col};
+            this.gameBoard.makeMovement(pos);
+          }
+        }
+        else {
+          if (intersects.length > 0) {
+            let object = intersects[0].object;
+            this.gameBoard.selectPiece(object);
+            this.objectSelected = true;
+          }
         }
       }
       else{

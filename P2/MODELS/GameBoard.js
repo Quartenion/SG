@@ -40,18 +40,18 @@ class GameBoard extends THREE.Object3D {
 
         // Creamos nueva matriz del tablero con los objetos donde ocurre el juego
         this.tableroPiezas = [
-            [new Hormiga("xN1"), new Hormiga("xN2"), new Hormiga("xN3"), new Hormiga("xN4"),
-                new Hormiga("xN5"), new Hormiga("xN6"), new Hormiga("xN7"), new Hormiga("xN8")],
-            [new Hormiga("pN1"), new Hormiga("pN2"), new Hormiga("pN3"), new Hormiga("pN4"),
-                new Hormiga("pN5"), new Hormiga("pN6"), new Hormiga("pN7"), new Hormiga("pN8")],
+            [new Hormiga("xN1", "rook", "black"), new Hormiga("xN2", "horse", "black"), new Hormiga("xN3", "bishop", "black"), new Hormiga("xN4", "queen", "black"),
+                new Hormiga("xN5", "king", "black"), new Hormiga("xN6", "bishop", "black"), new Hormiga("xN7", "horse", "black"), new Hormiga("xN8", "rook", "black")],
+            [new Hormiga("pN1", "pawn", "black"), new Hormiga("pN2", "pawn", "black"), new Hormiga("pN3", "pawn", "black"), new Hormiga("pN4", "pawn", "black"),
+                new Hormiga("pN5", "pawn", "black"), new Hormiga("pN6", "black", "pawn", "black"), new Hormiga("pN7", "pawn", "black"), new Hormiga("pN8", "pawn", "black")],
             [],
             [],
             [],
             [],
-            [new Hormiga("pB1"), new Hormiga("pB2"), new Hormiga("pB3"), new Hormiga("pB4"),
-                new Hormiga("pB5"), new Hormiga("pB6"), new Hormiga("pB7"), new Hormiga("pB8")],
-            [new Hormiga("xB1"), new Hormiga("xB2"), new Hormiga("xB3"), new Hormiga("xB4"),
-                            new Hormiga("xB5"), new Hormiga("xB6"), new Hormiga("xB7"), new Hormiga("xB8")]];
+            [new Hormiga("pB1", "pawn", "white"), new Hormiga("pB2", "pawn", "white"), new Hormiga("pB3", "pawn", "white"), new Hormiga("pB4", "pawn", "white"),
+                new Hormiga("pB5", "pawn", "white"), new Hormiga("pB6", "pawn", "white"), new Hormiga("pB7", "pawn", "white"), new Hormiga("pB8", "pawn", "white")],
+            [new Hormiga("xB1", "rook", "white"), new Hormiga("xB2", "horse", "white"), new Hormiga("xB3", "bishop", "white"), new Hormiga("xB4", "queen", "white"),
+                            new Hormiga("xB5", "king", "white"), new Hormiga("xB6", "bishop", "white"), new Hormiga("xB7", "horse", "white"), new Hormiga("xB8", "rook", "white")]];
 
         // Colocamos las piezas en su posición correspondiente con la correspondencia del tablero dibujado
         for (let i = 0; i < this.tableroPiezas.length; i++) {
@@ -112,27 +112,139 @@ class GameBoard extends THREE.Object3D {
     }
 
     selectPiece(piece){
+        piece = piece.parent; // Queremos el objeto en si no solo el mesh
         this.lastSelectedPiece = piece; // Registramos la última pieza seleccionada
-        piece.parent.select();          // Dejamos que la pieza haga los cambios pertinentes visuales
+        piece.select();          // Dejamos que la pieza haga los cambios pertinentes visuales
                                         // Mostramos de manera visual los movimientos (También devolver algo
                                         //                                   para hacer pick de las posiciones)
 
+        // Extraemos la fila y columna de la pieza en la matriz tableroPiezas
+        const fila = this.tableroPiezas.find(fila => fila.find(p => p !== undefined && p.name === piece.name));
+        const r  = this.tableroPiezas.findIndex(fila => fila.find(p =>  p !== undefined && p.name === piece.name));
+        const c = fila.findIndex(p =>  p !== undefined && p.name === piece.name);
 
 
+        // Algoritmo sobre matriz tableroPiezas para ver que posibles movimientos
+        this.ableMovements = []; // Los movimientos posibles será un grupo de movimientos
+        let tile;
+        switch (piece.type) {
+            case "pawn": // Para un peón hacemos la comprobación de moverse 1 casilla (2 si está en la fila de inicio)
+                         // además de los posibles movimientos de comer, que estarán disponibles siempre que esté ocupada
+                    let initial = 0;
+                    let value = 0;
+                    if (piece.team === "white"){
+                        initial = 6;
+                        value = -1;
+                    }
+                    else if (piece.team === "black"){
+                        initial = 1;
+                        value = 1;
+                    }
+                    else{
+                        console.log("Algún error con el color de la pieza");
+                        break;
+                    }
+
+                    if (r+value > 0 && this.tableroPiezas[r+value][c] === undefined) {
+                        // Movimiento inicial de moverse hacia adelante
+                        this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                            return (tile.row === r+value && tile.col  === c);
+                        })[0]);
+                        this.setAsMoveTile(tile, true);
+
+                        // Movimiento de dos casillas hacia adelante en caso de ser el inicial
+                        if (r === initial){ // Está en la fila inicial
+                            if (this.tableroPiezas[r+value*2][c] === undefined) {
+                                this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                                    return (tile.row === r+value*2 && tile.col  === c);
+                                })[0]);
+                                this.setAsMoveTile(tile, true);
+                            }
+                        }
+                    }
+                    else{
+                        break;
+                    }
+                    // Movimiento de Moverse a los lados para comer, por lo que tiene que estár ocupada
+                    if (c+value > 0 && !(this.tableroPiezas[r+value][c+value] === undefined)) {
+                        if (this.tableroPiezas[r+value][c+value].team !== piece.team) {
+                            this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                                return (tile.row === r + value && tile.col === c + value);
+                            })[0]);
+                            this.setAsMoveTile(tile, false);
+                        }
+                    }
+
+                    if (c-value > 0 && !(this.tableroPiezas[r+value][c-value] === undefined)) {
+                        if (this.tableroPiezas[r+value][c+value].team !== piece.team) {
+                            this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                                return (tile.row === r + value && tile.col === c - value);
+                            })[0]);
+                            this.setAsMoveTile(tile, false);
+                        }
+                    }
+                break
+
+            case "bishop":
+                break
+            case "rook":
+                break
+            case "horse":
+                break
+            case "queen":
+                break
+            case "king":
+                break
+            default: console.log("Something wrong with the types of the pieces");
+                break
+        }
+
+        //console.log(ableMovements);
+    }
+
+    setAsMoveTile(tile, empty){
+        if (empty) {
+            tile.material = new THREE.MeshBasicMaterial({color: 0x0000ff});
+        }
+        else {
+            tile.material = new THREE.MeshBasicMaterial({color: 0xff0000});
+        }
+
+    }
+
+    unsetMoveTiles(){
+        let color;
+
+        if (this.ableMovements) {
+            this.ableMovements.forEach(tile => {
+                (tile.row % 2 === 0) ? (tile.col % 2 === 0 ? color = 0xffffff : color = 0x000000) :
+                    (tile.col % 2 === 0 ? color = 0x000000 : color = 0xffffff)
+
+                tile.material = new THREE.MeshBasicMaterial({color: color});
+            });
+        }
     }
 
     unselectPiece(){
-        if (this.lastSelectedPiece)
-            this.lastSelectedPiece.parent.unselect(); // Lo opuesto, eliminar lo que se pasó
+        if (this.lastSelectedPiece) {
+            this.lastSelectedPiece.unselect(); // Lo opuesto, eliminar lo que se pasó
+            this.unsetMoveTiles();
+        }
     }
 
-    // Recibe un movimiento de los posibles que se han obtenido con selectPiece
-    makeMovement(movement, name){
-        console.log(`MOVIENDO PIEZA ${name}`);
-        // Se realiza el movimiento en concreto, el movimiento puede ser una casilla o algo (un par de índices)
-        // El movimiento consiste en dos cosas, cambiar la matriz, poniendo a undefined la casilla origen y asignando
-        // la pieza a la casilla destino, y luego la otra cosa es aplicar una animación utilizando las coordenadas origen
-        // y destino
+    // Recibe una posición a la que moverse [position, row, col]
+    makeMovement(pos){
+        if (this.lastSelectedPiece){
+            // Extraemos la fila y columna de la pieza en la matriz tableroPiezas
+            const fila = this.tableroPiezas.find(fila => fila.find(p =>  p !== undefined && p.name === this.lastSelectedPiece.name));
+            const r  = this.tableroPiezas.findIndex(fila => fila.find(p =>  p !== undefined && p.name === this.lastSelectedPiece.name));
+            const c = fila.findIndex(p =>  p !== undefined && p.name === this.lastSelectedPiece.name);
+
+            this.tableroPiezas[pos["row"]][pos["col"]] = this.lastSelectedPiece;
+            this.tableroPiezas[pos["row"]][pos["col"]].position.x = (pos["pos"].x);
+            this.tableroPiezas[pos["row"]][pos["col"]].position.z = (pos["pos"].z);
+            this.tableroPiezas[r][c] = undefined;
+        }
     }
 
     update(){

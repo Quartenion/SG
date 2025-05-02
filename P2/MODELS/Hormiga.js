@@ -2,9 +2,11 @@ import * as THREE from '../../libs/three.module.js';
 import * as CSG from '../../libs/three-bvh-csg.js'
 
 class Hormiga extends THREE.Object3D {
-    constructor(name) {
+    constructor(name, type, team) {
         super();
         this.name = name;
+        this.type = type;
+        this.team = team;
 
         this.torsoShape = new THREE.Shape();
         this.torsoShape.quadraticCurveTo(0.6, 0.2, 0.5, 0.5);
