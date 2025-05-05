@@ -8,13 +8,13 @@ import  Stats from '../libs/stats.module.js'
 
 // Clases de mi proyecto
 
-import { Hormiga } from './MODELS/Hormiga.js'
 import { Suelo } from './MODELS/Suelo.js'
 import { GameBoard } from './MODELS/GameBoard.js'
 
 
 class MyScene extends THREE.Scene {
   constructor (myCanvas) {
+    super();
     super();
 
     this.renderer = this.createRenderer(myCanvas);

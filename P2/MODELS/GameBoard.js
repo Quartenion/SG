@@ -156,26 +156,6 @@ class GameBoard extends THREE.Object3D {
         const initial = (piece.team === "white") ? 6 : 1;
         const value = (piece.team === "white") ? -1 : 1;
 
-        // Limites de la matriz, es cuadrada.
-        const limit_under = 0; // Límite inferior de la matriz
-        const limit_upper = 7; // Límite superior de la matriz
-
-        // Valores de movimiento
-        // Valores especial de cada tipo de pieza
-        let steps_forward = 0;
-        let steps_diagonal_right = 0;
-        let steps_diagonal_left = 0;
-        let steps_left = 0;
-        let steps_right = 0;
-        let steps_back = 0;
-        let steps_diagonal_left_back = 0;
-        let steps_diagonal_right_back = 0;
-
-        // Expresiones constantes que indican el número de movimientos
-        const mov_foward = r + value * steps_forward;
-        const mov_diagonal_right = c + value * steps_diagonal_right;
-        const mov_diagonal_left = c + value * steps_diagonal_left;
-        const mov_right = c + value * steps_right;
 
         switch (piece.type) {
             case "pawn":
