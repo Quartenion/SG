@@ -44,7 +44,7 @@ class GameBoard extends THREE.Object3D {
             [new Hormiga("xN1", "rook", "black"), new Hormiga("xN2", "horse", "black"), new Hormiga("xN3", "bishop", "black"), new Hormiga("xN4", "queen", "black"),
                 new Hormiga("xN5", "king", "black"), new Hormiga("xN6", "bishop", "black"), new Hormiga("xN7", "horse", "black"), new Hormiga("xN8", "rook", "black")],
             [new Hormiga("pN1", "pawn", "black"), new Hormiga("pN2", "pawn", "black"), new Hormiga("pN3", "pawn", "black"), new Hormiga("pN4", "pawn", "black"),
-                new Hormiga("pN5", "pawn", "black"), new Hormiga("pN6", "black", "pawn", "black"), new Hormiga("pN7", "pawn", "black"), new Hormiga("pN8", "pawn", "black")],
+                new Hormiga("pN5", "pawn", "black"), new Hormiga("pN6", "pawn", "black"), new Hormiga("pN7", "pawn", "black"), new Hormiga("pN8", "pawn", "black")],
             [],
             [],
             [],
@@ -80,10 +80,12 @@ class GameBoard extends THREE.Object3D {
         }
 
         // Verificación inicial de las piezas
-        this.tableroPiezas.forEach(pieza => {
-            if (pieza){
-                this.verifyPiece(pieza);
-            }
+        this.tableroPiezas.forEach(piezas => {
+            piezas.forEach(pieza => {
+                if (pieza){
+                    this.verifyPiece(pieza);
+                }
+            })
         })
 
         // Las piezas tienen un nombre único como identificador que luego permite buscarlas
@@ -127,6 +129,7 @@ class GameBoard extends THREE.Object3D {
         if (!(piece.team === "white") && !(piece.team === "black")){
             throw new Error(`La pieza: |${piece}| no tiene un 'team' correcto, el team es: |${piece.team}| `);
         }
+
     }
 
     selectPiece(piece){
@@ -159,7 +162,7 @@ class GameBoard extends THREE.Object3D {
 
         // Valores de movimiento
         // Valores especial de cada tipo de pieza
-        let steps_foward = 0;
+        let steps_forward = 0;
         let steps_diagonal_right = 0;
         let steps_diagonal_left = 0;
         let steps_left = 0;
@@ -169,8 +172,10 @@ class GameBoard extends THREE.Object3D {
         let steps_diagonal_right_back = 0;
 
         // Expresiones constantes que indican el número de movimientos
-        const mov_foward = r + value * steps_foward; // Si se quiere hacer varios movimientos hacia adelante es mov_foward + value * times
-        const mov_diagonal_right = c + value
+        const mov_foward = r + value * steps_forward; // Si se quiere hacer varios movimientos hacia adelante es mov_foward + value * times
+        const mov_diagonal_right = c + value * steps_diagonal_right;
+        const mov_diagonal_left = c + value * steps_diagonal_left;
+        const mov_right = c + value * steps_right;
 
         switch (piece.type) {
             case "pawn":
