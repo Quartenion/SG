@@ -22,20 +22,21 @@ class GameBoard extends THREE.Object3D {
 
         // Si no es la primera vez que se ejecuta se borran todas las piezas
         if (this.white) {
-            console.log("Eliminando los objetos porque ya es la segunda vez")
-            this.white.traverse(function (child) {
-                if (child instanceof THREE.Mesh) {
-                    child.geometry.dispose();
-                    child.material.dispose();
-                }
-            });
+            console.log("Eliminando los objetos porque ya es la segunda vez");
+            this.white.children.forEach(child => {
+                child.children[0].geometry.dispose();
+                child.children[0].material.dispose();
+                this.white.remove(child);
+            })
 
-            this.black.traverse(function (child) {
-                if (child instanceof THREE.Mesh) {
-                    child.geometry.dispose();
-                    child.material.dispose();
-                }
-            });
+            this.black.children.forEach(child => {
+                child.children[0].geometry.dispose();
+                child.children[0].material.dispose();
+                this.black.remove(child);
+            })
+
+            this.remove(this.white);
+            this.remove(this.black);
         }
 
         // Creamos nueva matriz del tablero con los objetos donde ocurre el juego
@@ -78,16 +79,19 @@ class GameBoard extends THREE.Object3D {
             }
         }
 
+        // Verificación inicial de las piezas
+        this.tableroPiezas.forEach(pieza => {
+            if (pieza){
+                this.verifyPiece(pieza);
+            }
+        })
+
         // Las piezas tienen un nombre único como identificador que luego permite buscarlas
         this.add(this.white);
         this.add(this.black);
-        /*
-        // todo quitar esto, es solo para probar cosas, pero se puede ver las distintas formas de sacar de la matriz
-        let fila = this.tableroPiezas.find(fila => fila.find(hormiga => hormiga.name === 'pN1'));
-        let filaIndex  = this.tableroPiezas.findIndex(fila => fila.find(hormiga => hormiga.name === 'pN1'));
-        console.log(fila.find(hormiga => hormiga.name === 'pN1'));
-        console.log(`${filaIndex} ${fila.findIndex(hormiga => hormiga.name === 'pN1')}`);
-        */
+
+
+
     }
 
     // Hace el turno, espera a que se ejecute selectPiece
@@ -111,6 +115,20 @@ class GameBoard extends THREE.Object3D {
         }
     }
 
+
+    verifyPiece(piece) {
+        if (!(piece.type === "pawn") && !(piece.type === "rook") && !(piece.type === "bishop") && !(piece.type === "horse")
+            && !(piece.type === "king") && !(piece.type === "queen")){
+            throw new Error (`La pieza: |${piece}| no tiene un 'type' correcto, el type es: |${piece.type}|`);
+        }
+        if (!piece.name){
+            throw new Error(`La pieza: |${piece}| no tiene un 'nombre' correcto`);
+        }
+        if (!(piece.team === "white") && !(piece.team === "black")){
+            throw new Error(`La pieza: |${piece}| no tiene un 'team' correcto, el team es: |${piece.team}| `);
+        }
+    }
+
     selectPiece(piece){
         piece = piece.parent; // Queremos el objeto en si no solo el mesh
         this.lastSelectedPiece = piece; // Registramos la última pieza seleccionada
@@ -123,70 +141,84 @@ class GameBoard extends THREE.Object3D {
         const r  = this.tableroPiezas.findIndex(fila => fila.find(p =>  p !== undefined && p.name === piece.name));
         const c = fila.findIndex(p =>  p !== undefined && p.name === piece.name);
 
-
         // Algoritmo sobre matriz tableroPiezas para ver que posibles movimientos
         this.ableMovements = []; // Los movimientos posibles será un grupo de movimientos
         let tile;
+
+        // Para un peón hacemos la comprobación de moverse 1 casilla (2 si está en la fila de inicio)
+        // además de los posibles movimientos de comer, que estarán disponibles siempre que esté ocupada
+
+
+
+        const initial = (piece.team === "white") ? 6 : 1;
+        const value = (piece.team === "white") ? -1 : 1;
+
+        // Limites de la matriz, es cuadrada.
+        const limit_under = 0; // Límite inferior de la matriz
+        const limit_upper = 7; // Límite superior de la matriz
+
+        // Valores de movimiento
+        // Valores especial de cada tipo de pieza
+        let steps_foward = 0;
+        let steps_diagonal_right = 0;
+        let steps_diagonal_left = 0;
+        let steps_left = 0;
+        let steps_right = 0;
+        let steps_back = 0;
+        let steps_diagonal_left_back = 0;
+        let steps_diagonal_right_back = 0;
+
+        // Expresiones constantes que indican el número de movimientos
+        const mov_foward = r + value * steps_foward; // Si se quiere hacer varios movimientos hacia adelante es mov_foward + value * times
+        const mov_diagonal_right = c + value
+
         switch (piece.type) {
-            case "pawn": // Para un peón hacemos la comprobación de moverse 1 casilla (2 si está en la fila de inicio)
-                         // además de los posibles movimientos de comer, que estarán disponibles siempre que esté ocupada
-                    let initial = 0;
-                    let value = 0;
-                    if (piece.team === "white"){
-                        initial = 6;
-                        value = -1;
-                    }
-                    else if (piece.team === "black"){
-                        initial = 1;
-                        value = 1;
-                    }
-                    else{
-                        console.log("Algún error con el color de la pieza");
-                        break;
-                    }
+            case "pawn":
+                {
 
-                    if (r+value > 0 && this.tableroPiezas[r+value][c] === undefined) {
-                        // Movimiento inicial de moverse hacia adelante
+                if (r + value > 0 && this.tableroPiezas[r + value][c] === undefined) {
+                    // Movimiento inicial de moverse hacia adelante
+                    this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                        return (tile.row === r + value && tile.col === c);
+                    })[0]);
+                    this.setAsMoveTile(tile, true);
+
+                    // Movimiento de dos casillas hacia adelante en caso de ser el inicial
+                    if (r === initial) { // Está en la fila inicial
+                        if (this.tableroPiezas[r + value * 2][c] === undefined) {
+                            this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                                return (tile.row === r + value * 2 && tile.col === c);
+                            })[0]);
+                            this.setAsMoveTile(tile, true);
+                        }
+                    }
+                }
+
+                // Movimiento de Moverse a los lados para comer, por lo que tiene que estár ocupada
+                if (r + value <= 7 && r + value >= 0 && c + value >= 0 && c + value <= 7 && !(this.tableroPiezas[r + value][c + value] === undefined)) {
+                    if (this.tableroPiezas[r + value][c + value].team !== piece.team) {
                         this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
-                            return (tile.row === r+value && tile.col  === c);
+                            return (tile.row === r + value && tile.col === c + value);
                         })[0]);
-                        this.setAsMoveTile(tile, true);
+                        this.setAsMoveTile(tile, false);
+                    }
+                }
 
-                        // Movimiento de dos casillas hacia adelante en caso de ser el inicial
-                        if (r === initial){ // Está en la fila inicial
-                            if (this.tableroPiezas[r+value*2][c] === undefined) {
-                                this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
-                                    return (tile.row === r+value*2 && tile.col  === c);
-                                })[0]);
-                                this.setAsMoveTile(tile, true);
-                            }
-                        }
+                if (r + value <= 7 && r + value >= 0 && c - value >= 0 && c - value <= 7 && !(this.tableroPiezas[r + value][c - value] === undefined)) {
+                    if (this.tableroPiezas[r + value][c - value].team !== piece.team) {
+                        this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                            return (tile.row === r + value && tile.col === c - value);
+                        })[0]);
+                        this.setAsMoveTile(tile, false);
                     }
-                    else{
-                        break;
-                    }
-                    // Movimiento de Moverse a los lados para comer, por lo que tiene que estár ocupada
-                    if (c+value > 0 && !(this.tableroPiezas[r+value][c+value] === undefined)) {
-                        if (this.tableroPiezas[r+value][c+value].team !== piece.team) {
-                            this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
-                                return (tile.row === r + value && tile.col === c + value);
-                            })[0]);
-                            this.setAsMoveTile(tile, false);
-                        }
-                    }
-
-                    if (c-value > 0 && !(this.tableroPiezas[r+value][c-value] === undefined)) {
-                        if (this.tableroPiezas[r+value][c+value].team !== piece.team) {
-                            this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
-                                return (tile.row === r + value && tile.col === c - value);
-                            })[0]);
-                            this.setAsMoveTile(tile, false);
-                        }
-                    }
+                }
                 break
-
+                }
             case "bishop":
+                {
+
                 break
+                }
             case "rook":
                 break
             case "horse":
@@ -209,12 +241,10 @@ class GameBoard extends THREE.Object3D {
         else {
             tile.material = new THREE.MeshBasicMaterial({color: 0xff0000});
         }
-
     }
 
     unsetMoveTiles(){
         let color;
-
         if (this.ableMovements) {
             this.ableMovements.forEach(tile => {
                 (tile.row % 2 === 0) ? (tile.col % 2 === 0 ? color = 0xffffff : color = 0x000000) :
@@ -240,13 +270,21 @@ class GameBoard extends THREE.Object3D {
             const r  = this.tableroPiezas.findIndex(fila => fila.find(p =>  p !== undefined && p.name === this.lastSelectedPiece.name));
             const c = fila.findIndex(p =>  p !== undefined && p.name === this.lastSelectedPiece.name);
 
+            if (!(this.tableroPiezas[pos["row"]][pos["col"]] === undefined)){
+                if (this.tableroPiezas[pos["row"]][pos["col"]].team === "black")
+                    this.black.remove(this.tableroPiezas[pos["row"]][pos["col"]]);
+                else
+                    this.white.remove(this.tableroPiezas[pos["row"]][pos["col"]]);
+
+                this.tableroPiezas[pos["row"]][pos["col"]].children[0].geometry.dispose;
+                this.tableroPiezas[pos["row"]][pos["col"]].children[0].material.dispose;
+            }
             this.tableroPiezas[pos["row"]][pos["col"]] = this.lastSelectedPiece;
             this.tableroPiezas[pos["row"]][pos["col"]].position.x = (pos["pos"].x);
             this.tableroPiezas[pos["row"]][pos["col"]].position.z = (pos["pos"].z);
             this.tableroPiezas[r][c] = undefined;
         }
     }
-
     update(){
         if (this.tableroPiezas) {
             for (let i = 0; i < this.tableroPiezas.length; i++) {
