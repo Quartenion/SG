@@ -1,16 +1,18 @@
-import * as THREE from '../../../../libs/three.module.js';
+import * as THREE from '../../../libs/three.module.js';
+import * as CSG from '../../../libs/three-bvh-csg.js'
 
-class Antena extends THREE.Object3D {
+class Pata extends THREE.Object3D {
     constructor() {
         super();
-        this.antenaShape = new THREE.Shape();
-        this.antenaShape.lineTo(0, 0.5);
-        this.antenaShape.quadraticCurveTo(0.5, 0.5, 0.5, 0.8);
+        this.pataShape = new THREE.Shape();
+        this.pataShape.lineTo(0, 0.5);
+        this.pataShape.lineTo(1, 1.5);
+        this.pataShape.lineTo(1, 2);
         this.drawSolid();
     }
 
     drawLines() {
-        const points = this.antenaShape.getPoints(100); 
+        const points = this.pataShape.getPoints(100); // Más puntos para suavizar la curva
         const geometry = new THREE.BufferGeometry().setFromPoints(points);
 
         this.OriginalMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
@@ -24,17 +26,19 @@ class Antena extends THREE.Object3D {
             color: 0x2a1b0a,
         });
     
-        const points = this.antenaShape.getPoints(100);
+        const points = this.pataShape.getPoints(100);
         const curve = new THREE.CatmullRomCurve3(
             points.map(p => new THREE.Vector3(p.x, p.y, 0))
         );
     
-        const radius = 0.02;
+        const radius = 0.03;
     
         this.tubeGeometry = new THREE.TubeGeometry(curve, 100, radius, 16, false);
+        this.tubeGeometry.rotateZ(Math.PI / 2);
+        this.tubeGeometry.rotateX(Math.PI);
         const tubeMesh = new THREE.Mesh(this.tubeGeometry, this.OriginalMaterial);
         this.add(tubeMesh);
     }
 }
 
-export { Antena };
+export { Pata };

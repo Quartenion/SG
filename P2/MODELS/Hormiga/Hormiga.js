@@ -1,5 +1,5 @@
-import * as TWEEN from '../../../../libs/tween.module.js';
-import * as THREE from '../../../../libs/three.module.js';
+import * as TWEEN from '../../../libs/tween.module.js';
+import * as THREE from '../../../libs/three.module.js';
 import { Abdomen } from './Abdomen.js';
 import { Torax } from './Torax.js';
 import { Cabeza } from './Cabeza.js';
@@ -7,9 +7,11 @@ import { Pata } from './Pata.js';
 import { LegAnimator } from './LegAnimator.js';
 
 class Hormiga extends THREE.Object3D {
-    constructor(name) {
+    constructor(name, type, team) {
         super();
         this.name = name;
+        this.type = type;
+        this.team = team;
         // ABDOMEN
         this.abdomen = new Abdomen();
         this.abdomen.translateY(0.01);
@@ -101,11 +103,11 @@ class Hormiga extends THREE.Object3D {
     }
 
     select(){
-        this.object.material = new THREE.MeshBasicMaterial({color: 0xff0000});
+        this.cabeza.material = new THREE.MeshBasicMaterial({color: 0xff0000});
     }
 
     unselect(){
-        this.object.material = this.OriginalMaterial;
+        this.cabeza.material = this.OriginalMaterial;
     }
 
     update(){

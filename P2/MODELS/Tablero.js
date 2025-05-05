@@ -30,7 +30,7 @@ class Tablero extends THREE.Object3D {
 
     for (let i = 0; i < board_tiles; i++) {
       for (let j = 0; j < board_tiles; j++) {
-        const geometry = new THREE.BoxGeometry(size, 0.01, size);
+        const geometry = new THREE.BoxGeometry(size, 0.05, size);
         const color = (i % 2 === 0) ? ( (j % 2 === 0) ? blanco : negro ) : ( (j % 2 === 0) ? negro : blanco );
 
 
@@ -41,7 +41,7 @@ class Tablero extends THREE.Object3D {
 
         this.board[i][j][0] = x + j * size; // Componente x de la casilla
         this.board[i][j][1] = z + i * size; // Componente z de la casilla
-        cube.position.set(x + j * size, -0.005, z + i * size);
+        cube.position.set(x + j * size, -0.025, z + i * size);
         this.tiles.add(cube);
       }
     }

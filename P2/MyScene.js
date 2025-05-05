@@ -15,7 +15,6 @@ import { GameBoard } from './MODELS/GameBoard.js'
 class MyScene extends THREE.Scene {
   constructor (myCanvas) {
     super();
-    super();
 
     this.renderer = this.createRenderer(myCanvas);
     this.gui = this.createGUI ();

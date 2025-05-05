@@ -14,7 +14,7 @@ import { Auricular } from './MODELS/Auricular.js'
 import { Cascos } from './MODELS/Cascos.js'
 import { Seccion } from './MODELS/Seccion.js'
 import { Destornillador } from './MODELS/Destornillador.js'
-import { Hormiga } from './MODELS/Hormiga/Hormiga.js'
+import { Hormiga } from '../../P2/MODELS/Hormiga/Hormiga.js'
 
 /// La clase fachada del modelo
 /**

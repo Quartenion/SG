@@ -1,4 +1,4 @@
-import * as TWEEN from '../../../../libs/tween.module.js';
+import * as TWEEN from '../../../libs/tween.module.js';
 
 class LegAnimator {
     constructor() {

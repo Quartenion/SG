@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import * as TWEEN from 'tween';
 import { Tablero } from './Tablero.js';
-import { Hormiga } from './Hormiga.js';
+import { Hormiga } from './Hormiga/Hormiga.js';
 import { StraightAnimator } from './Animator.js';
 
 class GameBoard extends THREE.Object3D {
