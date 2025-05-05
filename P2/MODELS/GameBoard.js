@@ -1,6 +1,8 @@
 import * as THREE from 'three';
+import * as TWEEN from 'tween';
 import { Tablero } from './Tablero.js';
 import { Hormiga } from './Hormiga.js';
+import { StraightAnimator } from './Animator.js';
 
 class GameBoard extends THREE.Object3D {
     constructor() {
@@ -264,11 +266,23 @@ class GameBoard extends THREE.Object3D {
                 this.tableroPiezas[pos["row"]][pos["col"]].children[0].material.dispose;
             }
             this.tableroPiezas[pos["row"]][pos["col"]] = this.lastSelectedPiece;
-            this.tableroPiezas[pos["row"]][pos["col"]].position.x = (pos["pos"].x);
-            this.tableroPiezas[pos["row"]][pos["col"]].position.z = (pos["pos"].z);
             this.tableroPiezas[r][c] = undefined;
+
+            let anim = new StraightAnimator();
+            let finPos = new THREE.Vector3();
+
+            var wait = $.Deferred();
+            let t = 1000;
+            finPos.x = pos["pos"].x;
+            finPos.z = pos["pos"].z;
+
+            anim.setAndStart(this.lastSelectedPiece.position, finPos, t, wait);
+            wait.done (() => {
+                // console.log ('Este mensaje no sale hasta que la animación termine');
+            });  
         }
     }
+    
     update(){
         if (this.tableroPiezas) {
             for (let i = 0; i < this.tableroPiezas.length; i++) {
@@ -277,6 +291,8 @@ class GameBoard extends THREE.Object3D {
                 }
             }
         }
+
+        TWEEN.update();
     }
 
 }
