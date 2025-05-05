@@ -10,6 +10,7 @@ import  Stats from '../libs/stats.module.js'
 
 import { Suelo } from './MODELS/Suelo.js'
 import { GameBoard } from './MODELS/GameBoard.js'
+import { Hormiga } from './MODELS/Hormiga/Hormiga.js'
 
 
 class MyScene extends THREE.Scene {

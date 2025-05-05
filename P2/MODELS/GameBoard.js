@@ -59,7 +59,7 @@ class GameBoard extends THREE.Object3D {
         // Colocamos las piezas en su posición correspondiente con la correspondencia del tablero dibujado
         for (let i = 0; i < this.tableroPiezas.length; i++) {
             for (let j = 0; j < this.tableroPiezas[i].length; j++) {
-                this.tableroPiezas[i][j].position.set(this.tablero.board[i][j][0], 0, this.tablero.board[i][j][1]);
+                this.tableroPiezas[i][j].position.set(this.tablero.board[i][j][0], this.tableroPiezas[i][j].position.y, this.tablero.board[i][j][1]);
             }
         }
 

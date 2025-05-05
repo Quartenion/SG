@@ -100,6 +100,10 @@ class Hormiga extends THREE.Object3D {
         this.pataDer3.rotateY(Math.PI / -6);
         this.pataDer3.rotateZ(Math.PI / -32);
         this.add(this.pataDer3);
+
+        this.translateY(0.03);
+        this.scale.set(0.4, 0.4, 0.4);
+        this.rotateY(Math.PI / 2);
     }
 
     select(){
