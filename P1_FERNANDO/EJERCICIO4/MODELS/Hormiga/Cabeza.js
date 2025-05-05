@@ -88,10 +88,6 @@ class Cabeza extends THREE.Object3D {
         this.AntenaDchaGeo.rotateZ(Math.PI / 8);
         this.AntenaDchaGeo.translate(0.6, 0.3, 0.2);
 
-        
-        
-        
-
         let CraneoBrush = new CSG.Brush(this.CraneoGeo, this.OriginalMaterial);
         let OjoIzdaBrush = new CSG.Brush(this.OjoIzdaGeo, this.EyeMaterial);
         let OjoDchaBrush = new CSG.Brush(this.OjoDchaGeo, this.EyeMaterial);

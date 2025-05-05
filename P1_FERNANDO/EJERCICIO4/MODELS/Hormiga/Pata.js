@@ -26,14 +26,13 @@ class Pata extends THREE.Object3D {
             color: 0x2a1b0a,
         });
     
-        const shapePoints = this.pataShape.getPoints(100);
+        const points = this.pataShape.getPoints(100);
         const curve = new THREE.CatmullRomCurve3(
-            shapePoints.map(p => new THREE.Vector3(p.x, p.y, 0))
+            points.map(p => new THREE.Vector3(p.x, p.y, 0))
         );
     
         const radius = 0.03;
     
-        // Crear el tubo
         this.tubeGeometry = new THREE.TubeGeometry(curve, 100, radius, 16, false);
         this.tubeGeometry.rotateZ(Math.PI / 2);
         this.tubeGeometry.rotateX(Math.PI);

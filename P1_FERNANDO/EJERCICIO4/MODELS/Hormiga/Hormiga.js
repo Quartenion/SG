@@ -98,18 +98,6 @@ class Hormiga extends THREE.Object3D {
         this.pataDer3.rotateY(Math.PI / -6);
         this.pataDer3.rotateZ(Math.PI / -32);
         this.add(this.pataDer3);
-
-        const patas = [
-            this.pataDcha1,
-            this.pataIzq1,
-            this.pataDcha2,
-            this.pataIzq2,
-            this.pataIzq3,
-            this.pataDer3
-        ];
-
-        this.legAnimators = patas.map(p => new LegAnimator(p, 'x', Math.PI / 8, 300));
-        this.legAnimators.forEach(anim => anim.start());
     }
 
     select(){
