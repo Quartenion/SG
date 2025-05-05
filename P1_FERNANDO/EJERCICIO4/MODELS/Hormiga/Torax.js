@@ -141,8 +141,6 @@ class Torax extends THREE.Object3D {
         let subMusloDcha1 = evaluator.evaluate(musloDcha3, SubMusloDcha1Brush, CSG.ADDITION);
         let total = evaluator.evaluate(subMusloDcha1, SubMusloDcha2Brush, CSG.ADDITION);
       
-       
-
         total.scale.set(0.06, 0.06, 0.06);
         this.add(total);
 
