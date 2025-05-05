@@ -50,9 +50,11 @@ class MyScene extends THREE.Scene {
 
   // Función que llamará y hará lo necesario en la creación de una partida
   newGame(){
+    this.gameBoard.unselectPiece(); // Quitamos pieza del pick por si había
     this.gameBoard.startGame();
+    // Establecemos la cámara a la posición inicial
     this.camera.position.set(this.whiteCameraPosition.x, this.whiteCameraPosition.y, this.whiteCameraPosition.z);
-    this.gameStarted = true;
+    this.gameStarted = true; // Establecemos las variables iniciales
     this.canPick = false;
     this.objectSelected = false;
   }
