@@ -172,7 +172,7 @@ class GameBoard extends THREE.Object3D {
         let steps_diagonal_right_back = 0;
 
         // Expresiones constantes que indican el número de movimientos
-        const mov_foward = r + value * steps_forward; // Si se quiere hacer varios movimientos hacia adelante es mov_foward + value * times
+        const mov_foward = r + value * steps_forward;
         const mov_diagonal_right = c + value * steps_diagonal_right;
         const mov_diagonal_left = c + value * steps_diagonal_left;
         const mov_right = c + value * steps_right;
@@ -221,7 +221,6 @@ class GameBoard extends THREE.Object3D {
                 }
             case "bishop":
                 {
-
                 break
                 }
             case "rook":
