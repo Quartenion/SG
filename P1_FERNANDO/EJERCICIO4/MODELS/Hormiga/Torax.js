@@ -143,8 +143,6 @@ class Torax extends THREE.Object3D {
       
         total.scale.set(0.06, 0.06, 0.06);
         this.add(total);
-
-
     }
 }
 
