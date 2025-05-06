@@ -77,6 +77,7 @@ class GameBoard extends THREE.Object3D {
 
         for (let i = 0; i < 2; i++) {
             for (let j = 0; j < this.tableroPiezas[i].length; j++) {
+                this.tableroPiezas[i][j].rotateY(Math.PI);
                 this.black.add(this.tableroPiezas[i][j]);
             }
         }
@@ -135,6 +136,8 @@ class GameBoard extends THREE.Object3D {
     }
 
     selectPiece(piece){
+        console.log(piece);
+        console.log(piece.parent);
         piece = piece.parent; // Queremos el objeto en si no solo el mesh
         this.lastSelectedPiece = piece; // Registramos la última pieza seleccionada
         piece.select();          // Dejamos que la pieza haga los cambios pertinentes visuales
