@@ -5,7 +5,7 @@ class Tablero extends THREE.Object3D {
     super();
 
     const size = 0.1; 
-    const negro = new THREE.Color(0x000000);  // negro
+    const negro = new THREE.Color(0x8b0000);  // rojo
     const blanco = new THREE.Color(0xffffff); // blanco
     const board_tiles = 8;
     const board_size = board_tiles * size;

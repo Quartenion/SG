@@ -28,6 +28,9 @@ class MyScene extends THREE.Scene {
     this.axis.position.set(0,0,0);
     this.add (this.axis);
 
+    this.hormiga = new Hormiga("Hormiga", "Hormiga", "Blanca");
+    this.add (this.hormiga);
+
 
     // Orientación inicial del juego es de +z a -z, que será primero turno de "blancas"
 
