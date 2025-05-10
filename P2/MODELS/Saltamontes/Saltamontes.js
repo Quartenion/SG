@@ -1,0 +1,115 @@
+import * as THREE from 'three';
+import { Abdomen } from './Abdomen.js';
+import { Femur } from './Femur.js';
+import { Ala } from './Ala.js';
+import { Cabeza } from './Cabeza.js';
+import { Torax } from './Torax.js';
+import { Pata } from './Pata.js';
+
+
+const conectorMaterial = new THREE.MeshPhysicalMaterial({ color: 0x2a1b0a });
+const conectorGeom1 = new THREE.CylinderGeometry(0.01, 0.01, 0.05, 8); // antes: 100 segmentos
+const conectorGeom2 = new THREE.CylinderGeometry(0.01, 0.01, 0.03, 8);
+
+class Saltamontes extends THREE.Object3D {
+    constructor() {
+        super();
+        this.scale.set(0.05, 0.05, 0.05);
+
+        this.Abdomen = new Abdomen();
+        this.Abdomen.translateX(-0.5);
+        this.Abdomen.rotateZ(-Math.PI / 2);
+        this.add(this.Abdomen);
+
+        this.Torax = new Torax();
+        this.Torax.scale.set(0.3, 0.2, 0.2);
+        this.Torax.translateX(0.6);
+        this.Torax.translateY(0.1);
+        this.Torax.rotateZ(Math.PI/4);
+        this.Torax.rotateY(Math.PI);
+        this.add(this.Torax);
+
+        this.Cabeza = new Cabeza();
+        this.Cabeza.scale.set(0.3, 0.3, 0.3);
+        this.Cabeza.translateX(0.7);
+        this.Cabeza.translateY(-0.1);
+        this.add(this.Cabeza);
+
+        this.AlaIzda = new Ala();
+        this.AlaIzda.translateY(0.15);
+        this.AlaIzda.translateX(0.6);
+        this.AlaIzda.rotateX(-Math.PI/4);
+        this.AlaIzda.rotateZ(Math.PI/2.1);
+        this.AlaIzda.rotateY(Math.PI/2);
+        this.add(this.AlaIzda);
+
+        this.AlaDcha = new Ala();
+        this.AlaDcha.translateY(0.158);
+        this.AlaDcha.translateX(0.6);
+        this.AlaDcha.rotateX(Math.PI/4);
+        this.AlaDcha.rotateZ(Math.PI/2.1);
+        this.AlaDcha.rotateY(-Math.PI/2);
+        this.add(this.AlaDcha);
+
+        this.FemurDcha = new Femur();
+        this.FemurDcha.scale.set(0.5, 0.5, 0.5);
+        this.FemurDcha.translateX(0.2);
+        this.FemurDcha.translateY(-0.1);
+        this.FemurDcha.translateZ(0.1);
+        this.FemurDcha.rotateY(Math.PI/6);
+        this.FemurDcha.rotateZ(Math.PI/6);
+        this.add(this.FemurDcha);
+
+        this.FemurIzda = new Femur();
+        this.FemurIzda.scale.set(0.5, 0.5, 0.5);
+        this.FemurIzda.translateX(0.2);
+        this.FemurIzda.translateY(-0.1);
+        this.FemurIzda.translateZ(-0.1);
+        this.FemurIzda.rotateY(-Math.PI/6);
+        this.FemurIzda.rotateZ(Math.PI/6);
+        this.add(this.FemurIzda);
+
+        this.PataIzdaFrontal = new Pata();
+        this.PataIzdaFrontal.scale.set(0.3, 0.3, 0.3);
+        this.PataIzdaFrontal.translateX(0.5);
+        this.PataIzdaFrontal.rotateY(-Math.PI/1.5);
+        this.add(this.PataIzdaFrontal);
+
+        this.PataIzdaCentral = new Pata();
+        this.PataIzdaCentral.scale.set(0.3, 0.3, 0.3);
+        this.PataIzdaCentral.translateX(0.4);
+        this.PataIzdaCentral.rotateY(-Math.PI/2.5);
+        this.add(this.PataIzdaCentral);
+
+        this.PataIzdaTrasera = new Pata();
+        this.PataIzdaTrasera.scale.set(0.3, 0.8, 0.8);
+        this.PataIzdaTrasera.translateX(-0.1);
+        this.PataIzdaTrasera.translateY(0.53);
+        this.PataIzdaTrasera.translateZ(-0.28);
+        this.PataIzdaTrasera.rotateY(-Math.PI/6);
+        this.add(this.PataIzdaTrasera);
+
+        this.PataDchaFrontal = new Pata();
+        this.PataDchaFrontal.scale.set(0.3, 0.3, 0.3);
+        this.PataDchaFrontal.translateX(0.5);
+        this.PataDchaFrontal.rotateY(Math.PI/1.5);
+        this.add(this.PataDchaFrontal);
+
+        this.PataDchaCentral = new Pata();
+        this.PataDchaCentral.scale.set(0.3, 0.3, 0.3);
+        this.PataDchaCentral.translateX(0.4);
+        this.PataDchaCentral.rotateY(Math.PI/2.5);
+        this.add(this.PataDchaCentral);
+
+        this.PataDchaTrasera = new Pata();
+        this.PataDchaTrasera.scale.set(0.3, 0.8, 0.8);
+        this.PataDchaTrasera.translateX(-0.1);
+        this.PataDchaTrasera.translateY(0.53);
+        this.PataDchaTrasera.translateZ(0.28);
+        this.PataDchaTrasera.rotateY(Math.PI/6);
+        this.add(this.PataDchaTrasera);
+        
+    }
+}
+
+export { Saltamontes };
