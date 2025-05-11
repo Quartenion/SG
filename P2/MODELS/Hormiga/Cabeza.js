@@ -81,7 +81,6 @@ class Cabeza extends THREE.Object3D {
         result = evaluator.evaluate(result, brushAntenaIzq, CSG.ADDITION);
         result = evaluator.evaluate(result, brushAntenaDer, CSG.ADDITION);
 
-        result.scale.set(0.06, 0.06, 0.06);
         this.add(result);
     }
 }

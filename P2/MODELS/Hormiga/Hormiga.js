@@ -5,8 +5,6 @@ import { Cabeza } from './Cabeza.js';
 import { Pata } from './Pata.js';
 
 const conectorMaterial = new THREE.MeshPhysicalMaterial({ color: 0x2a1b0a });
-const conectorGeom1 = new THREE.CylinderGeometry(0.01, 0.01, 0.05, 8); // antes: 100 segmentos
-const conectorGeom2 = new THREE.CylinderGeometry(0.01, 0.01, 0.03, 8);
 
 class Hormiga extends THREE.Object3D {
     constructor(name, type, team) {
@@ -15,69 +13,90 @@ class Hormiga extends THREE.Object3D {
         this.type = type;
         this.team = team;
 
-        // === ABDOMEN ===
-        this.abdomen = new Abdomen();
-        this.abdomen.position.set(-0.03, 0.01, 0);
-        this.abdomen.rotation.z = Math.PI / 1.8;
-        this.add(this.abdomen);
+        this.scale.set(0.02, 0.02, 0.02);
+        this.translateY(0.028);
+        this.translateZ(-0.01);
+        this.rotateY(Math.PI / 2);
 
-        // === TÓRAX ===
-        this.torax = new Torax();
-        this.torax.position.set(0.02, 0.02, 0);
-        this.add(this.torax);
+        this.Abdomen = new Abdomen();
+        this.Abdomen.translateX(-0.7);
+        this.Abdomen.rotateZ(Math.PI / 2);
+        this.add(this.Abdomen);
 
-        // === CABEZA ===
-        this.cabeza = new Cabeza();
-        this.cabeza.position.set(0.05, 0.02, 0);
-        this.cabeza.rotation.z = -Math.PI / 5;
-        this.add(this.cabeza);
+        this.Torax = new Torax();
+        this.add(this.Torax);
 
-        // === CONECTORES ===
-        this.conector1 = new THREE.Mesh(conectorGeom1, conectorMaterial);
-        this.conector1.position.set(-0.03, 0.01, 0);
-        this.conector1.rotation.z = -Math.PI / 3;
-        this.add(this.conector1);
+        this.Cabeza = new Cabeza();
+        this.Cabeza.scale.set(0.8, 0.8, 0.8);
+        this.Cabeza.translateX(0.6);
+        this.Cabeza.translateY(0.2);
+        this.Cabeza.rotateZ(-Math.PI / 8);
+        this.add(this.Cabeza);
 
-        this.conector2 = new THREE.Mesh(conectorGeom2, conectorMaterial);
-        this.conector2.position.set(0.05, 0.02, 0);
-        this.conector2.rotation.z = Math.PI / 3;
-        this.add(this.conector2);
+        const conectorGeom = new THREE.CylinderGeometry(0.15, 0.15, 0.5, 8);
+        const conector = new THREE.Mesh(conectorGeom, conectorMaterial);
+        conector.position.set(0.4, 0.3, 0); 
+        conector.rotateZ(Math.PI/2.5); 
+        this.add(conector);
 
-        // === PATAS ===
-        const crearPata = (x, y, z, rotY, rotZ = 0) => {
-            const pata = new Pata();
-            pata.scale.set(0.05, 0.05, 0.05);
-            pata.position.set(x, y, z);
-            pata.rotation.set(0, rotY, rotZ);
-            return pata;
-        };
+        this.PataDchaFrontal = new Pata();
+        this.PataDchaFrontal.scale.set(0.7, 0.7, 0.7);
+        this.PataDchaFrontal.translateX(-0.15);
+        this.PataDchaFrontal.translateY(-0.55);
+        this.PataDchaFrontal.translateZ(0.2);
+        this.PataDchaFrontal.rotateY(Math.PI / 1.5);
+        this.add(this.PataDchaFrontal);
 
-        // Frontales
-        this.add(crearPata(0.009, -0.013, 0.01, Math.PI / 1.5));     // Derecha
-        this.add(crearPata(0.009, -0.013, -0.01, -Math.PI / 1.5));  // Izquierda
+        this.PataDchaCentral = new Pata();
+        this.PataDchaCentral.scale.set(0.7, 0.7, 0.7);
+        this.PataDchaCentral.translateX(-0.85);
+        this.PataDchaCentral.translateY(-0.65);
+        this.PataDchaCentral.translateZ(0.55);
+        this.PataDchaCentral.rotateY(Math.PI / 2);
+        this.add(this.PataDchaCentral);
 
-        // Centrales
-        this.add(crearPata(-0.03, -0.02, 0.03, Math.PI / 2, -Math.PI / 64));   // Derecha
-        this.add(crearPata(-0.03, -0.02, -0.03, -Math.PI / 2, Math.PI / 64));  // Izquierda
+        this.PataDchaTrasera = new Pata();
+        this.PataDchaTrasera.scale.set(0.7, 0.7, 0.7);
+        this.PataDchaTrasera.translateX(-1.15);
+        this.PataDchaTrasera.translateY(-0.5);
+        this.PataDchaTrasera.translateZ(0.6);
+        this.PataDchaTrasera.rotateY(Math.PI / 8);
+        this.add(this.PataDchaTrasera);
 
-        // Traseras
-        this.add(crearPata(-0.045, -0.01, 0.035, Math.PI / 6, Math.PI / 32));   // Izquierda
-        this.add(crearPata(-0.045, -0.01, -0.035, -Math.PI / 6, -Math.PI / 32)); // Derecha
+        this.PataIzdaFrontal = new Pata();  
+        this.PataIzdaFrontal.scale.set(0.7, 0.7, 0.7);
+        this.PataIzdaFrontal.translateX(-0.15);
+        this.PataIzdaFrontal.translateY(-0.55);
+        this.PataIzdaFrontal.translateZ(-0.2);
+        this.PataIzdaFrontal.rotateY(-Math.PI / 1.5);
+        this.add(this.PataIzdaFrontal);
 
-        // === ESCALA Y POSICIÓN GLOBAL ===
-        this.position.y = 0.03;
-        this.scale.set(0.4, 0.4, 0.4);
-        this.rotation.y = Math.PI / 2;
+        this.PataIzdaCentral = new Pata();
+        this.PataIzdaCentral.scale.set(0.7, 0.7, 0.7);
+        this.PataIzdaCentral.translateX(-0.85);
+        this.PataIzdaCentral.translateY(-0.65);
+        this.PataIzdaCentral.translateZ(-0.55);
+        this.PataIzdaCentral.rotateY(-Math.PI / 2);
+        this.add(this.PataIzdaCentral);
+
+        this.PataIzdaTrasera = new Pata();
+        this.PataIzdaTrasera.scale.set(0.7, 0.7, 0.7);
+        this.PataIzdaTrasera.translateX(-1.15);
+        this.PataIzdaTrasera.translateY(-0.5);
+        this.PataIzdaTrasera.translateZ(-0.6);
+        this.PataIzdaTrasera.rotateY(-Math.PI / 8);
+        this.add(this.PataIzdaTrasera);
     }
 
     select() {
-        this.OriginalMaterial = this.cabeza.material; // Guarda el original por si no lo estaba guardando antes
-        this.cabeza.material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+        this.OriginalMaterial = this.Cabeza.material;
+        this.Cabeza.material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
     }
 
     unselect() {
-        if (this.OriginalMaterial)
-            this.cabeza.material = this.OriginalMaterial;
+        if (this.OriginalMaterial) {
+            this.Cabeza.material = this.OriginalMaterial;
+        }
     }
 
     update() {

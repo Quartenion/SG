@@ -16,7 +16,6 @@ class Abdomen extends THREE.Object3D {
         const points = shape.getPoints(50);
         const geo = new THREE.LatheGeometry(points, 50);
         const mesh = new THREE.Mesh(geo, material);
-        mesh.scale.set(0.07, 0.07, 0.07);
 
         this.add(mesh);
     }

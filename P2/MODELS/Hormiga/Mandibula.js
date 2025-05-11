@@ -8,7 +8,6 @@ class Mandibula extends THREE.Object3D {
         const material = new THREE.MeshPhysicalMaterial({ color: 0x2a1b0a });
 
         const base = new THREE.CylinderGeometry(1, 1, 0.1, 32);
-        base.scale(1, 1, 0.8);
         base.translate(1, 0, 0);
 
         const hole = new THREE.BoxGeometry(2, 0.5, 2);
