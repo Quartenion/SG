@@ -8,6 +8,7 @@ class EscarabajoPelotero extends THREE.Object3D {
         this.name = name;
         this.type = type;
         this.team = team;
+        this.scale.set(0.5, 0.5, 0.5);
 
         this.Escarabajo = new Escarabajo();
         this.Escarabajo.scale.set(0.05, 0.05, 0.05);

@@ -35,10 +35,10 @@ class MyScene extends THREE.Scene {
     // Creamos el tablero y el suelo que se colocarán uno encima de otro y justo debajo de los ejes (las piezas
     // se tendrán que mover con un valor de y = 0 siempre y cuando estén justo por encima del eje)
     this.gameBoard = new GameBoard();
-    //this.add (this.gameBoard);
+    this.add (this.gameBoard);
 
     this.suelo = new Suelo();
-    //this.add (this.suelo);
+    this.add (this.suelo);
 
     // Elementos para el raycasting
     this.raycaster = new THREE.Raycaster();

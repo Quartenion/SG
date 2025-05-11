@@ -15,7 +15,6 @@ class Hormiga extends THREE.Object3D {
 
         this.scale.set(0.02, 0.02, 0.02);
         this.translateY(0.028);
-        this.translateZ(-0.01);
         this.rotateY(Math.PI / 2);
 
         this.Abdomen = new Abdomen();
