@@ -13,6 +13,11 @@ class Saltamontes extends THREE.Object3D {
         this.type = type;
         this.team = team;
 
+        const geometry = new THREE.TorusGeometry(2, 0.1, 30);
+        const material = new THREE.MeshNormalMaterial();
+        this.halo = new THREE.Mesh(geometry, material);
+        this.halo.rotation.x = Math.PI / 2;
+
         this.scale.set(0.05, 0.05, 0.05);
         this.translateY(0.016);
         this.rotateY(Math.PI / 2);
@@ -118,14 +123,13 @@ class Saltamontes extends THREE.Object3D {
         this.add(this.PataDchaTrasera);
     }
 
+
     select() {
-        this.OriginalMaterial = this.cabeza.material; // Guarda el original por si no lo estaba guardando antes
-        this.cabeza.material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+        this.add(this.halo);
     }
 
     unselect() {
-        if (this.OriginalMaterial)
-            this.cabeza.material = this.OriginalMaterial;
+        this.remove(this.halo);
     }
 
     update() {

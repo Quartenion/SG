@@ -136,10 +136,17 @@ class GameBoard extends THREE.Object3D {
 
     }
 
+    getParentByChild(child){
+        if (child.team !== null && (child.team === "white" || child.team === "black"))
+            return child;
+        else if(child.parent != null){
+            return this.getParentByChild(child.parent);
+        }
+        else return null;
+    }
+
     selectPiece(piece){
-        console.log(piece);
-        console.log(piece.parent);
-        piece = piece.parent; // Queremos el objeto en si no solo el mesh
+        piece = this.getParentByChild(piece);
         this.lastSelectedPiece = piece; // Registramos la última pieza seleccionada
         piece.select();          // Dejamos que la pieza haga los cambios pertinentes visuales
                                         // Mostramos de manera visual los movimientos (También devolver algo
@@ -252,6 +259,7 @@ class GameBoard extends THREE.Object3D {
         }
     }
 
+
     // Recibe una posición a la que moverse [position, row, col]
     makeMovement(pos){
         if (this.lastSelectedPiece){
@@ -265,9 +273,6 @@ class GameBoard extends THREE.Object3D {
                     this.black.remove(this.tableroPiezas[pos["row"]][pos["col"]]);
                 else
                     this.white.remove(this.tableroPiezas[pos["row"]][pos["col"]]);
-
-                this.tableroPiezas[pos["row"]][pos["col"]].children[0].geometry.dispose;
-                this.tableroPiezas[pos["row"]][pos["col"]].children[0].material.dispose;
             }
             this.tableroPiezas[pos["row"]][pos["col"]] = this.lastSelectedPiece;
             this.tableroPiezas[r][c] = undefined;
@@ -275,10 +280,14 @@ class GameBoard extends THREE.Object3D {
             let anim = new StraightAnimator();
             let finPos = new THREE.Vector3();
 
-            var wait = $.Deferred();
+            let wait = $.Deferred();
             let t = 1000;
             finPos.x = pos["pos"].x;
+            finPos.y = this.lastSelectedPiece.position.y;
             finPos.z = pos["pos"].z;
+
+            console.log(this.lastSelectedPiece.position);
+            console.log(finPos);
 
             anim.setAndStart(this.lastSelectedPiece.position, finPos, t, wait);
             wait.done (() => {

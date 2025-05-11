@@ -30,9 +30,6 @@ class MyScene extends THREE.Scene {
     this.add (this.axis);
 
     // Orientación inicial del juego es de +z a -z, que será primero turno de "blancas"
-    this.Hormiga = new Hormiga("Hormiga", "Hormiga", "white");
-    this.add(this.Hormiga);
-
     // Creamos el tablero y el suelo que se colocarán uno encima de otro y justo debajo de los ejes (las piezas
     // se tendrán que mover con un valor de y = 0 siempre y cuando estén justo por encima del eje)
     this.gameBoard = new GameBoard();
@@ -72,13 +69,13 @@ class MyScene extends THREE.Scene {
         // Actualizamos el raycaster con la posición del ratón y la cámara
         this.raycaster.setFromCamera(this.mouse, this.camera);
 
-        let intersects = this.raycaster.intersectObjects(this.gameBoard.turnColor.children, true);
+        let intersects = this.raycaster.intersectObjects(this.gameBoard.turnColor.children);
         let tile_intersects;
 
         this.gameBoard.unselectPiece();
         if (this.objectSelected && intersects.length === 0) {
           // En caso de que no se haga select de otro object
-          tile_intersects = this.raycaster.intersectObjects(this.gameBoard.ableMovements, true);
+          tile_intersects = this.raycaster.intersectObjects(this.gameBoard.ableMovements,);
           this.objectSelected = false;
           if (tile_intersects.length > 0) {
             let tile = tile_intersects[0].object;

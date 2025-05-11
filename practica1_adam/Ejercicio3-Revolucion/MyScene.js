@@ -5,6 +5,7 @@ import * as THREE from '../../libs/three.module.js'
 import { GUI } from '../../libs/dat.gui.module.js'
 import { TrackballControls } from '../../libs/TrackballControls.js'
 import  Stats from '../../libs/stats.module.js'
+import {Avispa} from "./Avispa.js";
 
 // Clases del proyecto
 
@@ -20,10 +21,17 @@ class MyScene extends THREE.Scene {
     this.renderer = this.createRenderer(myCanvas);
     this.gui = this.createGUI();
     this.initStats();
-    //this.createLights();
+    this.createLights();
     this.createCamera();
 
+    this.axis = new THREE.AxesHelper (3);
+    this.avispa = new Avispa();
+    this.add (this.axis);
+    this.add (this.avispa);
 
+
+
+    /*
     // Shape
     this.axisShape = new THREE.AxesHelper (3);
     this.axisShape.position.set(-3,0,0);
@@ -48,6 +56,7 @@ class MyScene extends THREE.Scene {
 
     this.beetleRev = new BeetleRev(this.gui, "BeetleRev");
     this.add (this.beetleRev);
+    */
   }
 
   /********************************************************************************************************************/
@@ -125,15 +134,15 @@ class MyScene extends THREE.Scene {
     // En este caso la intensidad de la luz y si se muestran o no los ejes
     this.guiControls = {
 
-      //lightPower: 500.0,  // La potencia de esta fuente de luz se mide en lúmenes
-      //ambientIntensity: 0.5,
+      lightPower: 500.0,  // La potencia de esta fuente de luz se mide en lúmenes
+      ambientIntensity: 0.5,
       axisOnOff: true,
     }
 
     // Se crea una sección para los controles de esta clase
     var folder = gui.addFolder('Luz y Ejes');
 
-    /*
+
     // Se le añade un control para la potencia de la luz puntual
     folder.add(this.guiControls, 'lightPower', 0, 1000, 20)
         .name('Luz puntual : ')
@@ -143,7 +152,7 @@ class MyScene extends THREE.Scene {
     folder.add(this.guiControls, 'ambientIntensity', 0, 1, 0.05)
         .name('Luz ambiental: ')
         .onChange((value) => this.setAmbientIntensity(value));
-    */
+
 
     // Y otro para mostrar u ocultar los ejes
     folder.add(this.guiControls, 'axisOnOff')
@@ -239,12 +248,12 @@ class MyScene extends THREE.Scene {
 
     // Se actualiza la posición de la cámara según su controlador
     this.cameraControl.update();
-
+    /*
     // Se actualiza el resto del modelo
     this.beetleShape.update();
     this.beetle.update();
     this.beetleRev.update();
-
+    */
     // Le decimos al renderizador "visualiza la escena que te indico usando la cámara que te estoy pasando"
     this.renderer.render(this, this.getCamera());
 

@@ -13,10 +13,14 @@ class Hormiga extends THREE.Object3D {
         this.type = type;
         this.team = team;
 
+        const geometry = new THREE.TorusGeometry(2, 0.1, 30);
+        const material = new THREE.MeshNormalMaterial();
+        this.halo = new THREE.Mesh(geometry, material);
+        this.halo.rotation.x = Math.PI / 2;
+
         this.scale.set(0.02, 0.02, 0.02);
-        this.translateY(0.028);
-        this.translateZ(-0.01);
         this.rotateY(Math.PI / 2);
+        this.translateY(0.028);
 
         this.Abdomen = new Abdomen();
         this.Abdomen.translateX(-0.7);
@@ -89,14 +93,11 @@ class Hormiga extends THREE.Object3D {
     }
 
     select() {
-        this.OriginalMaterial = this.Cabeza.material;
-        this.Cabeza.material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+        this.add(this.halo);
     }
 
     unselect() {
-        if (this.OriginalMaterial) {
-            this.Cabeza.material = this.OriginalMaterial;
-        }
+        this.remove(this.halo);
     }
 
     update() {
