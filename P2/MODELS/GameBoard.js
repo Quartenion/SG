@@ -216,13 +216,95 @@ class GameBoard extends THREE.Object3D {
                 }
             case "bishop":
                 {
+                // Tiene movimiento diagonal infinito
+                // Se puede hacer un bucle  que compruebe cada diagonal hasta llegar al limite o ficha
+                let i = 1;
+                //  Diagonal derecha
+                while (r + value*i <= 7 && r + value*i >= 0 && c - value*i >= 0 && c - value*i <= 7) {
+                    if (!(this.tableroPiezas[r + value*i][c - value*i] === undefined)){
+                        if (this.tableroPiezas[r + value*i][c - value*i].team !== piece.team) {
+                            this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                                return (tile.row === r + value*i && tile.col === c - value*i);
+                            })[0]);
+                            this.setAsMoveTile(tile, false);
+                        }
+                        break; // Salimos porque ha encontrado un choque
+                    }
+                    else{
+                        this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                            return (tile.row === r + value*i && tile.col === c - value*i);
+                        })[0]);
+                        this.setAsMoveTile(tile, true);
+                    }
+                    i++
+                }
 
+                i = 1;
+                //  Diagonal izquierda
+                while (r + value*i <= 7 && r + value*i >= 0 && c + value*i >= 0 && c + value*i <= 7) {
+                    if (!(this.tableroPiezas[r + value*i][c + value*i] === undefined)){
+                        if (this.tableroPiezas[r + value*i][c + value*i].team !== piece.team) {
+                            this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                                return (tile.row === r + value*i && tile.col === c + value*i);
+                            })[0]);
+                            this.setAsMoveTile(tile, false);
+                        }
+                        break; // Salimos porque ha encontrado un choque
+                    }
+                    else{
+                        this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                            return (tile.row === r + value*i && tile.col === c + value*i);
+                        })[0]);
+                        this.setAsMoveTile(tile, true);
+                    }
+                    i++
+                }
 
-                    
+                i = 1;
+                //  Diagonal derecha abajo
+                while (r - value*i <= 7 && r - value*i >= 0 && c - value*i >= 0 && c - value*i <= 7) {
+                    if (!(this.tableroPiezas[r - value*i][c - value*i] === undefined)){
+                        if (this.tableroPiezas[r - value*i][c - value*i].team !== piece.team) {
+                            this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                                return (tile.row === r - value*i && tile.col === c - value*i);
+                            })[0]);
+                            this.setAsMoveTile(tile, false);
+                        }
+                        break; // Salimos porque ha encontrado un choque
+                    }
+                    else{
+                        this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                            return (tile.row === r - value*i && tile.col === c - value*i);
+                        })[0]);
+                        this.setAsMoveTile(tile, true);
+                    }
+                    i++
+                }
+
+                i = 1;
+                //  Diagonal izquierda abajo
+                while (r - value*i <= 7 && r - value*i >= 0 && c + value*i >= 0 && c + value*i <= 7) {
+                    if (!(this.tableroPiezas[r - value*i][c + value*i] === undefined)){
+                        if (this.tableroPiezas[r - value*i][c + value*i].team !== piece.team) {
+                            this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                                return (tile.row === r - value*i && tile.col === c + value*i);
+                            })[0]);
+                            this.setAsMoveTile(tile, false);
+                        }
+                        break; // Salimos porque ha encontrado un choque
+                    }
+                    else{
+                        this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                            return (tile.row === r - value*i && tile.col === c + value*i);
+                        })[0]);
+                        this.setAsMoveTile(tile, true);
+                    }
+                    i++
+                }
                 break
                 }
             case "rook":
-                break
+                break;
             case "horse":
                 break
             case "queen":
