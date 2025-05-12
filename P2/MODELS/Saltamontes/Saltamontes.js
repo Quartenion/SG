@@ -13,7 +13,7 @@ class Saltamontes extends THREE.Object3D {
         this.type = type;
         this.team = team;
 
-        const geometry = new THREE.TorusGeometry(2, 0.1, 30);
+        const geometry = new THREE.TorusGeometry(0.85, 0.05, 30);
         const material = new THREE.MeshNormalMaterial();
         this.halo = new THREE.Mesh(geometry, material);
         this.halo.rotation.x = Math.PI / 2;

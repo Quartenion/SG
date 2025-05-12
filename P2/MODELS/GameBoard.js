@@ -215,6 +215,9 @@ class GameBoard extends THREE.Object3D {
                 }
             case "bishop":
                 {
+
+
+                    
                 break
                 }
             case "rook":

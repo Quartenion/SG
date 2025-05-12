@@ -10,6 +10,12 @@ class EscarabajoPelotero extends THREE.Object3D {
         this.team = team;
         this.scale.set(0.5, 0.5, 0.5);
 
+        const geometry = new THREE.TorusGeometry(0.1, 0.005, 30);
+        geometry.translate(0, 0, -0.05);
+        const material = new THREE.MeshNormalMaterial();
+        this.halo = new THREE.Mesh(geometry, material);
+        this.halo.rotation.x = Math.PI / 2;
+
         this.Escarabajo = new Escarabajo();
         this.Escarabajo.scale.set(0.05, 0.05, 0.05);
         this.Escarabajo.translateY(0.05);
@@ -27,13 +33,11 @@ class EscarabajoPelotero extends THREE.Object3D {
     }
 
     select() {
-        this.OriginalMaterial = this.cabeza.material; // Guarda el original por si no lo estaba guardando antes
-        this.cabeza.material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+        this.add(this.halo);
     }
 
     unselect() {
-        if (this.OriginalMaterial)
-            this.cabeza.material = this.OriginalMaterial;
+        this.remove(this.halo);
     }
 
     update() {
