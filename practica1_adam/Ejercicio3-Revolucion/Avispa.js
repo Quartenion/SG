@@ -15,16 +15,14 @@ class Avispa extends THREE.Object3D{
 
         // Definimos los materiales
         this.OriginalMaterialBlack = new THREE.MeshPhysicalMaterial({
-                                  color: 0x9ACD32,
-                                  roughness: 0.5,
+                                  color: 0x2a1b00,
+                                  roughness: 0.1,
                                   metalness: 0.3,
-                                  clearcoat: 1,
                                 });
         this.OriginalMaterialYellow =         new THREE.MeshPhysicalMaterial({
                                   color: 0xffe135,
-                                  roughness: 0.5,
-                                  metalness: 0.3,
-                                  clearcoat: 1,
+                                  roughness: 0.2,
+                                  metalness: 0.6,
                                 });
         this.radialSegments = 20;
         this.evaluator = new CSG.Evaluator();
@@ -38,7 +36,6 @@ class Avispa extends THREE.Object3D{
         this.torso = this.createTorso();
         //this.torso.scale.set(this.ratioScale.x, this.ratioScale.y, this.ratioScale.z);
         this.torso.geometry.translate(0,0.17,0);
-        this.add(this.torso);
 
         // Creamos y colocamos el Aguijon
         let rot1 = {"rotX": 10, "rotY": 0, "rotZ": 0};
@@ -51,28 +48,182 @@ class Avispa extends THREE.Object3D{
 
 
         // Creamos y colocamos los brazos son un THREE.Group
-        let rotArmR = {"rotX": -90, "rotY": 0, "rotZ": 0};
-        let rotForearmR = {"rotX": 0, "rotY": 0, "rotZ": 0};
-        let rotArmL = {"rotX": -90, "rotY": 0, "rotZ": 0};
-        let rotForearmL = {"rotX": 0, "rotY": 0, "rotZ": 0};
+        let rotArmR = {"rotX": -40, "rotY": 0, "rotZ": 30};
+        let rotForearmR = {"rotX": 30, "rotY": 0, "rotZ": 0};
+        let rotArmL = {"rotX": -40, "rotY": 0, "rotZ": 0};
+        let rotForearmL = {"rotX": 30, "rotY": 0, "rotZ": -30};
 
         this.armRight = this.createArm();
         this.moveArm(this.armRight, rotArmR, rotForearmR);
         this.armRight.position.x += 0.17;
         this.armRight.position.y += 0.31;
         this.armRight.position.z += 0;
-        this.add(this.armRight);
 
         this.armLeft = this.createArm();
         this.moveArm(this.armLeft, rotArmL, rotForearmL);
         this.armLeft.position.x += -0.17;
         this.armLeft.position.y += 0.31;
         this.armLeft.position.z += 0;
-        this.add(this.armLeft);
+
+
+        this.head = this.createHead();
+        this.head.scale.set(1.2,1.2,1.2);
+        this.head.position.x += 0;
+        this.head.position.y += 0.37;
+        this.head.position.z += 0;
+
+        this.upper = new THREE.Group();
+        this.upper.add(this.head);
+        this.upper.add(this.torso);
+        this.upper.add(this.armRight);
+        this.upper.add(this.armLeft);
+
+        this.upper.rotateX(Math.PI / 180 * -15);
+
+        this.add(this.upper);
+
+        this.scale.set(0.07,0.07,0.07);
+        this.translateY(0.04);
     }
 
     createHead(){
+        // La cabeza va a tener 5 piezas distintas y tres de ellas se duplican
 
+        const height = 0.2;
+        const width = 0.15;
+
+        // Cuello
+        const neck = new THREE.CylinderGeometry(0.4/12,0.4/12,
+            height/2, this.radialSegments);
+        neck.translate(0,height/4,0);
+
+        // Cabeza
+        const head = new THREE.SphereGeometry(width/2, this.radialSegments +10);
+        head.scale(1, 0.6, 1.35);
+        head.rotateX(Math.PI/180 * -30);
+        head.translate(0,width/2 * 0.5 + height/4,-width/2 * 0.4);
+
+        // Ojos
+        const shape = new THREE.Shape();
+        shape.moveTo(0, 0);
+        shape.bezierCurveTo(0.07, 0, 0.04, 0.1, 0, 0.1);
+        const points = shape.getPoints(50);
+
+        // Crear geometrías
+        const geoOjoIzq = new THREE.LatheGeometry(points, 50);
+        geoOjoIzq.scale(0.4, 1, 0.7);
+        geoOjoIzq.rotateZ(-Math.PI / 2);
+        geoOjoIzq.rotateY(Math.PI/180 * 90);
+        geoOjoIzq.rotateX(Math.PI/180 * -30);
+        geoOjoIzq.translate(-0.035,width/2 * 0.4 + height/2,-width/2* 0.2);
+
+        const geoOjoDer = new THREE.LatheGeometry(points, 50);
+        geoOjoDer.scale(0.4, 1, 0.7);
+        geoOjoDer.rotateZ(-Math.PI / 2);
+        geoOjoDer.rotateY(Math.PI/180 * 90);
+        geoOjoDer.rotateX(Math.PI/180 * -30);
+        geoOjoDer.translate(0.035,width/2 * 0.4 + height/2,-width/2 * 0.2);
+
+        // ANTENAS
+        const shapeAntenna = new THREE.Shape();
+        shapeAntenna.moveTo(0, 0);
+        shapeAntenna.lineTo(0, 0.5);
+        shapeAntenna.quadraticCurveTo(0.5, 0.5, 0.5, 0.3);
+
+        const pointsAntenna = shapeAntenna.getPoints(100);
+        const curve = new THREE.CatmullRomCurve3(
+            pointsAntenna.map(p => new THREE.Vector3(p.x, p.y, 0))
+        );
+        const geometryAntenna = new THREE.TubeGeometry(curve, 100, 0.02,
+                                                        16, false);
+        geometryAntenna.scale(0.25, 0.25, 0.25);
+        geometryAntenna.rotateY(Math.PI/180 * 90);
+        geometryAntenna.rotateX(Math.PI/180 * -30);
+        geometryAntenna.translate(0.035,width/2 * 0.4 + height/2, 0);
+
+        const geometryAntenna2 = new THREE.TubeGeometry(curve, 100, 0.02,
+                                                        16, false);
+        geometryAntenna2.scale(0.25, 0.25, 0.25);
+        geometryAntenna2.rotateY(Math.PI/180 * 90);
+        geometryAntenna2.rotateX(Math.PI/180 * -30);
+        geometryAntenna2.translate(-0.035,width/2 * 0.4 + height/2, 0);
+
+
+        // BOCAS
+
+        const tooth1 = this.createTooth();
+        const tooth2 = this.createTooth();
+        tooth1.scale.set(0.1,0.1,0.1);
+        tooth2.scale.set(0.1,0.1,0.1);
+
+        tooth1.rotateX(Math.PI);
+        tooth1.rotateZ(Math.PI);
+        tooth2.rotateZ(Math.PI);
+
+        tooth1.rotateZ(Math.PI/180 * 30);
+        tooth1.translateY(width * 0.8);
+        tooth1.translateX(-width * 0.6);
+
+        tooth2.rotateZ(Math.PI/180 * -30);
+        tooth2.translateY(-width * 0.8);
+        tooth2.translateX(-width * 0.6);
+
+
+        const complete = new THREE.Group();
+        complete.add(new THREE.Mesh(neck, this.OriginalMaterialYellow));
+        complete.add(new THREE.Mesh(head, this.OriginalMaterialYellow));
+        complete.add(new THREE.Mesh(geoOjoIzq, this.OriginalMaterialBlack));
+        complete.add(new THREE.Mesh(geoOjoDer, this.OriginalMaterialBlack));
+        complete.add(new THREE.Mesh(geometryAntenna, this.OriginalMaterialBlack));
+        complete.add(new THREE.Mesh(geometryAntenna2, this.OriginalMaterialBlack));
+        complete.add(tooth1);
+        complete.add(tooth2);
+
+
+        return complete;
+    }
+
+    createTooth(){
+        const baseShape = new THREE.Shape();
+        baseShape.moveTo(0.5, 0);
+        baseShape.quadraticCurveTo(0.25, 0.5, -0.5, 0);
+        baseShape.lineTo(0.5, 0);
+
+        const extrudeSettings ={
+            steps: 100,
+            depth: 0.1,
+            bevelEnabled: true,
+            bevelSize: 0.1,
+            bevelSteps: 50,
+            bevelThickness: 0.05,
+        }
+        const base = new THREE.ExtrudeGeometry(baseShape, extrudeSettings);
+        base.rotateX(Math.PI/180 * 90);
+        base.translate(0,0.05,0);
+
+        const hole = new THREE.BoxGeometry(2, 0.5, 2);
+        hole.translate(0, 0, -1);
+
+        const createTooth = x => {
+            const geo = new THREE.BoxGeometry(0.15, 0.7, 0.15);
+            geo.rotateY(Math.PI / 4);
+            geo.translate(x, 0, 0);
+            return geo;
+        };
+
+        const toothPositions = [0.35, 0.15, -0.15, -0.35];
+        const evaluator = new CSG.Evaluator();
+
+        let result = new CSG.Brush(base, this.OriginalMaterialBlack);
+        result = evaluator.evaluate(result, new CSG.Brush(hole, this.OriginalMaterialBlack), CSG.SUBTRACTION);
+
+        for (const pos of toothPositions) {
+            const tooth = createTooth(pos);
+            result = evaluator.evaluate(result, new CSG.Brush(tooth, this.OriginalMaterialBlack), CSG.SUBTRACTION);
+        }
+        result.rotateY(Math.PI/180 * 90);
+
+        return result;
     }
 
     moveArm(arm, rotArm, rotForearm) {
@@ -139,9 +290,10 @@ class Avispa extends THREE.Object3D{
         const forearmBrush = new CSG.Brush(forearm, this.OriginalMaterialYellow);
         const part2 = this.evaluator.evaluate(elbowBrush, forearmBrush, CSG.ADDITION);
 
-        part2.geometry.translate(0,0,-height*2.7 -height/2);
+        part2.translateZ(-height*2.7 -height/2);
         part1.name = "arm";
         part2.name = "forearm";
+
 
         const result = new THREE.Group();
         result.add(part1);
@@ -174,7 +326,7 @@ class Avispa extends THREE.Object3D{
         s2.translate(0, height/2 + height/16, 0);
 
         const brush1 = new CSG.Brush(s1, this.OriginalMaterialBlack);
-        const brush2 = new CSG.Brush(s2, this.OriginalMaterialYellow);
+        const brush2 = new CSG.Brush(s2, this.OriginalMaterialBlack);
         const result = this.evaluator.evaluate(brush1, brush2, CSG.ADDITION);
         result.geometry.scale(1,1,0.7);
 

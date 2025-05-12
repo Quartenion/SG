@@ -5,6 +5,7 @@ import { Hormiga } from './Hormiga/Hormiga.js';
 import { Saltamontes } from './Saltamontes/Saltamontes.js';
 import { EscarabajoPelotero } from './EscarabajoPelotero/EscarabajoPelotero.js';
 import { StraightAnimator } from './Animator.js';
+import { Avispa } from './Avispa.js';
 
 class GameBoard extends THREE.Object3D {
     constructor() {
@@ -45,8 +46,8 @@ class GameBoard extends THREE.Object3D {
 
         // Creamos nueva matriz del tablero con los objetos donde ocurre el juego
         this.tableroPiezas = [
-            [new EscarabajoPelotero("xN1", "rook", "black"), new Saltamontes("xN2", "horse", "black"), new Hormiga("xN3", "bishop", "black"), new Hormiga("xN4", "queen", "black"),
-                new Hormiga("xN5", "king", "black"), new Hormiga("xN6", "bishop", "black"), new Saltamontes("xN7", "horse", "black"), new EscarabajoPelotero("xN8", "rook", "black")],
+            [new EscarabajoPelotero("xN1", "rook", "black"), new Saltamontes("xN2", "horse", "black"), new Avispa("xN3", "bishop", "black"), new Hormiga("xN4", "queen", "black"),
+                new Hormiga("xN5", "king", "black"), new Avispa("xN6", "bishop", "black"), new Saltamontes("xN7", "horse", "black"), new EscarabajoPelotero("xN8", "rook", "black")],
             [new Hormiga("pN1", "pawn", "black"), new Hormiga("pN2", "pawn", "black"), new Hormiga("pN3", "pawn", "black"), new Hormiga("pN4", "pawn", "black"),
                 new Hormiga("pN5", "pawn", "black"), new Hormiga("pN6", "pawn", "black"), new Hormiga("pN7", "pawn", "black"), new Hormiga("pN8", "pawn", "black")],
             [],
@@ -55,8 +56,8 @@ class GameBoard extends THREE.Object3D {
             [],
             [new Hormiga("pB1", "pawn", "white"), new Hormiga("pB2", "pawn", "white"), new Hormiga("pB3", "pawn", "white"), new Hormiga("pB4", "pawn", "white"),
                 new Hormiga("pB5", "pawn", "white"), new Hormiga("pB6", "pawn", "white"), new Hormiga("pB7", "pawn", "white"), new Hormiga("pB8", "pawn", "white")],
-            [new EscarabajoPelotero("xB1", "rook", "white"), new Saltamontes("xB2", "horse", "white"), new Hormiga("xB3", "bishop", "white"), new Hormiga("xB4", "queen", "white"),
-                            new Hormiga("xB5", "king", "white"), new Hormiga("xB6", "bishop", "white"), new Saltamontes("xB7", "horse", "white"), new EscarabajoPelotero("xB8", "rook", "white")]];
+            [new EscarabajoPelotero("xB1", "rook", "white"), new Saltamontes("xB2", "horse", "white"), new Avispa("xB3", "bishop", "white"), new Hormiga("xB4", "queen", "white"),
+                            new Hormiga("xB5", "king", "white"), new Avispa("xB6", "bishop", "white"), new Saltamontes("xB7", "horse", "white"), new EscarabajoPelotero("xB8", "rook", "white")]];
 
         // Colocamos las piezas en su posición correspondiente con la correspondencia del tablero dibujado
         for (let i = 0; i < this.tableroPiezas.length; i++) {
