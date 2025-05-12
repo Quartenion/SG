@@ -311,12 +311,9 @@ class Avispa extends THREE.Object3D{
 
         const shape1 = new THREE.Shape();
         shape1.moveTo(0, -height/2, 0);
-        shape1.bezierCurveTo(-width/2 * 0.6, -height/2 * 0.8, -width/2 * 0.5, -height * 0.5,
-                                    -width/2 * 0.8, 0);
-
-        shape1.quadraticCurveTo(-width/2 * 0.95, height/2 * 1.02, -width/2 * 0.5, height/2 );
+        shape1.bezierCurveTo(width/2 * 0.6, -height/2 * 0.8, width/2 * 0.5, -height * 0.5,width/2 * 0.8, 0);
+        shape1.quadraticCurveTo(width/2 * 0.95, height/2 * 1.02, width/2 * 0.5, height/2 );
         shape1.lineTo(0, height/2 , 0);
-        shape1.lineTo(0, -height/2, 0);
 
         const s1 = new THREE.LatheGeometry(shape1.getPoints(50), this.radialSegments+20);
 
@@ -329,7 +326,6 @@ class Avispa extends THREE.Object3D{
         const brush2 = new CSG.Brush(s2, this.OriginalMaterialBlack);
         const result = this.evaluator.evaluate(brush1, brush2, CSG.ADDITION);
         result.geometry.scale(1,1,0.7);
-
         return result;
     }
 
