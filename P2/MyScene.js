@@ -63,6 +63,21 @@ class MyScene extends THREE.Scene {
     this.objectSelected = false;
   }
 
+  async nextTurn(){
+    if (this.gameStarted) {
+      await this.gameBoard.nextTurn();
+
+      if (this.gameBoard.currentTurn === "black") {
+        console.log("changingToBlack")
+        this.camera.position.set(this.blackCameraPosition.x, this.blackCameraPosition.y, this.blackCameraPosition.z);
+      }
+      else{
+        console.log("changingToWhite")
+        this.camera.position.set(this.whiteCameraPosition.x, this.whiteCameraPosition.y, this.whiteCameraPosition.z);
+      }
+    }
+  }
+
 
   onMouseClick(MouseEvent) {
     if (this.gameStarted)
@@ -86,6 +101,7 @@ class MyScene extends THREE.Scene {
             let tile = tile_intersects[0].object;
             let pos ={"pos" : tile.position, "row" : tile.row, "col" : tile.col};
             this.gameBoard.makeMovement(pos);
+            this.nextTurn();
           }
         }
         else {
@@ -131,8 +147,8 @@ class MyScene extends THREE.Scene {
     this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 50);
 
     // Definimos las posiciones fijas (por ahora) de la cámara, la inicial será la de blancas
-    this.whiteCameraPosition = new THREE.Vector3 (0, 1, 1.3);
-    this.blackCameraPosition = new THREE.Vector3 (0, 1, -1.3);
+    this.whiteCameraPosition = new THREE.Vector3 (0, 0.75, 0.9);
+    this.blackCameraPosition = new THREE.Vector3 (0, 0.75, -0.9);
     this.lookPoint = new THREE.Vector3 (0, 0, 0);
 
     this.camera.position.set (this.whiteCameraPosition.x, this.whiteCameraPosition.y, this.whiteCameraPosition.z);
@@ -143,11 +159,14 @@ class MyScene extends THREE.Scene {
     // Por ahora quitado el control del ratón (si se pone hay que descomentar una cosa de update también)
     // TrackballControls (mover con el ratón)
     */
+    /*
     this.cameraControl = new TrackballControls (this.camera, this.renderer.domElement);
     this.cameraControl.rotateSpeed = 5;
     this.cameraControl.zoomSpeed = -2;
     this.cameraControl.panSpeed = 0.5;
     this.cameraControl.target = this.lookPoint;
+    */
+
 
   }
   
@@ -168,16 +187,8 @@ class MyScene extends THREE.Scene {
         this.newGame();
       },
 
-      nextTurn : () => {
-        if (this.gameStarted) {
-          this.gameBoard.nextTurn();
-          if (this.gameBoard.currentTurn === "black") {
-            this.camera.position.set(this.blackCameraPosition.x, this.blackCameraPosition.y, this.blackCameraPosition.z);
-          }
-          else{
-            this.camera.position.set(this.whiteCameraPosition.x, this.whiteCameraPosition.y, this.whiteCameraPosition.z);
-          }
-        }
+      passTurn : () => {
+        this.nextTurn();
       }
     }
 
@@ -202,7 +213,7 @@ class MyScene extends THREE.Scene {
 
     let folderGame = gui.addFolder ('GameBoard');
     folderGame.add (this.guiControls, 'startGame').name ('[ Start Game ]');
-    folderGame.add (this.guiControls, 'nextTurn').name ('[ Next Turn ]');
+    folderGame.add (this.guiControls, 'passTurn').name ('[ Pass Turn ]');
 
     return gui;
   }
@@ -286,7 +297,8 @@ class MyScene extends THREE.Scene {
     // Se actualizan los elementos de la escena para cada frame
     
     // Actualizamos la cámara
-    this.cameraControl.update();
+    // this.cameraControl.update();
+    this.camera.lookAt(this.lookPoint);
 
     // Se actualiza el resto del modelo   
     this.gameBoard.update();
@@ -295,7 +307,7 @@ class MyScene extends THREE.Scene {
     this.renderer.render (this, this.getCamera());
 
     // Configuramos la actualización automatica del update
-    requestAnimationFrame(() => this.update())
+    requestAnimationFrame(() => this.update());
   }
 }
 

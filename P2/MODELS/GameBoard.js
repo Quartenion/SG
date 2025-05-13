@@ -14,6 +14,7 @@ class GameBoard extends THREE.Object3D {
         // matriz que contiene el tablero con las posiciones en el espacio de las casillas
         this.tablero = new Tablero();
         this.add(this.tablero);
+
     }
 
     startGame(){
@@ -29,14 +30,10 @@ class GameBoard extends THREE.Object3D {
         if (this.white) {
             console.log("Eliminando los objetos porque ya es la segunda vez");
             this.white.children.forEach(child => {
-                child.children[0].geometry.dispose();
-                child.children[0].material.dispose();
                 this.white.remove(child);
             })
 
             this.black.children.forEach(child => {
-                child.children[0].geometry.dispose();
-                child.children[0].material.dispose();
                 this.black.remove(child);
             })
 
@@ -123,6 +120,16 @@ class GameBoard extends THREE.Object3D {
         }
     }
 
+    // pos será un diccionario que contendrá la fila y columna de la matriz
+    verifyCheck(pos, team){
+        // Tiene que checkear todas las posibles amenazas
+        // Amenazas diagonales, que mire en las diagonales si hay
+            // -> Un peón, alfil, reina o rey pegado en diagonal
+            // -> Un alfil o reina en diagonal libre
+        // Que mire en las proximidades no diagonales si hay
+            // -> rey enemigo, torre o reina
+        // Que revise si alguno de los dos caballos del enemigo le atacaría
+    }
 
     verifyPiece(piece) {
         if (!(piece.type === "pawn") && !(piece.type === "rook") && !(piece.type === "bishop") && !(piece.type === "horse")
@@ -150,7 +157,7 @@ class GameBoard extends THREE.Object3D {
     selectPiece(piece){
         piece = this.getParentByChild(piece);
         this.lastSelectedPiece = piece; // Registramos la última pieza seleccionada
-        piece.select();          // Dejamos que la pieza haga los cambios pertinentes visuales
+        piece.select();                 // Dejamos que la pieza haga los cambios pertinentes visuales
                                         // Mostramos de manera visual los movimientos (También devolver algo
                                         //                                   para hacer pick de las posiciones)
 
@@ -306,11 +313,99 @@ class GameBoard extends THREE.Object3D {
             case "rook":
                 break;
             case "horse":
-                break
+                {
+                    for (let i = 1; i <= 8; i++) {
+                        let rowV;
+                        let colV;
+                        switch (i){
+                            case 1: rowV = -1; colV = -2;
+                                break;
+                            case 2: rowV = -2; colV = -1;
+                                break;
+                            case 3: rowV = -2; colV = +1;
+                                break;
+                            case 4: rowV = -1; colV = +2;
+                                break;
+                            case 5: rowV = +1; colV = +2;
+                                break;
+                            case 6: rowV = +2; colV = +1;
+                                break;
+                            case 7: rowV = +2; colV = -1;
+                                break;
+                            case 8: rowV = +1; colV = -2;
+                                break;
+                        }
+
+                        if (r + rowV <= 7 && r + rowV >= 0 && c + colV >= 0 && c + colV <= 7) {
+                            if (!(this.tableroPiezas[r + rowV][c + colV] === undefined)) {
+                                if (this.tableroPiezas[r + rowV][c + colV].team !== piece.team) {
+                                    this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                                        return (tile.row === r + rowV && tile.col === c + colV);
+                                    })[0]);
+                                    this.setAsMoveTile(tile, false);
+                                }
+                            } else {
+                                this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                                    return (tile.row === r + rowV && tile.col === c + colV);
+                                })[0]);
+                                this.setAsMoveTile(tile, true);
+                            }
+                        }
+                    }
+                    break;
+                }
             case "queen":
                 break
             case "king":
-                break
+                {
+                    for (let i = 1; i <= 8; i++) {
+                        let rowV;
+                        let colV;
+                        switch (i) {
+                            case 1:
+                                rowV = -1;colV = -1;
+                                break;
+                            case 2:
+                                rowV =  0;colV = -1;
+                                break;
+                            case 3:
+                                rowV = +1;colV = -1;
+                                break;
+                            case 4:
+                                rowV = -1;colV =  0;
+                                break;
+                            case 5:
+                                rowV = +1;colV =  0;
+                                break;
+                            case 6:
+                                rowV = +1;colV = +1;
+                                break;
+                            case 7:
+                                rowV =  0;colV = +1;
+                                break;
+                            case 8:
+                                rowV = -1;colV = +1;
+                                break;
+                        }
+
+                        if (r + rowV <= 7 && r + rowV >= 0 && c + colV >= 0 && c + colV <= 7) {
+                            if (!(this.tableroPiezas[r + rowV][c + colV] === undefined)) {
+                                if (this.tableroPiezas[r + rowV][c + colV].team !== piece.team) {
+                                    this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                                        return (tile.row === r + rowV && tile.col === c + colV);
+                                    })[0]);
+                                    this.setAsMoveTile(tile, false);
+                                }
+                            } else {
+                                this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                                    return (tile.row === r + rowV && tile.col === c + colV);
+                                })[0]);
+                                this.setAsMoveTile(tile, true);
+                            }
+                        }
+                    }
+                    break;
+                }
             default: console.log("Something wrong with the types of the pieces");
                 break
         }
@@ -348,7 +443,7 @@ class GameBoard extends THREE.Object3D {
 
 
     // Recibe una posición a la que moverse [position, row, col]
-    makeMovement(pos){
+    async makeMovement(pos){
         if (this.lastSelectedPiece){
             // Extraemos la fila y columna de la pieza en la matriz tableroPiezas
             const fila = this.tableroPiezas.find(fila => fila.find(p =>  p !== undefined && p.name === this.lastSelectedPiece.name));
@@ -364,26 +459,20 @@ class GameBoard extends THREE.Object3D {
             this.tableroPiezas[pos["row"]][pos["col"]] = this.lastSelectedPiece;
             this.tableroPiezas[r][c] = undefined;
 
-            let anim = new StraightAnimator();
-            let finPos = new THREE.Vector3();
-
-            let wait = $.Deferred();
-            let t = 1000;
-            finPos.x = pos["pos"].x;
-            finPos.y = this.lastSelectedPiece.position.y;
-            finPos.z = pos["pos"].z;
-
-            console.log(this.lastSelectedPiece.position);
-            console.log(finPos);
-
-            anim.setAndStart(this.lastSelectedPiece.position, finPos, t, wait);
-            wait.done (() => {
-                // console.log ('Este mensaje no sale hasta que la animación termine');
-            });  
+            return new Promise((resolve) => {
+                const anim = new StraightAnimator();
+                let finPos = new THREE.Vector3();
+                let t = 1000;
+                finPos.x = pos["pos"].x;
+                finPos.y = this.lastSelectedPiece.position.y;
+                finPos.z = pos["pos"].z;
+                anim.setAndStart(this.lastSelectedPiece.position, finPos, t, resolve);
+            });
         }
     }
     
     update(){
+        /*
         if (this.tableroPiezas) {
             for (let i = 0; i < this.tableroPiezas.length; i++) {
                 for (let j = 0; j < this.tableroPiezas[i].length; j++) {
@@ -391,7 +480,7 @@ class GameBoard extends THREE.Object3D {
                 }
             }
         }
-
+        */
         TWEEN.update();
     }
 
