@@ -159,13 +159,13 @@ class MyScene extends THREE.Scene {
     // Por ahora quitado el control del ratón (si se pone hay que descomentar una cosa de update también)
     // TrackballControls (mover con el ratón)
     */
-    /*
+    
     this.cameraControl = new TrackballControls (this.camera, this.renderer.domElement);
     this.cameraControl.rotateSpeed = 5;
     this.cameraControl.zoomSpeed = -2;
     this.cameraControl.panSpeed = 0.5;
     this.cameraControl.target = this.lookPoint;
-    */
+    
 
 
   }
@@ -297,7 +297,7 @@ class MyScene extends THREE.Scene {
     // Se actualizan los elementos de la escena para cada frame
     
     // Actualizamos la cámara
-    // this.cameraControl.update();
+    this.cameraControl.update();
     this.camera.lookAt(this.lookPoint);
 
     // Se actualiza el resto del modelo   
