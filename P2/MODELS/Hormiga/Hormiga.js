@@ -4,7 +4,8 @@ import { Torax } from './Torax.js';
 import { Cabeza } from './Cabeza.js';
 import { Pata } from './Pata.js';
 
-const conectorMaterial = new THREE.MeshPhysicalMaterial({ color: 0x2a1b0a });
+const negro = new THREE.Color(0x2a1b0a);
+const blanco = new THREE.Color(0xF8F6F0); 
 
 class Hormiga extends THREE.Object3D {
     constructor(name, type, team) {
@@ -13,24 +14,31 @@ class Hormiga extends THREE.Object3D {
         this.type = type;
         this.team = team;
 
+        // Material según el equipo
+        const materialColor = (team === 'white') ? blanco : negro;
+        const material = new THREE.MeshStandardMaterial({ color: materialColor });
+
+        // Halo de selección (no depende del equipo)
         const geometry = new THREE.TorusGeometry(2, 0.1, 30);
-        const material = new THREE.MeshNormalMaterial();
-        this.halo = new THREE.Mesh(geometry, material);
+        const materialHalo = new THREE.MeshNormalMaterial();
+        this.halo = new THREE.Mesh(geometry, materialHalo);
         this.halo.rotation.x = Math.PI / 2;
 
+        // Transformaciones iniciales
         this.scale.set(0.02, 0.02, 0.02);
         this.rotateY(Math.PI / 2);
         this.translateY(0.028);
 
-        this.Abdomen = new Abdomen();
+        // Cuerpo
+        this.Abdomen = new Abdomen(material);
         this.Abdomen.translateX(-0.7);
         this.Abdomen.rotateZ(Math.PI / 2);
         this.add(this.Abdomen);
 
-        this.Torax = new Torax();
+        this.Torax = new Torax(material);
         this.add(this.Torax);
 
-        this.Cabeza = new Cabeza();
+        this.Cabeza = new Cabeza(material);
         this.Cabeza.scale.set(0.8, 0.8, 0.8);
         this.Cabeza.translateX(0.6);
         this.Cabeza.translateY(0.2);
@@ -38,58 +46,31 @@ class Hormiga extends THREE.Object3D {
         this.add(this.Cabeza);
 
         const conectorGeom = new THREE.CylinderGeometry(0.15, 0.15, 0.5, 8);
-        const conector = new THREE.Mesh(conectorGeom, conectorMaterial);
+        const conector = new THREE.Mesh(conectorGeom, material);
         conector.position.set(0.4, 0.3, 0); 
-        conector.rotateZ(Math.PI/2.5); 
+        conector.rotateZ(Math.PI / 2.5); 
         this.add(conector);
 
-        this.PataDchaFrontal = new Pata();
-        this.PataDchaFrontal.scale.set(0.7, 0.7, 0.7);
-        this.PataDchaFrontal.translateX(-0.15);
-        this.PataDchaFrontal.translateY(-0.55);
-        this.PataDchaFrontal.translateZ(0.2);
-        this.PataDchaFrontal.rotateY(Math.PI / 1.5);
-        this.add(this.PataDchaFrontal);
+        // Patas
+        const patas = [
+            { name: 'PataDchaFrontal', tx: -0.15, ty: -0.55, tz:  0.2, ry:  Math.PI / 1.5 },
+            { name: 'PataDchaCentral', tx: -0.85, ty: -0.65, tz:  0.55, ry: Math.PI / 2 },
+            { name: 'PataDchaTrasera', tx: -1.15, ty: -0.5,  tz:  0.6, ry:  Math.PI / 8 },
+            { name: 'PataIzdaFrontal', tx: -0.15, ty: -0.55, tz: -0.2, ry: -Math.PI / 1.5 },
+            { name: 'PataIzdaCentral', tx: -0.85, ty: -0.65, tz: -0.55, ry: -Math.PI / 2 },
+            { name: 'PataIzdaTrasera', tx: -1.15, ty: -0.5,  tz: -0.6, ry: -Math.PI / 8 }
+        ];
 
-        this.PataDchaCentral = new Pata();
-        this.PataDchaCentral.scale.set(0.7, 0.7, 0.7);
-        this.PataDchaCentral.translateX(-0.85);
-        this.PataDchaCentral.translateY(-0.65);
-        this.PataDchaCentral.translateZ(0.55);
-        this.PataDchaCentral.rotateY(Math.PI / 2);
-        this.add(this.PataDchaCentral);
-
-        this.PataDchaTrasera = new Pata();
-        this.PataDchaTrasera.scale.set(0.7, 0.7, 0.7);
-        this.PataDchaTrasera.translateX(-1.15);
-        this.PataDchaTrasera.translateY(-0.5);
-        this.PataDchaTrasera.translateZ(0.6);
-        this.PataDchaTrasera.rotateY(Math.PI / 8);
-        this.add(this.PataDchaTrasera);
-
-        this.PataIzdaFrontal = new Pata();  
-        this.PataIzdaFrontal.scale.set(0.7, 0.7, 0.7);
-        this.PataIzdaFrontal.translateX(-0.15);
-        this.PataIzdaFrontal.translateY(-0.55);
-        this.PataIzdaFrontal.translateZ(-0.2);
-        this.PataIzdaFrontal.rotateY(-Math.PI / 1.5);
-        this.add(this.PataIzdaFrontal);
-
-        this.PataIzdaCentral = new Pata();
-        this.PataIzdaCentral.scale.set(0.7, 0.7, 0.7);
-        this.PataIzdaCentral.translateX(-0.85);
-        this.PataIzdaCentral.translateY(-0.65);
-        this.PataIzdaCentral.translateZ(-0.55);
-        this.PataIzdaCentral.rotateY(-Math.PI / 2);
-        this.add(this.PataIzdaCentral);
-
-        this.PataIzdaTrasera = new Pata();
-        this.PataIzdaTrasera.scale.set(0.7, 0.7, 0.7);
-        this.PataIzdaTrasera.translateX(-1.15);
-        this.PataIzdaTrasera.translateY(-0.5);
-        this.PataIzdaTrasera.translateZ(-0.6);
-        this.PataIzdaTrasera.rotateY(-Math.PI / 8);
-        this.add(this.PataIzdaTrasera);
+        patas.forEach(p => {
+            const pata = new Pata(material);
+            pata.scale.set(0.7, 0.7, 0.7);
+            pata.translateX(p.tx);
+            pata.translateY(p.ty);
+            pata.translateZ(p.tz);
+            pata.rotateY(p.ry);
+            this.add(pata);
+            this[p.name] = pata;
+        });
     }
 
     select() {

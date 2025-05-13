@@ -14,16 +14,26 @@ class Avispa extends THREE.Object3D{
         this.halo.rotation.x = Math.PI / 2;
 
         // Definimos los materiales
-        this.OriginalMaterialBlack = new THREE.MeshPhysicalMaterial({
-                                  color: 0x2a1b00,
-                                  roughness: 0.1,
-                                  metalness: 0.3,
-                                });
-        this.OriginalMaterialYellow =         new THREE.MeshPhysicalMaterial({
-                                  color: 0xffe135,
-                                  roughness: 0.2,
-                                  metalness: 0.6,
-                                });
+        if(team === 'black'){
+            this.OriginalMaterial = new THREE.MeshPhysicalMaterial({
+                color: 0x2a1b00,
+                roughness: 0.1,
+                metalness: 0.3,
+            });
+        }
+        else {
+            this.OriginalMaterial = new THREE.MeshPhysicalMaterial({
+                color: 0xF8F6F0,
+                roughness: 0.1,
+                metalness: 0.3,
+            });
+        }
+        
+        this.OriginalMaterialYellow = new THREE.MeshPhysicalMaterial({
+            color: 0xffe135,
+            roughness: 0.2,
+            metalness: 0.6,
+        });
         this.radialSegments = 20;
         this.evaluator = new CSG.Evaluator();
         this.ratioScale = new THREE.Vector3(10,10,10);
@@ -172,10 +182,10 @@ class Avispa extends THREE.Object3D{
         const complete = new THREE.Group();
         complete.add(new THREE.Mesh(neck, this.OriginalMaterialYellow));
         complete.add(new THREE.Mesh(head, this.OriginalMaterialYellow));
-        complete.add(new THREE.Mesh(geoOjoIzq, this.OriginalMaterialBlack));
-        complete.add(new THREE.Mesh(geoOjoDer, this.OriginalMaterialBlack));
-        complete.add(new THREE.Mesh(geometryAntenna, this.OriginalMaterialBlack));
-        complete.add(new THREE.Mesh(geometryAntenna2, this.OriginalMaterialBlack));
+        complete.add(new THREE.Mesh(geoOjoIzq, this.OriginalMaterial));
+        complete.add(new THREE.Mesh(geoOjoDer, this.OriginalMaterial));
+        complete.add(new THREE.Mesh(geometryAntenna, this.OriginalMaterial));
+        complete.add(new THREE.Mesh(geometryAntenna2, this.OriginalMaterial));
         complete.add(tooth1);
         complete.add(tooth2);
 
@@ -214,12 +224,12 @@ class Avispa extends THREE.Object3D{
         const toothPositions = [0.35, 0.15, -0.15, -0.35];
         const evaluator = new CSG.Evaluator();
 
-        let result = new CSG.Brush(base, this.OriginalMaterialBlack);
-        result = evaluator.evaluate(result, new CSG.Brush(hole, this.OriginalMaterialBlack), CSG.SUBTRACTION);
+        let result = new CSG.Brush(base, this.OriginalMaterial);
+        result = evaluator.evaluate(result, new CSG.Brush(hole, this.OriginalMaterial), CSG.SUBTRACTION);
 
         for (const pos of toothPositions) {
             const tooth = createTooth(pos);
-            result = evaluator.evaluate(result, new CSG.Brush(tooth, this.OriginalMaterialBlack), CSG.SUBTRACTION);
+            result = evaluator.evaluate(result, new CSG.Brush(tooth, this.OriginalMaterial), CSG.SUBTRACTION);
         }
         result.rotateY(Math.PI/180 * 90);
 
@@ -272,7 +282,7 @@ class Avispa extends THREE.Object3D{
 
         // Creamos la primera parte, compuesta del hombro y el biceps
         const shoulderBrush = new CSG.Brush(s1, this.OriginalMaterialYellow);
-        const bicepsBrush = new CSG.Brush(biceps, this.OriginalMaterialBlack);
+        const bicepsBrush = new CSG.Brush(biceps, this.OriginalMaterial);
         const part1 = this.evaluator.evaluate(shoulderBrush, bicepsBrush, CSG.ADDITION);
 
 
@@ -286,7 +296,7 @@ class Avispa extends THREE.Object3D{
         forearm.rotateX(Math.PI/2);
         forearm.translate(0,0,-height*2.2 / 2);
 
-        const elbowBrush = new CSG.Brush(elbow, this.OriginalMaterialBlack);
+        const elbowBrush = new CSG.Brush(elbow, this.OriginalMaterial);
         const forearmBrush = new CSG.Brush(forearm, this.OriginalMaterialYellow);
         const part2 = this.evaluator.evaluate(elbowBrush, forearmBrush, CSG.ADDITION);
 
@@ -322,8 +332,8 @@ class Avispa extends THREE.Object3D{
             height/8, this.radialSegments+20);
         s2.translate(0, height/2 + height/16, 0);
 
-        const brush1 = new CSG.Brush(s1, this.OriginalMaterialBlack);
-        const brush2 = new CSG.Brush(s2, this.OriginalMaterialBlack);
+        const brush1 = new CSG.Brush(s1, this.OriginalMaterial);
+        const brush2 = new CSG.Brush(s2, this.OriginalMaterial);
         const result = this.evaluator.evaluate(brush1, brush2, CSG.ADDITION);
         result.geometry.scale(1,1,0.7);
         return result;
@@ -387,12 +397,12 @@ class Avispa extends THREE.Object3D{
 
         // Unión del conector con las 2 primeras piezas (TIENE UN MOVIMIENTO
         const brushS1 = new CSG.Brush(s1, this.OriginalMaterialYellow);
-        const brushS2 = new CSG.Brush(s2, this.OriginalMaterialBlack);
+        const brushS2 = new CSG.Brush(s2, this.OriginalMaterial);
         let temp = this.evaluator.evaluate(brushS1, brushS2, CSG.ADDITION );
         temp.geometry.translate(0, -heightConector, 0);
 
         conector.translate(0, -heightConector/2, 0);
-        const brushConector = new CSG.Brush(conector, this.OriginalMaterialBlack);
+        const brushConector = new CSG.Brush(conector, this.OriginalMaterial);
         temp = this.evaluator.evaluate(brushConector, temp, CSG.ADDITION );
         // temp.geometry.rotate([-10,90],0,0) rotación de 100 grados en eje X
 
@@ -436,7 +446,7 @@ class Avispa extends THREE.Object3D{
         const compensator = new THREE.SphereGeometry(widthTop/2 * 1.4, this.radialSegments);
 
         const brushS3 = new CSG.Brush(s3, this.OriginalMaterialYellow);
-        const brushS4 = new CSG.Brush(s4, this.OriginalMaterialBlack);
+        const brushS4 = new CSG.Brush(s4, this.OriginalMaterial);
         const brushC = new CSG.Brush(compensator, this.OriginalMaterialYellow);
         const temp2 = this.evaluator.evaluate(brushS3, brushS4, CSG.ADDITION );
         const temp2_5 = this.evaluator.evaluate(temp2, brushC, CSG.ADDITION );

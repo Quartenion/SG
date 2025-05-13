@@ -1,13 +1,9 @@
 import * as THREE from 'three';
 
 class Abdomen extends THREE.Object3D {
-    constructor() {
+    constructor(material = null) {
         super();
 
-        // Material
-        const material = new THREE.MeshPhysicalMaterial({ color: 0x2a1b0a });
-
-        // Forma del abdomen
         const shape = new THREE.Shape();
         shape.quadraticCurveTo(0.6, 0.2, 0.5, 0.5);
         shape.quadraticCurveTo(0.55, 0.7, 0.4, 0.9);

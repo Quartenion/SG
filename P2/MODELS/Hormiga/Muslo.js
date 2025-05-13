@@ -1,10 +1,8 @@
 import * as THREE from 'three';
 
 class Muslo extends THREE.Object3D {
-    constructor() {
+    constructor(material =null) {
         super();
-
-        const material = new THREE.MeshPhysicalMaterial({ color: 0x2a1b0a });
 
         const shape = new THREE.Shape();
         shape.quadraticCurveTo(0.5, 0.0, 0.4, 0.7);

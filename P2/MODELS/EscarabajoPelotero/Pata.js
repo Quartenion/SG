@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 
 class Pata extends THREE.Object3D {
-  constructor() {
+  constructor(material = null) {
     super();
-
+    this.material = material;
     this.pataShape = new THREE.Shape();
 
     // Forma base y garras
@@ -47,8 +47,8 @@ class Pata extends THREE.Object3D {
     const points = this.pataShape.getPoints(100);
     const geometry = new THREE.BufferGeometry().setFromPoints(points);
 
-    this.OriginalMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
-    const object = new THREE.Line(geometry, this.OriginalMaterial);
+    const lineMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
+    const object = new THREE.Line(geometry, lineMaterial);
 
     this.add(object);
   }
@@ -60,18 +60,7 @@ class Pata extends THREE.Object3D {
     };
 
     const geometry = new THREE.ExtrudeGeometry(this.pataShape, extrudeSettings);
-
-    this.OriginalMaterial = new THREE.MeshPhysicalMaterial({
-      color: 0x3b2f2f,                // Marrón oscuro base con tono rojizo
-      metalness: 0.6,                 // Metal medio-alto
-      roughness: 0.6,                 // Menos reflejos especulares
-      clearcoat: 0.2,                 // Capa brillante tenue
-      clearcoatRoughness: 0.4,        // Casi mate
-      sheen: 0.3,                     // Brillo superficial suave
-      sheenColor: new THREE.Color(0x223344), // Azul oscuro
-    });
-
-    const mesh = new THREE.Mesh(geometry, this.OriginalMaterial);
+    const mesh = new THREE.Mesh(geometry, this.material);
     mesh.scale.z = 0.1;
 
     this.add(mesh);

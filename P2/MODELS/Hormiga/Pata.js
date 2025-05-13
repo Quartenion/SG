@@ -1,10 +1,8 @@
 import * as THREE from 'three';
 
 class Pata extends THREE.Object3D {
-    constructor() {
+    constructor(material = null) {
         super();
-
-        const material = new THREE.MeshPhysicalMaterial({ color: 0x2a1b0a });
 
         const shape = new THREE.Shape();
         shape.lineTo(0, 0.5);
@@ -17,7 +15,6 @@ class Pata extends THREE.Object3D {
         );
 
         const radius = 0.03;
-
         const tubeGeometry = new THREE.TubeGeometry(curve, 100, radius, 16, false);
         tubeGeometry.rotateZ(Math.PI / 2);
         tubeGeometry.rotateX(Math.PI);

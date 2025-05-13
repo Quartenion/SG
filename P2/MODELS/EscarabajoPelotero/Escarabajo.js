@@ -6,19 +6,17 @@ import { Antena } from './Antena.js';
 import { Pata } from './Pata.js';
 
 class Escarabajo extends THREE.Object3D {
-    constructor() {
+    constructor(material = null) {
         super();
 
-        const material = new THREE.MeshPhysicalMaterial({ color: 0x3b2f2f });
-
-        this.Abdomen = new Abdomen();
+        this.Abdomen = new Abdomen(material);
         this.Abdomen.scale.set(1.5, 1, 0.7);
         this.Abdomen.translateZ(-0.52);
         this.Abdomen.translateY(0.15);
         this.Abdomen.rotateX(Math.PI / 2);
         this.add(this.Abdomen);
 
-        this.Torax = new Torax();
+        this.Torax = new Torax(material);
         this.Torax.scale.set(0.7, 1.3, 1.1);
         this.Torax.translateX(0.1);
         this.Torax.translateY(0.15);
@@ -26,14 +24,14 @@ class Escarabajo extends THREE.Object3D {
         this.Torax.rotateZ(Math.PI / 2);
         this.add(this.Torax);
 
-        this.Cabeza = new Cabeza();
+        this.Cabeza = new Cabeza(material);
         this.Cabeza.scale.set(0.3, 0.5, 0.5);
         this.Cabeza.translateX(-0.55);
         this.Cabeza.translateY(0.15);
         this.Cabeza.rotateZ(Math.PI / 2);
         this.add(this.Cabeza);
 
-        this.AntenaIzda = new Antena();
+        this.AntenaIzda = new Antena(material);
         this.AntenaIzda.scale.set(0.5, 0.5, 0.5);
         this.AntenaIzda.translateX(-0.3);
         this.AntenaIzda.translateY(0.2);
@@ -43,7 +41,7 @@ class Escarabajo extends THREE.Object3D {
         this.AntenaIzda.rotateZ(Math.PI / 8);
         this.add(this.AntenaIzda);
 
-        this.AntenaDcha = new Antena();
+        this.AntenaDcha = new Antena(material);
         this.AntenaDcha.scale.set(0.5, 0.5, 0.5);
         this.AntenaDcha.translateX(-0.3);
         this.AntenaDcha.translateY(0.2);
@@ -76,7 +74,7 @@ class Escarabajo extends THREE.Object3D {
         this.MusloDchoTrasero.rotateZ(-Math.PI / 8);
         this.add(this.MusloDchoTrasero);
 
-        this.PataDchaFrontal = new Pata();
+        this.PataDchaFrontal = new Pata(material);
         this.PataDchaFrontal.scale.set(2, 2, 2);
         this.PataDchaFrontal.translateX(-0.4);
         this.PataDchaFrontal.translateY(0.1);
@@ -86,7 +84,7 @@ class Escarabajo extends THREE.Object3D {
         this.PataDchaFrontal.rotateZ(Math.PI / 8);
         this.add(this.PataDchaFrontal);
 
-        this.PataDchaCentral = new Pata();
+        this.PataDchaCentral = new Pata(material);
         this.PataDchaCentral.scale.set(1.5, 1.5, 1.5);
         this.PataDchaCentral.translateX(-0.03);
         this.PataDchaCentral.translateY(0.1);
@@ -96,7 +94,7 @@ class Escarabajo extends THREE.Object3D {
         this.PataDchaCentral.rotateZ(-Math.PI / 1.3);
         this.add(this.PataDchaCentral);
 
-        this.PataDchaTrasera = new Pata();
+        this.PataDchaTrasera = new Pata(material);
         this.PataDchaTrasera.scale.set(2, 2, 2);
         this.PataDchaTrasera.translateX(0.49);
         this.PataDchaTrasera.translateY(0.1);
@@ -129,7 +127,7 @@ class Escarabajo extends THREE.Object3D {
         this.MusloIzdoTrasero.rotateZ(Math.PI / 8);
         this.add(this.MusloIzdoTrasero);
 
-        this.PataIzdaFrontal = new Pata();
+        this.PataIzdaFrontal = new Pata(material);
         this.PataIzdaFrontal.scale.set(2, 2, 2);
         this.PataIzdaFrontal.translateX(-0.4);
         this.PataIzdaFrontal.translateY(0.1);
@@ -139,7 +137,7 @@ class Escarabajo extends THREE.Object3D {
         this.PataIzdaFrontal.rotateZ(Math.PI / 8);
         this.add(this.PataIzdaFrontal);
 
-        this.PataIzdaCentral = new Pata();
+        this.PataIzdaCentral = new Pata(material);
         this.PataIzdaCentral.scale.set(1.5, 1.5, 1.5);
         this.PataIzdaCentral.translateX(-0.03);
         this.PataIzdaCentral.translateY(0.1);
@@ -149,7 +147,7 @@ class Escarabajo extends THREE.Object3D {
         this.PataIzdaCentral.rotateZ(-Math.PI / 1.3);
         this.add(this.PataIzdaCentral);
 
-        this.PataIzdaTrasera = new Pata();
+        this.PataIzdaTrasera = new Pata(material);
         this.PataIzdaTrasera.scale.set(2, 2, 2);
         this.PataIzdaTrasera.translateX(0.49);
         this.PataIzdaTrasera.translateY(0.1);
@@ -158,7 +156,6 @@ class Escarabajo extends THREE.Object3D {
         this.PataIzdaTrasera.rotateY(Math.PI / 2);
         this.PataIzdaTrasera.rotateZ(-Math.PI / 8);
         this.add(this.PataIzdaTrasera);
-
     }
 }
 

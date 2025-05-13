@@ -6,7 +6,7 @@ class Pelota extends THREE.Object3D {
 
     const pelotaGeo = new THREE.SphereGeometry(0.05, 32, 32);
 
-    // Cargar textura difusa
+    // Cargar textura 
     const texture = new THREE.TextureLoader().load('./TEXTURES/pelota.jpg');
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
@@ -22,7 +22,7 @@ class Pelota extends THREE.Object3D {
     const PelotaMat = new THREE.MeshStandardMaterial({
       map: texture,
       bumpMap: bumpMap,
-      bumpScale: 10 // Ajusta el valor según la intensidad que desees
+      bumpScale: 10 
     });
 
     const pelota = new THREE.Mesh(pelotaGeo, PelotaMat);

@@ -43,8 +43,8 @@ class GameBoard extends THREE.Object3D {
 
         // Creamos nueva matriz del tablero con los objetos donde ocurre el juego
         this.tableroPiezas = [
-            [new EscarabajoPelotero("xN1", "rook", "black"), new Saltamontes("xN2", "horse", "black"), new Avispa("xN3", "bishop", "black"), new Hormiga("xN4", "queen", "black"),
-                new Hormiga("xN5", "king", "black"), new Avispa("xN6", "bishop", "black"), new Saltamontes("xN7", "horse", "black"), new EscarabajoPelotero("xN8", "rook", "black")],
+            [new EscarabajoPelotero("xN1", "rook", "black"), new Saltamontes("xN2", "horse", "black"), new Avispa("xN3", "bishop", "black"), new Hormiga("xN4", "king", "black"),
+                new Hormiga("xN5", "queen", "black"), new Avispa("xN6", "bishop", "black"), new Saltamontes("xN7", "horse", "black"), new EscarabajoPelotero("xN8", "rook", "black")],
             [new Hormiga("pN1", "pawn", "black"), new Hormiga("pN2", "pawn", "black"), new Hormiga("pN3", "pawn", "black"), new Hormiga("pN4", "pawn", "black"),
                 new Hormiga("pN5", "pawn", "black"), new Hormiga("pN6", "pawn", "black"), new Hormiga("pN7", "pawn", "black"), new Hormiga("pN8", "pawn", "black")],
             [],
@@ -311,7 +311,93 @@ class GameBoard extends THREE.Object3D {
                 break
                 }
             case "rook":
+                {
+                let i = 1;
+                //  Arriba
+                while (r + value*i <= 7 && r + value*i >= 0 && c >= 0 && c <= 7) {
+                    if (!(this.tableroPiezas[r + value*i][c] === undefined)){
+                        if (this.tableroPiezas[r + value*i][c].team !== piece.team) {
+                            this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                                return (tile.row === r + value*i && tile.col === c);
+                            })[0]);
+                            this.setAsMoveTile(tile, false);
+                        }
+                        break; // Salimos porque ha encontrado un choque
+                    }
+                    else{
+                        this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                            return (tile.row === r + value*i && tile.col === c);
+                        })[0]);
+                        this.setAsMoveTile(tile, true);
+                    }
+                    i++
+                }
+                // Abajo
+
+                i = 1;
+                while (r - value*i <= 7 && r - value*i >= 0 && c >= 0 && c <= 7) {
+                    if (!(this.tableroPiezas[r - value*i][c] === undefined)){
+                        if (this.tableroPiezas[r - value*i][c].team !== piece.team) {
+                            this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                                return (tile.row === r - value*i && tile.col === c);
+                            })[0]);
+                            this.setAsMoveTile(tile, false);
+                        }
+                        break; // Salimos porque ha encontrado un choque
+                    }
+                    else{
+                        this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                            return (tile.row === r - value*i && tile.col === c);
+                        })[0]);
+                        this.setAsMoveTile(tile, true);
+                    }
+                    i++
+                }
+
+                // Izquierda
+                i = 1;
+                while (r >= 0 && r <= 7 && c + value*i >= 0 && c + value*i <= 7) {
+                    if (!(this.tableroPiezas[r][c + value*i] === undefined)){
+                        if (this.tableroPiezas[r][c + value*i].team !== piece.team) {
+                            this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                                return (tile.row === r && tile.col === c + value*i);
+                            })[0]);
+                            this.setAsMoveTile(tile, false);
+                        }
+                        break; // Salimos porque ha encontrado un choque
+                    }
+                    else{
+                        this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                            return (tile.row === r && tile.col === c + value*i);
+                        })[0]);
+                        this.setAsMoveTile(tile, true);
+                    }
+                    i++
+                }
+
+                // Derecha
+                i = 1;
+                while (r >= 0 && r <= 7 && c - value*i >= 0 && c - value*i <= 7) {
+                    if (!(this.tableroPiezas[r][c - value*i] === undefined)){
+                        if (this.tableroPiezas[r][c - value*i].team !== piece.team) {
+                            this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                                return (tile.row === r && tile.col === c - value*i);
+                            })[0]);
+                            this.setAsMoveTile(tile, false);
+                        }
+                        break; // Salimos porque ha encontrado un choque
+                    }
+                    else{
+                        this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                            return (tile.row === r && tile.col === c - value*i);
+                        })[0]);
+                        this.setAsMoveTile(tile, true);
+                    }
+                    i++
+                }
+                }
                 break;
+            
             case "horse":
                 {
                     for (let i = 1; i <= 8; i++) {
@@ -355,7 +441,176 @@ class GameBoard extends THREE.Object3D {
                     break;
                 }
             case "queen":
-                break
+                {
+                    let i = 1;
+                    //  Arriba
+                    while (r + value*i <= 7 && r + value*i >= 0 && c >= 0 && c <= 7) {
+                        if (!(this.tableroPiezas[r + value*i][c] === undefined)){
+                            if (this.tableroPiezas[r + value*i][c].team !== piece.team) {
+                                this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                                    return (tile.row === r + value*i && tile.col === c);
+                                })[0]);
+                                this.setAsMoveTile(tile, false);
+                            }
+                            break; // Salimos porque ha encontrado un choque
+                        }
+                        else{
+                            this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                                return (tile.row === r + value*i && tile.col === c);
+                            })[0]);
+                            this.setAsMoveTile(tile, true);
+                        }
+                        i++
+                    }
+                    // Abajo
+
+                    i = 1;
+                    while (r - value*i <= 7 && r - value*i >= 0 && c >= 0 && c <= 7) {
+                        if (!(this.tableroPiezas[r - value*i][c] === undefined)){
+                            if (this.tableroPiezas[r - value*i][c].team !== piece.team) {
+                                this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                                    return (tile.row === r - value*i && tile.col === c);
+                                })[0]);
+                                this.setAsMoveTile(tile, false);
+                            }
+                            break; // Salimos porque ha encontrado un choque
+                        }
+                        else{
+                            this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                                return (tile.row === r - value*i && tile.col === c);
+                            })[0]);
+                            this.setAsMoveTile(tile, true);
+                        }
+                        i++
+                    }
+
+                    // Izquierda
+                    i = 1;
+                    while (r >= 0 && r <= 7 && c + value*i >= 0 && c + value*i <= 7) {
+                        if (!(this.tableroPiezas[r][c + value*i] === undefined)){
+                            if (this.tableroPiezas[r][c + value*i].team !== piece.team) {
+                                this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                                    return (tile.row === r && tile.col === c + value*i);
+                                })[0]);
+                                this.setAsMoveTile(tile, false);
+                            }
+                            break; // Salimos porque ha encontrado un choque
+                        }
+                        else{
+                            this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                                return (tile.row === r && tile.col === c + value*i);
+                            })[0]);
+                            this.setAsMoveTile(tile, true);
+                        }
+                        i++
+                    }
+
+                    // Derecha
+                    i = 1;
+                    while (r >= 0 && r <= 7 && c - value*i >= 0 && c - value*i <= 7) {
+                        if (!(this.tableroPiezas[r][c - value*i] === undefined)){
+                            if (this.tableroPiezas[r][c - value*i].team !== piece.team) {
+                                this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                                    return (tile.row === r && tile.col === c - value*i);
+                                })[0]);
+                                this.setAsMoveTile(tile, false);
+                            }
+                            break; // Salimos porque ha encontrado un choque
+                        }
+                        else{
+                            this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                                return (tile.row === r && tile.col === c - value*i);
+                            })[0]);
+                            this.setAsMoveTile(tile, true);
+                        }
+                        i++
+                    }
+
+                    // Diagonal derecha
+                    i = 1;
+                    while (r + value*i <= 7 && r + value*i >= 0 && c - value*i >= 0 && c - value*i <= 7) {
+                        if (!(this.tableroPiezas[r + value*i][c - value*i] === undefined)){
+                            if (this.tableroPiezas[r + value*i][c - value*i].team !== piece.team) {
+                                this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                                    return (tile.row === r + value*i && tile.col === c - value*i);
+                                })[0]);
+                                this.setAsMoveTile(tile, false);
+                            }
+                            break; // Salimos porque ha encontrado un choque
+                        }
+                        else{
+                            this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                                return (tile.row === r + value*i && tile.col === c - value*i);
+                            })[0]);
+                            this.setAsMoveTile(tile, true);
+                        }
+                        i++
+                    }
+
+                    // Diagonal izquierda
+                    i = 1;
+                    while (r + value*i <= 7 && r + value*i >= 0 && c + value*i >= 0 && c + value*i <= 7) {
+                        if (!(this.tableroPiezas[r + value*i][c + value*i] === undefined)){
+                            if (this.tableroPiezas[r + value*i][c + value*i].team !== piece.team) {
+                                this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                                    return (tile.row === r + value*i && tile.col === c + value*i);
+                                })[0]);
+                                this.setAsMoveTile(tile, false);
+                            }
+                            break; // Salimos porque ha encontrado un choque
+                        }
+                        else{
+                            this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                                return (tile.row === r + value*i && tile.col === c + value*i);
+                            })[0]);
+                            this.setAsMoveTile(tile, true);
+                        }
+                        i++
+                    }
+
+                    // Diagonal derecha abajo
+                    i = 1;
+                    while (r - value*i <= 7 && r - value*i >= 0 && c - value*i >= 0 && c - value*i <= 7) {
+                        if (!(this.tableroPiezas[r - value*i][c - value*i] === undefined)){
+                            if (this.tableroPiezas[r - value*i][c - value*i].team !== piece.team) {
+                                this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                                    return (tile.row === r - value*i && tile.col === c - value*i);
+                                })[0]);
+                                this.setAsMoveTile(tile, false);
+                            }
+                            break; // Salimos porque ha encontrado un choque
+                        }
+                        else{
+                            this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                                return (tile.row === r - value*i && tile.col === c - value*i);
+                            })[0]);
+                            this.setAsMoveTile(tile, true);
+                        }
+                        i++
+                    }
+
+                    // Diagonal izquierda abajo
+                    i = 1;
+                    while (r - value*i <= 7 && r - value*i >= 0 && c + value*i >= 0 && c + value*i <= 7) {
+                        if (!(this.tableroPiezas[r - value*i][c + value*i] === undefined)){
+                            if (this.tableroPiezas[r - value*i][c + value*i].team !== piece.team) {
+                                this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                                    return (tile.row === r - value*i && tile.col === c + value*i);
+                                })[0]);
+                                this.setAsMoveTile(tile, false);
+                            }
+                            break; // Salimos porque ha encontrado un choque
+                        }
+                        else{
+                            this.ableMovements.push(tile = this.tablero.tiles.children.filter(tile => {
+                                return (tile.row === r - value*i && tile.col === c + value*i);
+                            })[0]);
+                            this.setAsMoveTile(tile, true);
+                        }
+                        i++
+                    }
+                }
+            break
             case "king":
                 {
                     for (let i = 1; i <= 8; i++) {
@@ -426,8 +681,8 @@ class GameBoard extends THREE.Object3D {
         let color;
         if (this.ableMovements) {
             this.ableMovements.forEach(tile => {
-                (tile.row % 2 === 0) ? (tile.col % 2 === 0 ? color = 0xffffff : color = 0x000000) :
-                    (tile.col % 2 === 0 ? color = 0x000000 : color = 0xffffff)
+                (tile.row % 2 === 0) ? (tile.col % 2 === 0 ? color = 0xffffff : color = 0x8B0000) :
+                    (tile.col % 2 === 0 ? color = 0x8B0000 : color = 0xffffff)
 
                 tile.material = new THREE.MeshBasicMaterial({color: color});
             });

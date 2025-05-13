@@ -2,10 +2,8 @@ import * as THREE from 'three';
 import * as CSG from 'csg';
 
 class Mandibula extends THREE.Object3D {
-    constructor() {
+    constructor(material = null) {
         super();
-
-        const material = new THREE.MeshPhysicalMaterial({ color: 0x2a1b0a });
 
         const base = new THREE.CylinderGeometry(1, 1, 0.1, 32);
         base.translate(1, 0, 0);

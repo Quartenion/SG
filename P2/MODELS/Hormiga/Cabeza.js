@@ -5,10 +5,11 @@ import { Mandibula } from './Mandibula.js';
 import { Antena } from './Antena.js';
 
 class Cabeza extends THREE.Object3D {
-    constructor() {
+    constructor(material = null) {
         super();
 
-        this.materialCraneo = new THREE.MeshPhysicalMaterial({ color: 0x2a1b0a });
+        this.materialCraneo = material;
+
         this.materialOjo = new THREE.MeshPhysicalMaterial({
             color: 0x000822,
             roughness: 0.5,
@@ -24,7 +25,6 @@ class Cabeza extends THREE.Object3D {
         shape.bezierCurveTo(0.7, 0, 0.4, 1, 0, 1);
         const points = shape.getPoints(50);
 
-        // Crear geometrías
         const geoCraneo = new THREE.LatheGeometry(points, 50);
         geoCraneo.rotateZ(-Math.PI / 2);
         geoCraneo.translate(-0.1, 0.15, 0);
@@ -42,28 +42,28 @@ class Cabeza extends THREE.Object3D {
         geoOjoDer.rotateY(-Math.PI / 15);
         geoOjoDer.translate(0.2, 0.2, -0.3);
 
-        const geoMandIzq = new Mandibula().children[0].geometry.clone();
+        const geoMandIzq = new Mandibula(material).children[0].geometry.clone();
         geoMandIzq.scale(0.2, 0.2, 0.2);
         geoMandIzq.rotateX(Math.PI);
         geoMandIzq.rotateY(Math.PI / 8);
         geoMandIzq.translate(0.7, 0.1, 0);
 
-        const geoMandDer = new Mandibula().children[0].geometry.clone();
+        const geoMandDer = new Mandibula(material).children[0].geometry.clone();
         geoMandDer.scale(0.2, 0.2, 0.2);
         geoMandDer.rotateY(-Math.PI / 8);
         geoMandDer.translate(0.7, 0.1, 0);
 
-        const geoAntenaIzq = new Antena().children[0].geometry.clone();
+        const geoAntenaIzq = new Antena(material).children[0].geometry.clone();
         geoAntenaIzq.rotateY(Math.PI / 8);
         geoAntenaIzq.rotateZ(Math.PI / 8);
         geoAntenaIzq.translate(0.6, 0.3, -0.2);
 
-        const geoAntenaDer = new Antena().children[0].geometry.clone();
+        const geoAntenaDer = new Antena(material).children[0].geometry.clone();
         geoAntenaDer.rotateY(-Math.PI / 8);
         geoAntenaDer.rotateZ(Math.PI / 8);
         geoAntenaDer.translate(0.6, 0.3, 0.2);
 
-        // Crear brushes
+        // Brushes
         const brushCraneo = new CSG.Brush(geoCraneo, this.materialCraneo);
         const brushOjoIzq = new CSG.Brush(geoOjoIzq, this.materialOjo);
         const brushOjoDer = new CSG.Brush(geoOjoDer, this.materialOjo);
@@ -72,7 +72,7 @@ class Cabeza extends THREE.Object3D {
         const brushAntenaIzq = new CSG.Brush(geoAntenaIzq, this.materialCraneo);
         const brushAntenaDer = new CSG.Brush(geoAntenaDer, this.materialCraneo);
 
-        // Composición
+        // CSG
         const evaluator = new CSG.Evaluator();
         let result = evaluator.evaluate(brushCraneo, brushOjoIzq, CSG.ADDITION);
         result = evaluator.evaluate(result, brushOjoDer, CSG.ADDITION);

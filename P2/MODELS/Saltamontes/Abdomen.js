@@ -9,13 +9,12 @@ class Abdomen extends THREE.Object3D {
     this.abdomenShape.moveTo(0, 0);
 
     // Definir pasos equidistantes para las primeras 5 hendiduras
-    const stepY = 0.15; // 0.9 / 5 = 0.18
-
-    this.abdomenShape.quadraticCurveTo(0.1, 0.05, 0.12, stepY);               // subida inicial
-    this.abdomenShape.quadraticCurveTo(0.14, stepY + 0.03, 0.12, stepY * 2);  // hendidura 1
-    this.abdomenShape.quadraticCurveTo(0.15, stepY * 2 + 0.03, 0.12, stepY * 3); // hendidura 2
-    this.abdomenShape.quadraticCurveTo(0.16, stepY * 3 + 0.03, 0.12, stepY * 4); // hendidura 3
-    this.abdomenShape.quadraticCurveTo(0.15, stepY * 4 + 0.03, 0.12, stepY * 5); // hendidura 4
+    const stepY = 0.15; 
+    this.abdomenShape.quadraticCurveTo(0.1, 0.05, 0.12, stepY);               
+    this.abdomenShape.quadraticCurveTo(0.14, stepY + 0.03, 0.12, stepY * 2);  
+    this.abdomenShape.quadraticCurveTo(0.15, stepY * 2 + 0.03, 0.12, stepY * 3); 
+    this.abdomenShape.quadraticCurveTo(0.16, stepY * 3 + 0.03, 0.12, stepY * 4); 
+    this.abdomenShape.quadraticCurveTo(0.15, stepY * 4 + 0.03, 0.12, stepY * 5); 
     this.abdomenShape.quadraticCurveTo(0.15, 1.1, 0, 1.1);
 
     this.drawSolid();

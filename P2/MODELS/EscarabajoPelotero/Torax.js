@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 class Torax extends THREE.Object3D {
-  constructor() {
+  constructor(material = null) {
     super();
 
     this.abdomenShape = new THREE.Shape();
@@ -12,7 +12,7 @@ class Torax extends THREE.Object3D {
     this.abdomenShape.quadraticCurveTo(0.5, 0.3, 0.3, 0.5);  
     this.abdomenShape.lineTo(0, 0.55);
 
-    this.drawSolid();
+    this.drawSolid(material);
   }
 
   drawLines() {
@@ -25,21 +25,10 @@ class Torax extends THREE.Object3D {
     this.add(object);
   }
 
-  drawSolid() {
-    this.OriginalMaterial = new THREE.MeshPhysicalMaterial({
-        color: 0x3b2f2f,             // Marrón oscuro base con tono rojizo
-        metalness: 0.6,              // Metal medio-alto, da efecto "placa metálica"
-        roughness: 0.6,              // Más rugoso, menos reflejos especulares
-        clearcoat: 0.2,              // Un poco de capa brillante, pero muy tenue
-        clearcoatRoughness: 0.4,     // Casi mate
-        sheen: 0.3,                  // Un poco de brillo superficial, tipo cáscara
-        sheenColor: new THREE.Color(0x223344), // Azul oscuro para el tono azulado
-      });      
-      
-
+  drawSolid(material) {    
     const points = this.abdomenShape.getPoints(50);
     this.seccionTorax = new THREE.LatheGeometry(points, 50, 0, Math.PI * 2);
-    const mesh = new THREE.Mesh(this.seccionTorax, this.OriginalMaterial);
+    const mesh = new THREE.Mesh(this.seccionTorax, material);
 
     this.add(mesh);
   }
