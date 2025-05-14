@@ -678,13 +678,9 @@ class GameBoard extends THREE.Object3D {
     }
 
     unsetMoveTiles(){
-        let color;
         if (this.ableMovements) {
             this.ableMovements.forEach(tile => {
-                (tile.row % 2 === 0) ? (tile.col % 2 === 0 ? color = 0xffffff : color = 0x8B0000) :
-                    (tile.col % 2 === 0 ? color = 0x8B0000 : color = 0xffffff)
-
-                tile.material = new THREE.MeshBasicMaterial({color: color});
+                tile.material = tile.originMaterial;
             });
         }
     }

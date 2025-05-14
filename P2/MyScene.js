@@ -147,8 +147,8 @@ class MyScene extends THREE.Scene {
     this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 50);
 
     // Definimos las posiciones fijas (por ahora) de la cámara, la inicial será la de blancas
-    this.whiteCameraPosition = new THREE.Vector3 (0, 0.75, 0.9);
-    this.blackCameraPosition = new THREE.Vector3 (0, 0.75, -0.9);
+    this.whiteCameraPosition = new THREE.Vector3 (0, 1.1, 0.9);
+    this.blackCameraPosition = new THREE.Vector3 (0, 1.1, -0.9);
     this.lookPoint = new THREE.Vector3 (0, 0, 0);
 
     this.camera.position.set (this.whiteCameraPosition.x, this.whiteCameraPosition.y, this.whiteCameraPosition.z);
@@ -179,8 +179,9 @@ class MyScene extends THREE.Scene {
     // En este caso la intensidad de la luz y si se muestran o no los ejes
     this.guiControls = {
       // En el contexto de una función   this   alude a la función
-      lightPower : 500.0,  // La potencia de esta fuente de luz se mide en lúmenes
-      ambientIntensity : 0.5,
+      lightPowerRed : 80.0,  // La potencia de esta fuente de luz se mide en lúmenes
+      lightPowerBlue : 80.0,  // La potencia de esta fuente de luz se mide en lúmenes
+      ambientIntensity : 0.3,
       axisOnOff : true,
 
       startGame : () => {
@@ -196,9 +197,14 @@ class MyScene extends THREE.Scene {
     var folder = gui.addFolder ('Luz y Ejes');
     
     // Se le añade un control para la potencia de la luz puntual
-    folder.add (this.guiControls, 'lightPower', 0, 1000, 20)
-      .name('Luz puntual : ')
-      .onChange ( (value) => this.setLightPower(value) );
+    folder.add (this.guiControls, 'lightPowerRed', 0, 200, 20)
+      .name('Luz puntual Roja:  ')
+      .onChange ( (value) => this.setLightPowerRed(value) );
+
+    // Se le añade un control para la potencia de la luz puntual
+    folder.add (this.guiControls, 'lightPowerBlue', 0, 200, 20)
+      .name('Luz puntual azul:  ')
+      .onChange ( (value) => this.setLightPowerBlue(value) );
     
     // Otro para la intensidad de la luz ambiental
     folder.add (this.guiControls, 'ambientIntensity', 0, 1, 0.05)
@@ -225,20 +231,30 @@ class MyScene extends THREE.Scene {
     //    se hace así puesto que no va a ser accedida desde otros métodos
     this.ambientLight = new THREE.AmbientLight('white', this.guiControls.ambientIntensity);
     // La añadimos a la escena
-    this.add (this.ambientLight);
-    
+    this.add(this.ambientLight);
+
     // Se crea una luz focal que va a ser la luz principal de la escena
     // La luz focal, además tiene una posición, y un punto de mira
     // Si no se le da punto de mira, apuntará al (0,0,0) en coordenadas del mundo
     // En este caso se declara como   this.atributo   para que sea un atributo accesible desde otros métodos.
-    this.pointLight = new THREE.PointLight( 0xffffff );
-    this.pointLight.power = this.guiControls.lightPower;
-    this.pointLight.position.set( 2, 3, 1 );
-    this.add (this.pointLight);
+    this.pointLightRed = new THREE.PointLight(new THREE.Color(1, 0.6, 0.7), 2);
+    this.pointLightBlue = new THREE.PointLight(new THREE.Color(0.6, 0.7, 1), 2);
+
+    this.pointLightRed.power = this.guiControls.lightPowerRed;
+    this.pointLightBlue.power = this.guiControls.lightPowerBlue;
+
+    this.pointLightBlue.position.set(0, 2.2, -0.7);
+    this.pointLightRed.position.set(0, 2.2, 0.7);
+
+    this.add(this.pointLightRed);
+    this.add(this.pointLightBlue);
   }
   
-  setLightPower (valor) {
-    this.pointLight.power = valor;
+  setLightPowerRed (valor) {
+    this.pointLightRed.power = valor;
+  }
+  setLightPowerBlue (valor) {
+    this.pointLightBlue.power = valor;
   }
 
   setAmbientIntensity (valor) {

@@ -17,24 +17,48 @@ class Avispa extends THREE.Object3D{
         // Definimos los materiales
         if(team === 'black'){
             this.OriginalMaterial = new THREE.MeshPhysicalMaterial({
-                color: 0x2a1b00,
-                roughness: 0.1,
-                metalness: 0.3,
+                color: 0x000000,       // Negro intenso
+                roughness: 0.5,        // Ligera rugosidad para evitar un acabado demasiado brillante
+                metalness: 0.0,        // No metálico
+                clearcoat: 0.2,        // Brillo superficial sutil
+                clearcoatRoughness: 0.1,
             });
         }
         else {
             this.OriginalMaterial = new THREE.MeshPhysicalMaterial({
-                color: 0xF8F6F0,
-                roughness: 0.1,
-                metalness: 0.3,
+                color: 0x2c1b3f,       // Azul oscuro profundo
+                roughness: 0.5,
+                metalness: 0.0,
+                clearcoat: 0.2,
+                clearcoatRoughness: 0.1,
             });
         }
-        
         this.OriginalMaterialYellow = new THREE.MeshPhysicalMaterial({
-            color: 0xffe135,
-            roughness: 0.2,
-            metalness: 0.6,
+            color: 0xffc400,       // Amarillo brillante
+            roughness: 0.5,        // Similar a las rayas negras
+            metalness: 0.0,        // No metálico
+            clearcoat: 0.2,        // Brillo superficial sutil
+            clearcoatRoughness: 0.1,
         });
+        this.boxingGloveMaterial = new THREE.MeshPhysicalMaterial({
+            color: 0x4a0d0d,
+            roughness: 0.5,
+            metalness: 0.0,
+            clearcoat: 0.2,
+            clearcoatRoughness: 0.1,
+        });
+        this.wingMaterial  = new THREE.MeshPhysicalMaterial({
+            color: 0x958542,
+            transmission: 0.9,
+            ior: 1.2,
+            thickness: 0.1,
+            roughness: 0.1,
+            metalness: 0.0,
+            clearcoat: 0.5,
+            clearcoatRoughness: 0.1,
+        });
+
+
         this.radialSegments = 20;
         this.evaluator = new CSG.Evaluator();
         this.ratioScale = new THREE.Vector3(10,10,10);
@@ -49,14 +73,13 @@ class Avispa extends THREE.Object3D{
         // Creamos y colocamos el torso
         this.torso = this.createTorso();
         //this.torso.scale.set(this.ratioScale.x, this.ratioScale.y, this.ratioScale.z);
-        this.torso.geometry.translate(0,0.17,0);
+        this.torso.translateY(0.17);
 
         // Creamos y colocamos el Aguijon
         this.rot1 = new THREE.Vector3(10,0,0);
         this.rot2 = new THREE.Vector3(20,0,0);
         this.rot3 = new THREE.Vector3(10,0,0);
         this.sting = this.createSting();
-        this.moveSting();
         //this.sting.scale.set(this.ratioScale.x, this.ratioScale.y, this.ratioScale.z);
         this.add(this.sting);
 
@@ -70,14 +93,12 @@ class Avispa extends THREE.Object3D{
 
         this.armRight = this.createArm();
         this.armRight.name = "right";
-        this.moveArm(this.armRight, this.rotArmR, this.rotForearmR);
         this.armRight.position.x += 0.17;
         this.armRight.position.y += 0.31;
         this.armRight.position.z += 0;
 
         this.armLeft = this.createArm();
         this.armLeft.name = "left";
-        this.moveArm(this.armLeft, this.rotArmL, this.rotForearmL);
         this.armLeft.position.x += -0.17;
         this.armLeft.position.y += 0.31;
         this.armLeft.position.z += 0;
@@ -95,8 +116,11 @@ class Avispa extends THREE.Object3D{
         this.upper.add(this.armRight);
         this.upper.add(this.armLeft);
 
-        this.upper.rotateX(Math.PI / 180 * -15);
 
+        this.moveArm(this.armLeft, this.rotArmL, this.rotForearmL);
+        this.moveArm(this.armRight, this. rotArmR, this.rotForearmR);
+        this.upper.rotateX(Math.PI / 180 * -15);
+        this.moveSting();
         this.add(this.upper);
 
         this.scale.set(0.15,0.15,0.15);
@@ -513,6 +537,7 @@ class Avispa extends THREE.Object3D{
         const biceps = new THREE.CylinderGeometry(width/2 * 0.9, width/2 * 0.7,
                                                                 height*2.7, this.radialSegments);
         biceps.scale(0.9,1,1);
+
         biceps.rotateX(Math.PI/2);
         biceps.translate(0,0,-(height*(2.7/2)) - height/2);
 
@@ -522,7 +547,7 @@ class Avispa extends THREE.Object3D{
         const part1 = this.evaluator.evaluate(shoulderBrush, bicepsBrush, CSG.ADDITION);
 
 
-        // CODO Y ANTEBRAZO
+        // CODO Y ANTEBRAZO Y MANOS
         const elbow = new THREE.SphereGeometry(width/2 * 0.65, this.radialSegments);
         elbow.scale(0.9,1,1);
 
@@ -536,16 +561,61 @@ class Avispa extends THREE.Object3D{
         const forearmBrush = new CSG.Brush(forearm, this.OriginalMaterialYellow);
         const part2 = this.evaluator.evaluate(elbowBrush, forearmBrush, CSG.ADDITION);
 
-        part2.translateZ(-height*2.7 -height/2);
+        const handBrush = new CSG.Brush(this.createHand(), this.boxingGloveMaterial);
+        handBrush.geometry.translate(0,0,-height*2.2 / 2 - 0.05);
+
+        const part3 = this.evaluator.evaluate(part2, handBrush, CSG.ADDITION);
+
+
+        part3.translateZ(-height*2.7 -height/2);
         part1.name = "arm";
-        part2.name = "forearm";
+        part3.name = "forearm";
 
 
         const result = new THREE.Group();
         result.add(part1);
-        result.add(part2);
+        result.add(part3);
 
         return result;
+    }
+
+    createHand(){
+
+        const baseShape = new THREE.Shape();
+        baseShape.moveTo(0, 0);
+        baseShape.lineTo(-0.01,0);
+        baseShape.lineTo(-0.01,0.04);
+        baseShape.lineTo(0,0.04);
+        baseShape.lineTo(0,0);
+
+        const extrudeSettings ={
+            steps: 50,
+            depth: 0.1,
+            bevelEnabled: true,
+            bevelSize: 0.03,
+            bevelThickness: 0.04,
+            bevelSteps: 50,
+        }
+        const base = new THREE.ExtrudeGeometry(baseShape, extrudeSettings);
+        base.translate(0.005,-0.02,-0.05);
+
+        return base;
+    }
+
+    createWing(){
+        const alaShape = new THREE.Shape();
+        alaShape.moveTo(0, 0); // base ancha y redondeada
+        alaShape.lineTo(0.1, 0);
+        alaShape.quadraticCurveTo(0.2, 0.5, 0.1, 1);
+        alaShape.lineTo(0, 1.1);
+        alaShape.lineTo(0,0);
+
+        const extrudeSettings = {
+            depth: 0.01,
+            bevelEnabled: false,
+        };
+
+        return new THREE.ExtrudeGeometry(alaShape, extrudeSettings);
     }
 
     createTorso(){
@@ -570,8 +640,33 @@ class Avispa extends THREE.Object3D{
 
         const brush1 = new CSG.Brush(s1, this.OriginalMaterial);
         const brush2 = new CSG.Brush(s2, this.OriginalMaterial);
-        const result = this.evaluator.evaluate(brush1, brush2, CSG.ADDITION);
-        result.geometry.scale(1,1,0.7);
+        const body = this.evaluator.evaluate(brush1, brush2, CSG.ADDITION);
+
+        const wing1 = this.createWing();
+        wing1.name = "rightWing";
+        const wing2 = this.createWing();
+        wing2.name = "leftWing";
+
+        wing1.translate(0,0,-0.005);
+        wing2.translate(0,0,-0.005);
+
+        wing2.rotateY((Math.PI/180)*180);
+
+        wing1.rotateX((Math.PI/180)*-240);
+        wing2.rotateX((Math.PI/180)*-240);
+
+        wing1.rotateY(Math.PI/180 * 20);
+        wing2.rotateY(Math.PI/180 * -20);
+
+        wing1.translate(0,height/2-0.03, width/4);
+        wing2.translate(0,height/2-0.03, width/4);
+
+        const result = new THREE.Group();
+        result.add(body);
+        result.add(new THREE.Mesh(wing1, this.wingMaterial));
+        result.add(new THREE.Mesh(wing2, this.wingMaterial));
+
+        result.scale.set(1,1,0.7);
         return result;
     }
 
@@ -712,12 +807,14 @@ class Avispa extends THREE.Object3D{
         return piezas;
     }
 
+
+
     async combatAnimation(currentPos, time=1000, promise=null){
         // Debería de resolverla la última pieza de la animación
         this.currentPos = currentPos;
         return new Promise((resolve) => {
             this.promise = resolve;
-            this.combatAnim.start()
+            this.combatAnim.start();
         });
     }
 

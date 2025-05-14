@@ -33,11 +33,20 @@ class Tablero extends THREE.Object3D {
         const geometry = new THREE.BoxGeometry(size, 0.05, size);
         const color = (i % 2 === 0) ? ( (j % 2 === 0) ? blanco : negro ) : ( (j % 2 === 0) ? negro : blanco );
 
+        const material =  new THREE.MeshPhysicalMaterial({
+            color: color,
+            metalness: 0.8,
+            roughness: 0.4,
+            clearcoat: 0.5,
+            clearcoatRoughness: 0.2,
+            reflectivity: 0.8,
+        });
 
-        const material = new THREE.MeshBasicMaterial({ color: color });
         const cube = new THREE.Mesh(geometry, material);
         cube.row = i;
         cube.col = j;
+
+        cube.originMaterial = material;
 
         this.board[i][j][0] = x + j * size; // Componente x de la casilla
         this.board[i][j][1] = z + i * size; // Componente z de la casilla

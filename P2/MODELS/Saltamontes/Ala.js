@@ -22,11 +22,13 @@ class Ala extends THREE.Object3D {
     
     const material = new THREE.MeshPhysicalMaterial({ 
         color: 0x958542,  
-        transparent: true, 
-        opacity: 0.6,      
-        roughness: 0,    
-        metalness: 0,    
-        transmission: 0.5,
+        transmission: 0.9,
+        ior: 1.2,
+        thickness: 0.1,
+        roughness: 0.1,
+        metalness: 0.0,
+        clearcoat: 0.5,
+        clearcoatRoughness: 0.1,
     });
     
     const mesh = new THREE.Mesh(geometry, material);
