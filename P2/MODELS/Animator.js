@@ -17,7 +17,7 @@ class StraightAnimator {
           })
           .onComplete (() => {
             if (this.promise) {
-                //this.promise();
+                this.promise();
             }
             begin.t = 0.0;
           })

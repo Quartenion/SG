@@ -1,5 +1,6 @@
 import * as THREE from '../../libs/three.module.js'
 import * as CSG from '../../libs/three-bvh-csg.js';
+import TWEEN from "../../libs/tween.module.js";
 
 class Avispa extends THREE.Object3D{
     constructor(name, type, team){
@@ -37,6 +38,9 @@ class Avispa extends THREE.Object3D{
         this.radialSegments = 20;
         this.evaluator = new CSG.Evaluator();
         this.ratioScale = new THREE.Vector3(10,10,10);
+        this.promise = null;
+
+        this.createAnimations();
 
         // La escala de la avispa está en el metro, es decir, entra dentro de un cubo
         // de un metro y luego se puede escalar a proporción
@@ -48,29 +52,32 @@ class Avispa extends THREE.Object3D{
         this.torso.geometry.translate(0,0.17,0);
 
         // Creamos y colocamos el Aguijon
-        let rot1 = {"rotX": 10, "rotY": 0, "rotZ": 0};
-        let rot2 = {"rotX": 20, "rotY": 0, "rotZ": 0};
-        let rot3 = {"rotX": 10, "rotY": 0, "rotZ": 0};
+        this.rot1 = new THREE.Vector3(10,0,0);
+        this.rot2 = new THREE.Vector3(20,0,0);
+        this.rot3 = new THREE.Vector3(10,0,0);
         this.sting = this.createSting();
-        this.moveSting(this.sting, rot1, rot2, rot3);
+        this.moveSting();
         //this.sting.scale.set(this.ratioScale.x, this.ratioScale.y, this.ratioScale.z);
         this.add(this.sting);
 
 
         // Creamos y colocamos los brazos son un THREE.Group
-        let rotArmR = {"rotX": -40, "rotY": 0, "rotZ": 30};
-        let rotForearmR = {"rotX": 30, "rotY": 0, "rotZ": 0};
-        let rotArmL = {"rotX": -40, "rotY": 0, "rotZ": 0};
-        let rotForearmL = {"rotX": 30, "rotY": 0, "rotZ": -30};
+        this.rotArmR =      new THREE.Vector3(-40,0,30);
+        this.rotForearmR =  new THREE.Vector3( 30,0,0);
+        this.rotArmL =      new THREE.Vector3(-40,-0,-30);
+        this.rotForearmL =  new THREE.Vector3( 30,-0,-0);
+
 
         this.armRight = this.createArm();
-        this.moveArm(this.armRight, rotArmR, rotForearmR);
+        this.armRight.name = "right";
+        this.moveArm(this.armRight, this.rotArmR, this.rotForearmR);
         this.armRight.position.x += 0.17;
         this.armRight.position.y += 0.31;
         this.armRight.position.z += 0;
 
         this.armLeft = this.createArm();
-        this.moveArm(this.armLeft, rotArmL, rotForearmL);
+        this.armLeft.name = "left";
+        this.moveArm(this.armLeft, this.rotArmL, this.rotForearmL);
         this.armLeft.position.x += -0.17;
         this.armLeft.position.y += 0.31;
         this.armLeft.position.z += 0;
@@ -94,6 +101,236 @@ class Avispa extends THREE.Object3D{
 
         this.scale.set(0.15,0.15,0.15);
         this.translateY(0.08);
+    }
+
+    createAnimations(){
+        // Interpolación de posición
+        this.currentPos = null;
+        this.currentPosCopy = new THREE.Vector3(0, 0, 0);
+        this.destinationPos = null;
+
+        // Interpolación de ángulos
+        this.currentRotation = new THREE.Vector3(this.rotation.x,
+            this.rotation.y, this.rotation.z);
+        this.currentRotationCopy = this.currentRotation;
+        this.destinationRotation = null;
+
+
+        const createTween = (duration, onStart, onUpdate) => {
+             const begin = {t: 0.0};
+             const end = {t: 1.0};
+
+             return new TWEEN.Tween(begin)
+                 .to(end)
+                 .duration(duration)
+                 .onStart(onStart)
+                 .onUpdate(() =>{
+                     onUpdate(begin.t);
+                 })
+                 .onComplete(() => {
+                     begin.t = 0.0;
+                     if (this.promise) this.promise();
+                 })
+                 .easing(TWEEN.Easing.Quadratic.InOut);
+        }
+
+        // STEP 1 - BACKING UP
+        this.combatAnim = createTween(
+            600,
+            () => {
+                this.currentPosCopy = this.currentPos.clone();
+                this.destinationPos = new THREE.Vector3(
+                    this.currentPos.x,
+                    this.currentPos.y + 0.07,
+                    this.currentPos.z + 0.05);
+                this.currentRotationCopy = this.currentRotation;
+                this.destinationRotation = new THREE.Vector3(
+                    this.rotation.x + (Math.PI / 180) * -15,
+                    this.rotation.y,
+                    this.rotation.z);
+            },
+            (t) => {
+                this.currentPos.lerpVectors(this.currentPosCopy, this.destinationPos, t);
+                this.currentRotation.lerpVectors(this.currentRotationCopy, this.destinationRotation, t);
+                this.rotation.set(this.currentRotation.x, this.currentRotation.y, this.rotation.z);
+            },
+        )
+
+        // STEP 2 - CHARGING RIGHT ARM
+        const chargeRightArmAnim = createTween(
+            450,
+            () => {
+                this.rotArmCopyR = this.rotArmR.clone();
+                this.rotForearmCopyR = this.rotForearmR.clone();
+                this.rotArmCopyL = this.rotArmL.clone();
+                this.rotForearmCopyL = this.rotForearmL.clone();
+
+                // Modificar sumando o restando lo que se quiera
+                this.destinationArmRotationR = new THREE.Vector3(
+                    0,
+                    -110,
+                    0 );
+
+                this.destinationForearmRotationR = new THREE.Vector3(
+                    0,
+                    90,
+                    0 );
+
+                this.destinationArmRotationL = new THREE.Vector3(
+                    -90,
+                    0,
+                    0 );
+
+                this.destinationForearmRotationL = new THREE.Vector3(
+                    90,
+                    0,
+                    0 );
+
+                this.currentRotationCopy = this.currentRotation;
+                this.destinationRotation = new THREE.Vector3(
+                    this.rotation.x,
+                    this.rotation.y + (Math.PI / 180) * -30,
+                    this.rotation.z);
+            },
+            (t) => {
+                // BRAZO DERECHO
+                this.rotArmR.lerpVectors(this.rotArmCopyR, this.destinationArmRotationR, t);
+                this.rotForearmR.lerpVectors(this.rotForearmCopyR, this.destinationForearmRotationR, t);
+                this.moveArm(this.armRight, this.rotArmR, this.rotForearmR);
+
+                // BRAZO IZQUIERDO
+                this.rotArmL.lerpVectors(this.rotArmCopyL, this.destinationArmRotationL, t);
+                this.rotForearmL.lerpVectors(this.rotForearmCopyL, this.destinationForearmRotationL, t);
+                this.moveArm(this.armLeft, this.rotArmL, this.rotForearmL);
+
+                // CUERPO
+                this.currentRotation.lerpVectors(this.currentRotationCopy,this.destinationRotation, t);
+                this.rotation.set(this.currentRotation.x, this.currentRotation.y,this.rotation.z);
+            },
+        )
+
+        // STEP 3 - RIGHT PUNCH
+        const rightPunchAnim = createTween(
+            300,
+            () => {
+                this.currentPosCopy = this.currentPos.clone();
+                this.destinationPos = new THREE.Vector3(
+                    this.currentPos.x,
+                    this.currentPos.y - 0.07,
+                    this.currentPos.z - 0.07);
+
+                this.rotArmCopyR = this.rotArmR.clone();
+                this.rotForearmCopyR = this.rotForearmR.clone();
+                // Modificar sumando o restando lo que se quiera
+                this.destinationArmRotationR = new THREE.Vector3(
+                    -20,
+                    30,
+                    0 );
+
+                this.destinationForearmRotationR = new THREE.Vector3(
+                    0,
+                    30,
+                    0 );
+                this.currentRotationCopy = this.currentRotation;
+                this.destinationRotation = new THREE.Vector3(
+                    this.rotation.x,
+                    this.rotation.y + (Math.PI / 180) * +60,
+                    this.rotation.z);
+            },
+            (t) => {
+                // BRAZO
+                this.rotArmR.lerpVectors(this.rotArmCopyR, this.destinationArmRotationR, t);
+                this.rotForearmR.lerpVectors(this.rotForearmCopyR, this.destinationForearmRotationR, t);
+                this.moveArm(this.armRight, this.rotArmR, this.rotForearmR);
+
+                // CUERPO
+                this.currentRotation.lerpVectors(this.currentRotationCopy,this.destinationRotation, t);
+                this.rotation.set(this.currentRotation.x, this.currentRotation.y,this.rotation.z);
+
+                // POSICION
+                this.currentPos.lerpVectors(this.currentPosCopy, this.destinationPos, t);
+            },
+        )
+
+
+        // STEP 4 - CHARGING LEFT ARM
+        const chargeLeftArmAnim = createTween(
+            450,
+            () => {
+                this.rotArmCopyL = this.rotArmL.clone();
+                this.rotForearmCopyL = this.rotForearmL.clone();
+                this.rotArmCopyR = this.rotArmR.clone();
+                this.rotForearmCopyR = this.rotForearmR.clone();
+
+                this.destinationArmRotationL = new THREE.Vector3(0, 110, 0);
+                this.destinationForearmRotationL = new THREE.Vector3(0, -90, 0);
+                this.destinationArmRotationR = new THREE.Vector3(-20, -90, 0);
+                this.destinationForearmRotationR = new THREE.Vector3(0, 90, 0);
+
+                this.currentPosCopy = this.currentPos;
+                this.destinationPos = new THREE.Vector3(
+                    this.currentPos.x,
+                    this.currentPos.y + 0.07,
+                    this.currentPos.z + 0.07);
+
+            },
+            (t) => {
+                // BRAZO DERECHO
+                this.rotArmR.lerpVectors(this.rotArmCopyR, this.destinationArmRotationR, t);
+                this.rotForearmR.lerpVectors(this.rotForearmCopyR, this.destinationForearmRotationR, t);
+                this.moveArm(this.armRight, this.rotArmR, this.rotForearmR);
+
+                // BRAZO IZQUIERDO
+                this.rotArmL.lerpVectors(this.rotArmCopyL, this.destinationArmRotationL, t);
+                this.rotForearmL.lerpVectors(this.rotForearmCopyL, this.destinationForearmRotationL, t);
+                this.moveArm(this.armLeft, this.rotArmL, this.rotForearmL);
+
+                // POSICION
+                this.currentPos.lerpVectors(this.currentPosCopy, this.destinationPos, t);
+            }
+        );
+
+        // STEP 5 - LEFT PUNCH
+        const leftPunchAnim = createTween(
+            300,
+            () => {
+                this.currentPosCopy.copy(this.currentPos);
+                this.destinationPos.set(
+                    this.currentPos.x,
+                    this.currentPos.y - 0.07,
+                    this.currentPos.z - 0.07
+                );
+
+                this.rotArmCopyL = this.rotArmL.clone();
+                this.rotForearmCopyL = this.rotForearmL.clone();
+
+                this.destinationArmRotationL = new THREE.Vector3(-20, -30, 0);
+                this.destinationForearmRotationL = new THREE.Vector3(0, -30, 0);
+
+                this.currentRotationCopy.copy(this.currentRotation);
+                this.destinationRotation.set(
+                    this.rotation.x,
+                    this.rotation.y + (Math.PI / 180) * -60,
+                    this.rotation.z
+                );
+            },
+            (t) => {
+                this.rotArmL.lerpVectors(this.rotArmCopyL, this.destinationArmRotationL, t);
+                this.rotForearmL.lerpVectors(this.rotForearmCopyL, this.destinationForearmRotationL, t);
+                this.moveArm(this.armLeft, this.rotArmL, this.rotForearmL);
+
+                this.currentRotation.lerpVectors(this.currentRotationCopy, this.destinationRotation, t);
+                this.rotation.set(this.currentRotation.x, this.currentRotation.y, this.rotation.z);
+
+                this.currentPos.lerpVectors(this.currentPosCopy, this.destinationPos, t);
+            }
+        );
+
+        // Encadenar animaciones
+        chargeLeftArmAnim.chain(leftPunchAnim);
+        rightPunchAnim.chain(chargeLeftArmAnim);
+        chargeRightArmAnim.chain(rightPunchAnim);
+        this.combatAnim.chain(chargeRightArmAnim);
     }
 
     createHead(){
@@ -240,16 +477,15 @@ class Avispa extends THREE.Object3D{
         // Rotación del brazo
         // rango: [-110, 90] eje x
         // rango: [-90,20]   eje y
-        // rango: [-90, 90]  eje Z
-        arm.rotation.set((Math.PI/180)*rotArm["rotX"], (Math.PI/180)*rotArm["rotY"], (Math.PI/180)*rotArm["rotZ"]);
+        // rango: [-90, 90]  eje Zº
+        arm.rotation.set((Math.PI/180)*rotArm.x, (Math.PI/180)*rotArm.y, (Math.PI/180)*rotArm.z);
 
         // Buscamos el antebrazo
         let forearm = arm.getObjectByName("forearm");
 
         // Rotación del antebrazo
-        forearm.geometry.rotateX(Math.PI/180 * rotForearm["rotX"]);
-        forearm.geometry.rotateY(Math.PI/180 * rotForearm["rotY"]);
-        forearm.geometry.rotateZ(Math.PI/180 * rotForearm["rotZ"]);
+        forearm.rotation.set(Math.PI/180 * rotForearm.x, Math.PI/180 * rotForearm.y,
+            Math.PI/180 * rotForearm.z);
     }
 
     createArm(){
@@ -339,23 +575,23 @@ class Avispa extends THREE.Object3D{
         return result;
     }
 
-    moveSting(sting, rot1, rot2, rot3){
+    moveSting(){
         // Las transformaciones se aplican luego, a el grupo general para mover la pieza
         // se aplican aa temp3 que tiene name="part2" para la segunda parte
         // luego dentro de temp3 se puede buscar "stinguer" para moverlo
 
         // Rotación de toda la pieza
-        sting.rotation.set((Math.PI/180)*rot1["rotX"], (Math.PI/180)*rot1["rotY"], (Math.PI/180)*rot1["rotZ"]);
+        this.sting.rotation.set((Math.PI/180)*this.rot1.x, (Math.PI/180)*this.rot1.y, (Math.PI/180)*this.rot1.z);
 
         // Rotación part2
-        let part2 = sting.getObjectByName("part2");
-        part2.rotation.set((Math.PI/180)*rot2["rotX"], (Math.PI/180)*rot2["rotY"], (Math.PI/180)*rot2["rotZ"]);
+        let part2 = this.sting.getObjectByName("part2");
+        part2.rotation.set((Math.PI/180)*this.rot2.x, (Math.PI/180)*this.rot2.y, (Math.PI/180)*this.rot2.z);
 
         // Rotación stinger
         let st = part2.getObjectByName("stinger");
-        st.rotateX((Math.PI/180) * rot3.rotX);
-        st.rotateY((Math.PI/180) * rot3.rotY);
-        st.rotateZ((Math.PI/180) * rot3.rotZ);
+        st.rotateX((Math.PI/180) * this.rot3.x);
+        st.rotateY((Math.PI/180) * this.rot3.y);
+        st.rotateZ((Math.PI/180) * this.rot3.z);
     }
 
     createSting(){
@@ -476,6 +712,14 @@ class Avispa extends THREE.Object3D{
         return piezas;
     }
 
+    async combatAnimation(currentPos, time=1000, promise=null){
+        // Debería de resolverla la última pieza de la animación
+        this.currentPos = currentPos;
+        return new Promise((resolve) => {
+            this.promise = resolve;
+            this.combatAnim.start()
+        });
+    }
 
     select() {
         this.add(this.halo);
@@ -486,7 +730,7 @@ class Avispa extends THREE.Object3D{
     }
 
     update() {
-        // Lógica de actualización futura
+        TWEEN.update();
     }
 }
 

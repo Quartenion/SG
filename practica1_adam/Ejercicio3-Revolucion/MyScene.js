@@ -5,13 +5,14 @@ import * as THREE from '../../libs/three.module.js'
 import { GUI } from '../../libs/dat.gui.module.js'
 import { TrackballControls } from '../../libs/TrackballControls.js'
 import  Stats from '../../libs/stats.module.js'
-import {Avispa} from "./Avispa.js";
+import {Avispa} from "../../P2/MODELS/Avispa.js";
 
 // Clases del proyecto
 
 import {Beetle_shape} from "../Ejercicio3-Revolucion/Models/Beetle_shape.js";
 import {Beetle} from "../Ejercicio3-Revolucion/Models/Beetle.js";
 import {BeetleRev} from "../Ejercicio3-Revolucion/Models/Beetle_rev.js";
+import * as TWEEN from "../../libs/tween.module.js";
 
 class MyScene extends THREE.Scene {
   constructor(myCanvas) {
@@ -124,6 +125,9 @@ class MyScene extends THREE.Scene {
     this.add(ground);
   }
 
+  async funcionA() {
+    await this.avispa.combatAnimation(this.avispa.position);
+  }
   // Interfaz para la escena (controles)
   createGUI() {
     // Se crea la interfaz gráfica de usuario
@@ -137,6 +141,10 @@ class MyScene extends THREE.Scene {
       lightPower: 500.0,  // La potencia de esta fuente de luz se mide en lúmenes
       ambientIntensity: 0.5,
       axisOnOff: true,
+
+      animation :  () => {
+        this.funcionA();
+      },
     }
 
     // Se crea una sección para los controles de esta clase
@@ -158,6 +166,8 @@ class MyScene extends THREE.Scene {
     folder.add(this.guiControls, 'axisOnOff')
         .name('Mostrar ejes : ')
         .onChange((value) => this.setAxisVisible(value));
+
+    folder.add(this.guiControls, 'animation').name('[ animation ]');
 
     return gui;
   }
@@ -256,6 +266,9 @@ class MyScene extends THREE.Scene {
     */
     // Le decimos al renderizador "visualiza la escena que te indico usando la cámara que te estoy pasando"
     this.renderer.render(this, this.getCamera());
+    this.camera.lookAt(this.avispa.position);
+    this.cameraControl.target =this.avispa.position;
+    TWEEN.update();
 
     // Este método debe ser llamado cada vez que queramos visualizar la escena de nuevo.
     // Literalmente le decimos al navegador: "La próxima vez que haya que refrescar la pantalla, llama al método que te indico".

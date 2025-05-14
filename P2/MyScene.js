@@ -65,7 +65,7 @@ class MyScene extends THREE.Scene {
 
   async nextTurn(){
     if (this.gameStarted) {
-      await this.gameBoard.nextTurn();
+      this.gameBoard.nextTurn();
 
       if (this.gameBoard.currentTurn === "black") {
         console.log("changingToBlack")
@@ -79,7 +79,7 @@ class MyScene extends THREE.Scene {
   }
 
 
-  onMouseClick(MouseEvent) {
+  async onMouseClick(MouseEvent) {
     if (this.gameStarted)
     {
       if (this.canPick) {
@@ -100,7 +100,7 @@ class MyScene extends THREE.Scene {
           if (tile_intersects.length > 0) {
             let tile = tile_intersects[0].object;
             let pos ={"pos" : tile.position, "row" : tile.row, "col" : tile.col};
-            this.gameBoard.makeMovement(pos);
+            await this.gameBoard.makeMovement(pos);
             this.nextTurn();
           }
         }
