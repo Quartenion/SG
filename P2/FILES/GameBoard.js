@@ -4,8 +4,9 @@ import { Tablero } from './Tablero.js';
 import { Hormiga } from './Hormiga/Hormiga.js';
 import { Saltamontes } from './Saltamontes/Saltamontes.js';
 import { EscarabajoPelotero } from './EscarabajoPelotero/EscarabajoPelotero.js';
-import { StraightAnimator } from './Animator.js';
+import { StraightAnimator } from './StraightAnimator.js';
 import { Avispa } from './Avispa.js';
+import { Insect } from './Insect.js';
 
 class GameBoard extends THREE.Object3D {
     constructor() {
@@ -397,7 +398,6 @@ class GameBoard extends THREE.Object3D {
                 }
                 }
                 break;
-            
             case "horse":
                 {
                     for (let i = 1; i <= 8; i++) {
@@ -692,6 +692,31 @@ class GameBoard extends THREE.Object3D {
         }
     }
 
+    async resolveMovement(pos){
+        return new Promise((resolve) => {
+            const anim = new StraightAnimator();
+            let finPos = new THREE.Vector3();
+            let t = 1000;
+            finPos.x = pos["pos"].x;
+            finPos.y = this.lastSelectedPiece.position.y;
+            finPos.z = pos["pos"].z;
+
+            let to90 = new THREE.Vector3(
+                this.lastSelectedPiece.position.x+(finPos.x-this.lastSelectedPiece.position.x)*0.75,
+                this.lastSelectedPiece.position.y+(finPos.y-this.lastSelectedPiece.position.y)*0.75,
+                this.lastSelectedPiece.position.z+(finPos.z-this.lastSelectedPiece.position.z)*0.75);
+
+            if (this.lastSelectedPiece.type !== "bishop") {
+                anim.setAndStart(this.lastSelectedPiece.position, finPos, t, resolve);
+            }
+            else if (!(this.tableroPiezas[pos["row"]][pos["col"]] === undefined)){
+                this.lastSelectedPiece.moveCombat(this.lastSelectedPiece.position, finPos, to90, t, resolve);
+            }
+            else{
+                this.lastSelectedPiece.move(this.lastSelectedPiece.position, finPos, finPos, t, resolve);
+            }
+        });
+    }
 
     // Recibe una posición a la que moverse [position, row, col]
     async makeMovement(pos){
@@ -701,6 +726,8 @@ class GameBoard extends THREE.Object3D {
             const r  = this.tableroPiezas.findIndex(fila => fila.find(p =>  p !== undefined && p.name === this.lastSelectedPiece.name));
             const c = fila.findIndex(p =>  p !== undefined && p.name === this.lastSelectedPiece.name);
 
+            await this.resolveMovement(pos);
+            console.log("me la pela");
             if (!(this.tableroPiezas[pos["row"]][pos["col"]] === undefined)){
                 if (this.tableroPiezas[pos["row"]][pos["col"]].team === "black")
                     this.black.remove(this.tableroPiezas[pos["row"]][pos["col"]]);
@@ -709,21 +736,11 @@ class GameBoard extends THREE.Object3D {
             }
             this.tableroPiezas[pos["row"]][pos["col"]] = this.lastSelectedPiece;
             this.tableroPiezas[r][c] = undefined;
-
-            return new Promise((resolve) => {
-                const anim = new StraightAnimator();
-                let finPos = new THREE.Vector3();
-                let t = 1000;
-                finPos.x = pos["pos"].x;
-                finPos.y = this.lastSelectedPiece.position.y;
-                finPos.z = pos["pos"].z;
-                anim.setAndStart(this.lastSelectedPiece.position, finPos, t, resolve);
-            });
         }
     }
     
     update(){
-        /*
+
         if (this.tableroPiezas) {
             for (let i = 0; i < this.tableroPiezas.length; i++) {
                 for (let j = 0; j < this.tableroPiezas[i].length; j++) {
@@ -731,7 +748,7 @@ class GameBoard extends THREE.Object3D {
                 }
             }
         }
-        */
+
         TWEEN.update();
     }
 

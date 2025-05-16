@@ -1,45 +1,12 @@
 import * as THREE from '../../libs/three.module.js'
 import * as CSG from '../../libs/three-bvh-csg.js';
 import TWEEN from "../../libs/tween.module.js";
+import { Insect } from "./Insect.js";
 
-class Avispa extends THREE.Object3D{
+class Avispa extends Insect{
     constructor(name, type, team){
-        super();
-        this.name = name;
-        this.type = type;
-        this.team = team;
+        super(name, type, team);
 
-        const geometry = new THREE.TorusGeometry(0.4, 0.02, 30);
-        const material = new THREE.MeshNormalMaterial();
-        this.halo = new THREE.Mesh(geometry, material);
-        this.halo.rotation.x = Math.PI / 2;
-
-        // Definimos los materiales
-        if(team === 'black'){
-            this.OriginalMaterial = new THREE.MeshPhysicalMaterial({
-                color: 0x000000,       // Negro intenso
-                roughness: 0.5,        // Ligera rugosidad para evitar un acabado demasiado brillante
-                metalness: 0.0,        // No metálico
-                clearcoat: 0.2,        // Brillo superficial sutil
-                clearcoatRoughness: 0.1,
-            });
-        }
-        else {
-            this.OriginalMaterial = new THREE.MeshPhysicalMaterial({
-                color: 0x2c1b3f,       // Azul oscuro profundo
-                roughness: 0.5,
-                metalness: 0.0,
-                clearcoat: 0.2,
-                clearcoatRoughness: 0.1,
-            });
-        }
-        this.OriginalMaterialYellow = new THREE.MeshPhysicalMaterial({
-            color: 0xffc400,       // Amarillo brillante
-            roughness: 0.5,        // Similar a las rayas negras
-            metalness: 0.0,        // No metálico
-            clearcoat: 0.2,        // Brillo superficial sutil
-            clearcoatRoughness: 0.1,
-        });
         this.boxingGloveMaterial = new THREE.MeshPhysicalMaterial({
             color: 0x4a0d0d,
             roughness: 0.5,
@@ -47,17 +14,6 @@ class Avispa extends THREE.Object3D{
             clearcoat: 0.2,
             clearcoatRoughness: 0.1,
         });
-        this.wingMaterial  = new THREE.MeshPhysicalMaterial({
-            color: 0x958542,
-            transmission: 0.9,
-            ior: 1.2,
-            thickness: 0.1,
-            roughness: 0.1,
-            metalness: 0.0,
-            clearcoat: 0.5,
-            clearcoatRoughness: 0.1,
-        });
-
 
         this.radialSegments = 20;
         this.evaluator = new CSG.Evaluator();
@@ -128,50 +84,26 @@ class Avispa extends THREE.Object3D{
     }
 
     createAnimations(){
-        // Interpolación de posición
-        this.currentPos = null;
+        // Interpolación de posición para el combate
+        this.currentPos = null
         this.currentPosCopy = new THREE.Vector3(0, 0, 0);
         this.destinationPos = null;
 
-        // Interpolación de ángulos
-        this.currentRotation = new THREE.Vector3(this.rotation.x,
-            this.rotation.y, this.rotation.z);
-        this.currentRotationCopy = this.currentRotation;
-        this.destinationRotation = null;
-
-
-        const createTween = (duration, onStart, onUpdate) => {
-             const begin = {t: 0.0};
-             const end = {t: 1.0};
-
-             return new TWEEN.Tween(begin)
-                 .to(end)
-                 .duration(duration)
-                 .onStart(onStart)
-                 .onUpdate(() =>{
-                     onUpdate(begin.t);
-                 })
-                 .onComplete(() => {
-                     begin.t = 0.0;
-                     if (this.promise) this.promise();
-                 })
-                 .easing(TWEEN.Easing.Quadratic.InOut);
-        }
-
         // STEP 1 - BACKING UP
-        this.combatAnim = createTween(
+        this.combatAnim = this.createTween(
             600,
             () => {
-                this.currentPosCopy = this.currentPos.clone();
-                this.destinationPos = new THREE.Vector3(
-                    this.currentPos.x,
-                    this.currentPos.y + 0.07,
-                    this.currentPos.z + 0.05);
-                this.currentRotationCopy = this.currentRotation;
-                this.destinationRotation = new THREE.Vector3(
-                    this.rotation.x + (Math.PI / 180) * -15,
-                    this.rotation.y,
-                    this.rotation.z);
+                this.currentPos = this.from;
+                this.currentPosCopy.set(this.currentPos.x, this.currentPos.y, this.currentPos.z);
+                if (this.team === "white"){
+                    this.destinationPos = new THREE.Vector3(this.currentPos.x,this.currentPos.y + 0.07,this.currentPos.z + 0.05);
+                    this.destinationRotation = new THREE.Vector3(this.rotation.x +(Math.PI/180)*-15,this.rotation.y,this.rotation.z);
+                }
+                else{
+                    this.destinationPos = new THREE.Vector3(this.currentPos.x,this.currentPos.y + 0.07,this.currentPos.z - 0.05);
+                    this.destinationRotation = new THREE.Vector3(this.rotation.x +(Math.PI/180)*15,this.rotation.y,this.rotation.z);
+                }
+                this.currentRotationCopy.set(this.currentRotation.x, this.currentRotation.y, this.currentRotation.z);
             },
             (t) => {
                 this.currentPos.lerpVectors(this.currentPosCopy, this.destinationPos, t);
@@ -181,40 +113,22 @@ class Avispa extends THREE.Object3D{
         )
 
         // STEP 2 - CHARGING RIGHT ARM
-        const chargeRightArmAnim = createTween(
+        const chargeRightArmAnim = this.createTween(
             450,
             () => {
-                this.rotArmCopyR = this.rotArmR.clone();
-                this.rotForearmCopyR = this.rotForearmR.clone();
-                this.rotArmCopyL = this.rotArmL.clone();
-                this.rotForearmCopyL = this.rotForearmL.clone();
+                this.rotArmCopyR      = this.rotArmR.clone();
+                this.rotForearmCopyR  = this.rotForearmR.clone();
+                this.rotArmCopyL      = this.rotArmL.clone();
+                this.rotForearmCopyL  = this.rotForearmL.clone();
 
                 // Modificar sumando o restando lo que se quiera
-                this.destinationArmRotationR = new THREE.Vector3(
-                    0,
-                    -110,
-                    0 );
+                this.destinationArmRotationR      = new THREE.Vector3    (0,  -110,0 );
+                this.destinationForearmRotationR  = new THREE.Vector3(0,  90,  0 );
+                this.destinationArmRotationL      = new THREE.Vector3    (-90,0,   0 );
+                this.destinationForearmRotationL  = new THREE.Vector3(90, 0,   0 );
 
-                this.destinationForearmRotationR = new THREE.Vector3(
-                    0,
-                    90,
-                    0 );
-
-                this.destinationArmRotationL = new THREE.Vector3(
-                    -90,
-                    0,
-                    0 );
-
-                this.destinationForearmRotationL = new THREE.Vector3(
-                    90,
-                    0,
-                    0 );
-
-                this.currentRotationCopy = this.currentRotation;
-                this.destinationRotation = new THREE.Vector3(
-                    this.rotation.x,
-                    this.rotation.y + (Math.PI / 180) * -30,
-                    this.rotation.z);
+                this.currentRotationCopy.set(this.currentRotation.x, this.currentRotation.y, this.currentRotation.z);
+                this.destinationRotation = new THREE.Vector3(this.rotation.x,this.rotation.y + (Math.PI / 180) * -30,this.rotation.z);
             },
             (t) => {
                 // BRAZO DERECHO
@@ -229,37 +143,30 @@ class Avispa extends THREE.Object3D{
 
                 // CUERPO
                 this.currentRotation.lerpVectors(this.currentRotationCopy,this.destinationRotation, t);
-                this.rotation.set(this.currentRotation.x, this.currentRotation.y,this.rotation.z);
+                this.rotation.set(this.currentRotation.x, this.currentRotation.y,this.currentRotation.z);
             },
         )
 
         // STEP 3 - RIGHT PUNCH
-        const rightPunchAnim = createTween(
+        const rightPunchAnim = this.createTween(
             300,
             () => {
-                this.currentPosCopy = this.currentPos.clone();
-                this.destinationPos = new THREE.Vector3(
-                    this.currentPos.x,
-                    this.currentPos.y - 0.07,
-                    this.currentPos.z - 0.07);
+                this.currentPosCopy.set(this.currentPos.x, this.currentPos.y, this.currentPos.z);
+                if (this.team === "white"){
+                    this.destinationPos = new THREE.Vector3(this.currentPos.x,this.currentPos.y - 0.07,this.currentPos.z - 0.07);
+                }
+                else{
+                    this.destinationPos = new THREE.Vector3(this.currentPos.x,this.currentPos.y - 0.07,this.currentPos.z + 0.07);
+                }
 
                 this.rotArmCopyR = this.rotArmR.clone();
                 this.rotForearmCopyR = this.rotForearmR.clone();
                 // Modificar sumando o restando lo que se quiera
-                this.destinationArmRotationR = new THREE.Vector3(
-                    -20,
-                    30,
-                    0 );
+                this.destinationArmRotationR = new THREE.Vector3(-20,30,0 );
+                this.destinationForearmRotationR = new THREE.Vector3(0,30,0 );
 
-                this.destinationForearmRotationR = new THREE.Vector3(
-                    0,
-                    30,
-                    0 );
-                this.currentRotationCopy = this.currentRotation;
-                this.destinationRotation = new THREE.Vector3(
-                    this.rotation.x,
-                    this.rotation.y + (Math.PI / 180) * +60,
-                    this.rotation.z);
+                this.currentRotationCopy = this.currentRotation.clone();
+                this.destinationRotation = new THREE.Vector3(this.rotation.x,this.rotation.y+(Math.PI/180)*60,this.rotation.z);
             },
             (t) => {
                 // BRAZO
@@ -276,26 +183,27 @@ class Avispa extends THREE.Object3D{
             },
         )
 
-
         // STEP 4 - CHARGING LEFT ARM
-        const chargeLeftArmAnim = createTween(
+        const chargeLeftArmAnim = this.createTween(
             450,
             () => {
-                this.rotArmCopyL = this.rotArmL.clone();
+                this.rotArmCopyL     = this.rotArmL.clone();
                 this.rotForearmCopyL = this.rotForearmL.clone();
-                this.rotArmCopyR = this.rotArmR.clone();
+                this.rotArmCopyR     = this.rotArmR.clone();
                 this.rotForearmCopyR = this.rotForearmR.clone();
 
-                this.destinationArmRotationL = new THREE.Vector3(0, 110, 0);
+                this.destinationArmRotationL     = new THREE.Vector3(0, 110, 0);
                 this.destinationForearmRotationL = new THREE.Vector3(0, -90, 0);
-                this.destinationArmRotationR = new THREE.Vector3(-20, -90, 0);
+                this.destinationArmRotationR     = new THREE.Vector3(-20, -90, 0);
                 this.destinationForearmRotationR = new THREE.Vector3(0, 90, 0);
 
-                this.currentPosCopy = this.currentPos;
-                this.destinationPos = new THREE.Vector3(
-                    this.currentPos.x,
-                    this.currentPos.y + 0.07,
-                    this.currentPos.z + 0.07);
+                this.currentPosCopy = this.currentPos.clone();
+                if (this.team === "white"){
+                    this.destinationPos = new THREE.Vector3(this.currentPos.x,this.currentPos.y + 0.07,this.currentPos.z + 0.07);
+                }
+                else{
+                    this.destinationPos = new THREE.Vector3(this.currentPos.x,this.currentPos.y + 0.07,this.currentPos.z - 0.07);
+                }
 
             },
             (t) => {
@@ -315,15 +223,16 @@ class Avispa extends THREE.Object3D{
         );
 
         // STEP 5 - LEFT PUNCH
-        const leftPunchAnim = createTween(
+        this.leftPunchAnim = this.createTween(
             300,
             () => {
                 this.currentPosCopy.copy(this.currentPos);
-                this.destinationPos.set(
-                    this.currentPos.x,
-                    this.currentPos.y - 0.07,
-                    this.currentPos.z - 0.07
-                );
+                if (this.team === "white"){
+                    this.destinationPos.set(this.currentPos.x,this.currentPos.y - 0.07,this.currentPos.z - 0.07);
+                }
+                else{
+                    this.destinationPos.set(this.currentPos.x,this.currentPos.y - 0.07,this.currentPos.z + 0.07);
+                }
 
                 this.rotArmCopyL = this.rotArmL.clone();
                 this.rotForearmCopyL = this.rotForearmL.clone();
@@ -331,12 +240,8 @@ class Avispa extends THREE.Object3D{
                 this.destinationArmRotationL = new THREE.Vector3(-20, -30, 0);
                 this.destinationForearmRotationL = new THREE.Vector3(0, -30, 0);
 
-                this.currentRotationCopy.copy(this.currentRotation);
-                this.destinationRotation.set(
-                    this.rotation.x,
-                    this.rotation.y + (Math.PI / 180) * -60,
-                    this.rotation.z
-                );
+                this.currentRotationCopy = this.currentRotation.clone();
+                this.destinationRotation.set(this.rotation.x,this.rotation.y + (Math.PI / 180) * -60,this.rotation.z);
             },
             (t) => {
                 this.rotArmL.lerpVectors(this.rotArmCopyL, this.destinationArmRotationL, t);
@@ -350,8 +255,11 @@ class Avispa extends THREE.Object3D{
             }
         );
 
-        // Encadenar animaciones
-        chargeLeftArmAnim.chain(leftPunchAnim);
+        // LAST STEP - UNDO MOVEMENTS
+        const undoAnim = null;
+
+
+        chargeLeftArmAnim.chain(this.leftPunchAnim);
         rightPunchAnim.chain(chargeLeftArmAnim);
         chargeRightArmAnim.chain(rightPunchAnim);
         this.combatAnim.chain(chargeRightArmAnim);
@@ -580,7 +488,6 @@ class Avispa extends THREE.Object3D{
     }
 
     createHand(){
-
         const baseShape = new THREE.Shape();
         baseShape.moveTo(0, 0);
         baseShape.lineTo(-0.01,0);
@@ -808,24 +715,21 @@ class Avispa extends THREE.Object3D{
     }
 
 
-
-    async combatAnimation(currentPos, time=1000, promise=null){
-        // Debería de resolverla la última pieza de la animación
-        this.currentPos = currentPos;
-        return new Promise((resolve) => {
-            this.promise = resolve;
-            this.combatAnim.start();
-        });
+    move(from, to, to90,time=1000, promise=null) {
+        // Encadenar animaciones
+        this.straightMove.chain(this.rotationMoveEnd);
+        this.rotationMoveStart.chain(this.straightMove);
+        super.move(from, to, to90, time, promise);
     }
 
-    select() {
-        this.add(this.halo);
+    moveCombat(from, to, to90, time=1000, promise=null){
+        // Encadenar animaciones
+        this.straightMoveP2.chain(this.rotationMoveEnd);
+        this.leftPunchAnim.chain(this.straightMoveP2);
+        this.straightMove.chain(this.combatAnim);
+        this.rotationMoveStart.chain(this.straightMove);
+        super.move(from, to, to90, time, promise);
     }
-
-    unselect() {
-        this.remove(this.halo);
-    }
-
     update() {
         TWEEN.update();
     }

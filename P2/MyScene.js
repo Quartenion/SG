@@ -5,15 +5,16 @@ import * as THREE from '../libs/three.module.js'
 import { GUI } from '../libs/dat.gui.module.js'
 import { TrackballControls } from '../libs/TrackballControls.js'
 import  Stats from '../libs/stats.module.js'
+import TWEEN from "../libs/tween.module.js";
 
 // Clases de mi proyecto
 
-import { Suelo } from './MODELS/Suelo.js'
-import { GameBoard } from './MODELS/GameBoard.js'
-import { Hormiga } from './MODELS/Hormiga/Hormiga.js'
-import { Saltamontes } from './MODELS/Saltamontes/Saltamontes.js'
-import { EscarabajoPelotero } from './MODELS/EscarabajoPelotero/EscarabajoPelotero.js'
-import { Torso } from './MODELS/Torso.js'
+import { Suelo } from './FILES/Suelo.js'
+import { GameBoard } from './FILES/GameBoard.js'
+import { Hormiga } from './FILES/Hormiga/Hormiga.js'
+import { Saltamontes } from './FILES/Saltamontes/Saltamontes.js'
+import { EscarabajoPelotero } from './FILES/EscarabajoPelotero/EscarabajoPelotero.js'
+import { Torso } from './DEPRECATED/Torso.js'
 
 
 class MyScene extends THREE.Scene {
@@ -50,6 +51,88 @@ class MyScene extends THREE.Scene {
     this.gameStarted = false;    // Indica que ha empezado la partida
     this.canPick = false;        // Permite hacer el pick
     this.objectSelected = false; // Para detectar cuando hay una pieza elegida
+    this.animationFlag = false;
+
+
+
+    // Animaciones de la escena
+    let startPowerBlue =  this.guiControls.lightPowerBlue;
+    let startPowerRed =  this.guiControls.lightPowerRed;
+    let objetiveLightValueBlue = null;
+    let objetiveLightValueRed = null;
+
+    const cameraCurveWB = new THREE.CubicBezierCurve3(
+      new THREE.Vector3(this.whiteCameraPosition.x, this.whiteCameraPosition.y, this.whiteCameraPosition.z),
+      new THREE.Vector3(this.whiteCameraPosition.x-0.7, this.whiteCameraPosition.y, this.whiteCameraPosition.z*0.5),
+      new THREE.Vector3(this.whiteCameraPosition.x-0.7, this.whiteCameraPosition.y, this.blackCameraPosition.z*0.5),
+      new THREE.Vector3(this.blackCameraPosition.x, this.blackCameraPosition.y, this.blackCameraPosition.z)
+    );
+
+    const cameraCurveBW = new THREE.CubicBezierCurve3(
+      new THREE.Vector3(this.blackCameraPosition.x, this.blackCameraPosition.y, this.blackCameraPosition.z),
+      new THREE.Vector3(this.whiteCameraPosition.x+0.7, this.whiteCameraPosition.y, this.blackCameraPosition.z*0.5),
+      new THREE.Vector3(this.whiteCameraPosition.x+0.7, this.whiteCameraPosition.y, this.whiteCameraPosition.z*0.5),
+      new THREE.Vector3(this.whiteCameraPosition.x, this.whiteCameraPosition.y, this.whiteCameraPosition.z)
+    );
+
+    /*
+    const curvePoints = cameraCurveWB.getPoints(50);
+    const curveGeometry = new THREE.BufferGeometry().setFromPoints(curvePoints);
+    const curveMaterial = new THREE.LineBasicMaterial({ color: 0x0000ff });
+    const visualizedCurve = new THREE.Line(curveGeometry, curveMaterial);
+    this.add(visualizedCurve);
+
+
+    const curvePoints2 = cameraCurveBW.getPoints(50);
+    const curveGeometry2 = new THREE.BufferGeometry().setFromPoints(curvePoints2);
+    const curveMaterial2 = new THREE.LineBasicMaterial({ color: 0xff0000 });
+    const visualizedCurve2 = new THREE.Line(curveGeometry2, curveMaterial2);
+    this.add(visualizedCurve2);
+    */
+
+    let chosenCurve = null;
+
+
+
+    this.lightPromise = null;
+    const begin = {t: 0.0};
+    const end = {t: 1.0};
+    this.lightChangeAnim = new TWEEN.Tween(begin)
+        .to(end, 1500)
+        .onStart(()=>  {
+          startPowerBlue =  this.guiControls.lightPowerBlue;
+          startPowerRed =  this.guiControls.lightPowerRed
+          if (this.gameBoard.currentTurn === "white"){
+            objetiveLightValueBlue = 200.0;
+            objetiveLightValueRed = 0.0;
+            chosenCurve = cameraCurveBW;
+          }
+          else{
+            objetiveLightValueBlue = 0.0;
+            objetiveLightValueRed = 200.0;
+            chosenCurve = cameraCurveWB;
+          }
+        })
+        .onUpdate(() =>{
+          this.guiControls.lightPowerBlue = THREE.MathUtils.lerp(startPowerBlue,
+              objetiveLightValueBlue, begin.t);
+          this.guiControls.lightPowerRed = THREE.MathUtils.lerp(startPowerRed,
+              objetiveLightValueRed, begin.t);
+
+          this.setLightPowerBlue(this.guiControls.lightPowerBlue);
+          this.setLightPowerRed(this.guiControls.lightPowerRed);
+
+          const position = chosenCurve.getPoint(begin.t);
+          this.camera.position.copy(position);
+        })
+        .onComplete (() => {
+          begin.t = 0.0;
+          if (this.lightPromise) {
+            this.lightPromise();
+          }
+        })
+        .easing(TWEEN.Easing.Quadratic.InOut);
+
   }
 
   // Función que llamará y hará lo necesario en la creación de una partida
@@ -61,12 +144,22 @@ class MyScene extends THREE.Scene {
     this.gameStarted = true; // Establecemos las variables iniciales
     this.canPick = false;
     this.objectSelected = false;
+    this.animationFlag = false;
+
+    this.guiControls.lightPowerRed = 0.0;
+    this.guiControls.lightPowerBlue = 200.0;
+
+    this.pointLightRed.power = this.guiControls.lightPowerRed;
+    this.pointLightBlue.power = this.guiControls.lightPowerBlue;
+
+
+
   }
 
   async nextTurn(){
     if (this.gameStarted) {
       this.gameBoard.nextTurn();
-
+      /*
       if (this.gameBoard.currentTurn === "black") {
         console.log("changingToBlack")
         this.camera.position.set(this.blackCameraPosition.x, this.blackCameraPosition.y, this.blackCameraPosition.z);
@@ -75,12 +168,19 @@ class MyScene extends THREE.Scene {
         console.log("changingToWhite")
         this.camera.position.set(this.whiteCameraPosition.x, this.whiteCameraPosition.y, this.whiteCameraPosition.z);
       }
+      */
+
+      return new Promise((resolve) => {
+        if (!this.lightChangeAnim.isPlaying()) {
+            this.lightPromise = resolve;
+            this.lightChangeAnim.start();
+        }
+      })
     }
   }
 
-
   async onMouseClick(MouseEvent) {
-    if (this.gameStarted)
+    if (this.gameStarted && !this.animationFlag)
     {
       if (this.canPick) {
         this.mouse.x = (MouseEvent.clientX / window.innerWidth) * 2 - 1;
@@ -100,8 +200,10 @@ class MyScene extends THREE.Scene {
           if (tile_intersects.length > 0) {
             let tile = tile_intersects[0].object;
             let pos ={"pos" : tile.position, "row" : tile.row, "col" : tile.col};
+            this.animationFlag = true;
             await this.gameBoard.makeMovement(pos);
-            this.nextTurn();
+            this.animationFlag = false;
+            await this.nextTurn();
           }
         }
         else {
@@ -147,8 +249,8 @@ class MyScene extends THREE.Scene {
     this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 50);
 
     // Definimos las posiciones fijas (por ahora) de la cámara, la inicial será la de blancas
-    this.whiteCameraPosition = new THREE.Vector3 (0, 1.1, 0.9);
-    this.blackCameraPosition = new THREE.Vector3 (0, 1.1, -0.9);
+    this.whiteCameraPosition = new THREE.Vector3 (0, 1, 0.9);
+    this.blackCameraPosition = new THREE.Vector3 (0, 1, -0.9);
     this.lookPoint = new THREE.Vector3 (0, 0, 0);
 
     this.camera.position.set (this.whiteCameraPosition.x, this.whiteCameraPosition.y, this.whiteCameraPosition.z);
@@ -179,8 +281,8 @@ class MyScene extends THREE.Scene {
     // En este caso la intensidad de la luz y si se muestran o no los ejes
     this.guiControls = {
       // En el contexto de una función   this   alude a la función
-      lightPowerRed : 80.0,  // La potencia de esta fuente de luz se mide en lúmenes
-      lightPowerBlue : 80.0,  // La potencia de esta fuente de luz se mide en lúmenes
+      lightPowerRed : 0.0,  // La potencia de esta fuente de luz se mide en lúmenes
+      lightPowerBlue : 200.0,  // La potencia de esta fuente de luz se mide en lúmenes
       ambientIntensity : 0.3,
       axisOnOff : true,
 
@@ -188,8 +290,10 @@ class MyScene extends THREE.Scene {
         this.newGame();
       },
 
-      passTurn : () => {
-        this.nextTurn();
+      passTurn : async () => {
+        if (!this.lightChangeAnim.isPlaying()) {
+          await this.nextTurn();
+        }
       }
     }
 
@@ -199,16 +303,17 @@ class MyScene extends THREE.Scene {
     // Se le añade un control para la potencia de la luz puntual
     folder.add (this.guiControls, 'lightPowerRed', 0, 200, 20)
       .name('Luz puntual Roja:  ')
+      .listen()
       .onChange ( (value) => this.setLightPowerRed(value) );
 
     // Se le añade un control para la potencia de la luz puntual
     folder.add (this.guiControls, 'lightPowerBlue', 0, 200, 20)
-      .name('Luz puntual azul:  ')
+      .name('Luz puntual azul:  ').listen()
       .onChange ( (value) => this.setLightPowerBlue(value) );
     
     // Otro para la intensidad de la luz ambiental
     folder.add (this.guiControls, 'ambientIntensity', 0, 1, 0.05)
-      .name('Luz ambiental: ')
+      .name('Luz ambiental: ').listen()
       .onChange ( (value) => this.setAmbientIntensity(value) );
       
     // Y otro para mostrar u ocultar los ejes
@@ -237,14 +342,14 @@ class MyScene extends THREE.Scene {
     // La luz focal, además tiene una posición, y un punto de mira
     // Si no se le da punto de mira, apuntará al (0,0,0) en coordenadas del mundo
     // En este caso se declara como   this.atributo   para que sea un atributo accesible desde otros métodos.
-    this.pointLightRed = new THREE.PointLight(new THREE.Color(1, 0.6, 0.7), 2);
-    this.pointLightBlue = new THREE.PointLight(new THREE.Color(0.6, 0.7, 1), 2);
+    this.pointLightRed = new THREE.PointLight(new THREE.Color(1, 0.2, 0.3), 4);
+    this.pointLightBlue = new THREE.PointLight(new THREE.Color(0.2, 0.3, 1), 4);
 
     this.pointLightRed.power = this.guiControls.lightPowerRed;
     this.pointLightBlue.power = this.guiControls.lightPowerBlue;
 
-    this.pointLightBlue.position.set(0, 2.2, -0.7);
-    this.pointLightRed.position.set(0, 2.2, 0.7);
+    this.pointLightBlue.position.set(0, 2.1, -0.7);
+    this.pointLightRed.position.set(0, 2.1, 0.7);
 
     this.add(this.pointLightRed);
     this.add(this.pointLightBlue);
@@ -322,6 +427,7 @@ class MyScene extends THREE.Scene {
     // Configuramos el render con la cámara
     this.renderer.render (this, this.getCamera());
 
+    TWEEN.update();
     // Configuramos la actualización automatica del update
     requestAnimationFrame(() => this.update());
   }
