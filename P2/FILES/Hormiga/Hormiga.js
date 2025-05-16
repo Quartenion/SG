@@ -3,11 +3,12 @@ import { Abdomen } from './Abdomen.js';
 import { Torax } from './Torax.js';
 import { Cabeza } from './Cabeza.js';
 import { Pata } from './Pata.js';
+import { Insect } from "../Insect.js";
 
 const negro = new THREE.Color(0x2a1b0a);
 const blanco = new THREE.Color(0xF8F6F0); 
 
-class Hormiga extends THREE.Object3D {
+class Hormiga extends Insect {
     constructor(name, type, team) {
         super();
         this.name = name;

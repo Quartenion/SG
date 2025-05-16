@@ -706,10 +706,8 @@ class GameBoard extends THREE.Object3D {
                 this.lastSelectedPiece.position.y+(finPos.y-this.lastSelectedPiece.position.y)*0.75,
                 this.lastSelectedPiece.position.z+(finPos.z-this.lastSelectedPiece.position.z)*0.75);
 
-            if (this.lastSelectedPiece.type !== "bishop") {
-                anim.setAndStart(this.lastSelectedPiece.position, finPos, t, resolve);
-            }
-            else if (!(this.tableroPiezas[pos["row"]][pos["col"]] === undefined)){
+           
+            if (!(this.tableroPiezas[pos["row"]][pos["col"]] === undefined)){
                 this.lastSelectedPiece.moveCombat(this.lastSelectedPiece.position, finPos, to90, t, resolve);
             }
             else{

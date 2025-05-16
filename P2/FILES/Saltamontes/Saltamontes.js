@@ -5,8 +5,9 @@ import { Ala } from './Ala.js';
 import { Cabeza } from './Cabeza.js';
 import { Torax } from './Torax.js';
 import { Pata } from './Pata.js';
+import { Insect } from "../Insect.js";
 
-class Saltamontes extends THREE.Object3D {
+class Saltamontes extends Insect {
     constructor(name, type, team) {
         super();
         this.name = name;

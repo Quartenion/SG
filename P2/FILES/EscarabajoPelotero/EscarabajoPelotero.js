@@ -1,11 +1,12 @@
 import * as THREE from 'three';
 import { Escarabajo } from './Escarabajo.js';
 import { Pelota } from './Pelota.js';
+import { Insect } from "../Insect.js";
 
 const negro = new THREE.Color(0x2a1b0a);
 const blanco = new THREE.Color(0xF8F6F0); 
 
-class EscarabajoPelotero extends THREE.Object3D {
+class EscarabajoPelotero extends Insect {
     constructor(name, type, team) {
         super();
         this.name = name;
