@@ -15,7 +15,7 @@ class Insect extends THREE.Object3D{
         // Definimos los materiales
         if(team === 'black'){
             this.OriginalMaterial = new THREE.MeshPhysicalMaterial({
-                color: 0x000000,       // Negro intenso
+                color: 0x8B0000, // DarkRed, sangre oscura y fuerte
                 roughness: 0.5,        // Ligera rugosidad para evitar un acabado demasiado brillante
                 metalness: 0.0,        // No metálico
                 clearcoat: 0.2,        // Brillo superficial sutil
@@ -24,7 +24,7 @@ class Insect extends THREE.Object3D{
         }
         else {
             this.OriginalMaterial = new THREE.MeshPhysicalMaterial({
-                color: 0x2c1b3f,       // Azul oscuro profundo
+                color: 0x0b0c2a, // Azul casi negro con un tinte púrpura
                 roughness: 0.5,
                 metalness: 0.0,
                 clearcoat: 0.2,

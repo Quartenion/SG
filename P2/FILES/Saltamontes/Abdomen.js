@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 class Abdomen extends THREE.Object3D {
-  constructor() {
+  constructor(material = null) {
     super();
 
     this.abdomenShape = new THREE.Shape();
@@ -17,30 +17,13 @@ class Abdomen extends THREE.Object3D {
     this.abdomenShape.quadraticCurveTo(0.15, stepY * 4 + 0.03, 0.12, stepY * 5); 
     this.abdomenShape.quadraticCurveTo(0.15, 1.1, 0, 1.1);
 
-    this.drawSolid();
+    this.drawSolid(material);
   }
 
-  drawLines() {
-    const points = this.abdomenShape.getPoints(100);
-    const geometry = new THREE.BufferGeometry().setFromPoints(points);
-
-    this.OriginalMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
-    const object = new THREE.Line(geometry, this.OriginalMaterial);
-
-    this.add(object);
-  }
-
-  drawSolid() {
-    this.OriginalMaterial = new THREE.MeshPhysicalMaterial({
-      color: 0x9ACD32,
-      roughness: 0.5,
-      metalness: 0.3,
-      clearcoat: 1,
-    });
-
+  drawSolid(material = null) {
     const points = this.abdomenShape.getPoints(50);
     this.seccionTorax = new THREE.LatheGeometry(points, 50, 0, Math.PI * 2);
-    const mesh = new THREE.Mesh(this.seccionTorax, this.OriginalMaterial);
+    const mesh = new THREE.Mesh(this.seccionTorax, material);
 
     this.add(mesh);
   }
