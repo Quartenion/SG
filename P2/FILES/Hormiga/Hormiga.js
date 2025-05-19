@@ -3,26 +3,14 @@ import { Abdomen } from './Abdomen.js';
 import { Torax } from './Torax.js';
 import { Cabeza } from './Cabeza.js';
 import { Pata } from './Pata.js';
+import { Insect } from "../Insect.js";
 
 const negro = new THREE.Color(0x2a1b0a);
 const blanco = new THREE.Color(0xF8F6F0); 
 
-class Hormiga extends THREE.Object3D {
+class Hormiga extends Insect {
     constructor(name, type, team) {
-        super();
-        this.name = name;
-        this.type = type;
-        this.team = team;
-
-        // Material según el equipo
-        const materialColor = (team === 'white') ? blanco : negro;
-        const material = new THREE.MeshStandardMaterial({ color: materialColor });
-
-        // Halo de selección (no depende del equipo)
-        const geometry = new THREE.TorusGeometry(2, 0.1, 30);
-        const materialHalo = new THREE.MeshNormalMaterial();
-        this.halo = new THREE.Mesh(geometry, materialHalo);
-        this.halo.rotation.x = Math.PI / 2;
+        super(name, type, team);
 
         // Transformaciones iniciales
         this.scale.set(0.02, 0.02, 0.02);
@@ -30,15 +18,15 @@ class Hormiga extends THREE.Object3D {
         this.translateY(0.028);
 
         // Cuerpo
-        this.Abdomen = new Abdomen(material);
+        this.Abdomen = new Abdomen(this.OriginalMaterial);
         this.Abdomen.translateX(-0.7);
         this.Abdomen.rotateZ(Math.PI / 2);
         this.add(this.Abdomen);
 
-        this.Torax = new Torax(material);
+        this.Torax = new Torax(this.OriginalMaterial);
         this.add(this.Torax);
 
-        this.Cabeza = new Cabeza(material);
+        this.Cabeza = new Cabeza(this.OriginalMaterial);
         this.Cabeza.scale.set(0.8, 0.8, 0.8);
         this.Cabeza.translateX(0.6);
         this.Cabeza.translateY(0.2);
@@ -46,7 +34,7 @@ class Hormiga extends THREE.Object3D {
         this.add(this.Cabeza);
 
         const conectorGeom = new THREE.CylinderGeometry(0.15, 0.15, 0.5, 8);
-        const conector = new THREE.Mesh(conectorGeom, material);
+        const conector = new THREE.Mesh(conectorGeom, this.OriginalMaterial);
         conector.position.set(0.4, 0.3, 0); 
         conector.rotateZ(Math.PI / 2.5); 
         this.add(conector);
@@ -62,7 +50,7 @@ class Hormiga extends THREE.Object3D {
         ];
 
         patas.forEach(p => {
-            const pata = new Pata(material);
+            const pata = new Pata(this.OriginalMaterial);
             pata.scale.set(0.7, 0.7, 0.7);
             pata.translateX(p.tx);
             pata.translateY(p.ty);
@@ -71,14 +59,6 @@ class Hormiga extends THREE.Object3D {
             this.add(pata);
             this[p.name] = pata;
         });
-    }
-
-    select() {
-        this.add(this.halo);
-    }
-
-    unselect() {
-        this.remove(this.halo);
     }
 
     update() {

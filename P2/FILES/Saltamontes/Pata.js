@@ -1,10 +1,8 @@
 import * as THREE from 'three';
 
 class Pata extends THREE.Object3D {
-    constructor() {
+    constructor(material = null) {
         super();
-
-        const material = new THREE.MeshPhysicalMaterial({ color: 0x9ACD32 });
 
         const shape = new THREE.Shape();
         shape.lineTo(0, 0.5);

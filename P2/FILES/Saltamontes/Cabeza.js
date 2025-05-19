@@ -3,11 +3,11 @@ import * as CSG from 'csg';
 import { Antena } from './Antena.js';
 
 class Cabeza extends THREE.Object3D {
-  constructor() {
+  constructor(material = null) {
     super();
     this.cabezaShape = new THREE.Shape();
     this.cabezaShape.bezierCurveTo(0.4, 0, 0.7, 1.5, 0, 1.5);
-    this.drawSolid(); 
+    this.drawSolid(material); 
   }
 
   createLatheGeometry(points, scale = 1, translate = new THREE.Vector3(0, 0, 0)) {
@@ -25,14 +25,7 @@ class Cabeza extends THREE.Object3D {
     return antenaGeo;
   }
 
-  drawSolid() {
-    const materialCraneo = new THREE.MeshPhysicalMaterial({
-      color: 0x9ACD32,
-      roughness: 0.5,
-      metalness: 0.3,
-      clearcoat: 1,
-    });
-
+  drawSolid(material = null) {
     const materialOjo = new THREE.MeshPhysicalMaterial({
       color: 0x000822,
       roughness: 0.5,
@@ -55,11 +48,11 @@ class Cabeza extends THREE.Object3D {
     const geoAntenaDer = this.createAntena(Math.PI / 8, -Math.PI / 8, new THREE.Vector3(0.2, 1.4, 0.1));
 
     // Crear los Brushes
-    const brushCraneo = new CSG.Brush(geoCraneo, materialCraneo);
+    const brushCraneo = new CSG.Brush(geoCraneo, material);
     const brushOjoIzq = new CSG.Brush(geoOjoIzq, materialOjo);
     const brushOjoDer = new CSG.Brush(geoOjoDer, materialOjo);
-    const brushAntenaIzq = new CSG.Brush(geoAntenaIzq, materialCraneo);
-    const brushAntenaDer = new CSG.Brush(geoAntenaDer, materialCraneo);
+    const brushAntenaIzq = new CSG.Brush(geoAntenaIzq, material);
+    const brushAntenaDer = new CSG.Brush(geoAntenaDer, material);
 
     // Evaluar la combinación de las geometrías
     const evaluator = new CSG.Evaluator();
