@@ -11,13 +11,6 @@ class EscarabajoRinoceronte extends Insect {
        
         const objectLoader = new OBJLoader();
 
-        // Crear material brillante
-        const material = new THREE.MeshStandardMaterial({
-            color: 0x0a1a2f,
-            roughness: 0.2,   
-            metalness: 0.6,  
-        });
-
         // Cargar y aplicar material
         objectLoader.load('./FILES/EscarabajoRinoceronte/15925_Rhinoceros_Beetle_v1.obj', (object) => {
             object.traverse((child) => {

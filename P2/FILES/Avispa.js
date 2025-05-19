@@ -822,6 +822,7 @@ class Avispa extends Insect{
         this.undoAnim.chain(this.straightMoveP2);
         this.straightMove.chain(this.combatAnim);
         this.rotationMoveStart.chain(this.straightMove);
+
         super.move(from, to, to90, time, promise);
     }
     update() {
