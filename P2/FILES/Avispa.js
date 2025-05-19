@@ -30,6 +30,8 @@ class Avispa extends Insect{
        this.torso.translateY(0.17);
 
 
+
+
        // Creamos y colocamos el Aguijon
        this.rot1 = new THREE.Vector3(10,0,0);
        this.rot2 = new THREE.Vector3(20,0,0);
@@ -39,8 +41,6 @@ class Avispa extends Insect{
        this.add(this.sting);
 
 
-
-
        // Creamos y colocamos los brazos son un THREE.Group
        this.rotArmR =      new THREE.Vector3(-40,0,30);
        this.rotForearmR =  new THREE.Vector3( 30,0,0);
@@ -48,7 +48,14 @@ class Avispa extends Insect{
        this.rotForearmL =  new THREE.Vector3( 30,-0,-0);
 
 
-
+       // POSICIONES ORIGINALES, SOLO VARIABLES DE LECTURA
+       this.originalRotation = this.rotation.clone();
+       this.originalRotArmR  = this.rotArmR.clone();
+       this.originalRotArmL  = this.rotArmL.clone();
+       this.originalRotForearmR  = this.rotForearmR.clone();
+       this.originalRotForearmRL  = this.rotForearmL.clone();
+       // this.originalPos Esto si que no puedes controlarlo desde aqui
+       // Esto no necesita corregirse, las animaciones ya le dejan en su sitio
 
        this.armRight = this.createArm();
        this.armRight.name = "right";
@@ -101,35 +108,11 @@ class Avispa extends Insect{
        this.destinationPos = null;
 
 
-       // POSICIONES INICIALES ANIMACIÓN BACK-UP
-       this.originalRewindPos = new THREE.Vector3(0, 0, 0);
-       this.originalRewindRotation = null;
-
-
-       // POSICIONES INICIALES ANIMACIÓN PUNCH
-       this.rewindPos = new THREE.Vector3(0, 0, 0);
-       this.rewindRotation = null;
-       this.rewindArmRotation = null;
-       this.rewindForearmRotation = null;
-
-
-       // POSICIONES INICIALES ANIMACIÓN CHARGE
-       this.rewindChargeRotationR = null;
-       this.rewindChargeArmRotationR = null;
-       this.rewindChargeArmRotationL = null;
-       this.rewindChargeForearmRotationL = null;
-
-
        // STEP 1 - BACKING UP
        this.combatAnim = this.createTween(
            600,
            () => {
                this.currentPos = this.from;
-               this.originalRewindPos = this.currentPos.clone();
-               this.originalRewindRotation = this.rotation.clone();
-
-
-
 
                this.currentPosCopy.set(this.currentPos.x, this.currentPos.y, this.currentPos.z);
                if (this.team === "white"){
@@ -158,13 +141,6 @@ class Avispa extends Insect{
                this.rotForearmCopyR  = this.rotForearmR.clone();
                this.rotArmCopyL      = this.rotArmL.clone();
                this.rotForearmCopyL  = this.rotForearmL.clone();
-
-
-               this.rewindChargeRotationR = this.currentRotation.clone();
-               this.rewindChargeArmRotationR = this.rotArmR.clone();
-               this.rewindChargeForearmRotationR = this.rotForearmR.clone();
-               this.rewindChargeArmRotationL = this.rotArmL.clone();
-               this.rewindChargeForearmRotationL = this.rotForearmL.clone();
 
 
                // Modificar sumando o restando lo que se quiera
@@ -201,12 +177,6 @@ class Avispa extends Insect{
        const rightPunchAnim = this.createTween(
            300,
            () => {
-               this.rewindPos = this.currentPos.clone();
-               this.rewindRotation = this.currentRotation.clone();
-               this.rewindArmRotation = this.rotArmR.clone();
-               this.rewindForearmRotation = this.rotForearmR.clone();
-
-
                this.currentPosCopy.set(this.currentPos.x, this.currentPos.y, this.currentPos.z);
                if (this.team === "white"){
                    this.destinationPos = new THREE.Vector3(this.currentPos.x,this.currentPos.y - 0.07,this.currentPos.z - 0.07);
@@ -244,6 +214,7 @@ class Avispa extends Insect{
        )
 
 
+        /*
        const rightRewindPunchAnim = this.createTween(
            300,
            () => {
@@ -311,7 +282,7 @@ class Avispa extends Insect{
                this.rotation.set(this.currentRotation.x, this.currentRotation.y,this.currentRotation.z);
            },
        )
-
+    */
 
        // STEP 4 - CHARGING LEFT ARM
        const chargeLeftArmAnim = this.createTween(
@@ -321,14 +292,6 @@ class Avispa extends Insect{
                this.rotForearmCopyL = this.rotForearmL.clone();
                this.rotArmCopyR     = this.rotArmR.clone();
                this.rotForearmCopyR = this.rotForearmR.clone();
-
-
-               this.rewindChargeRotationR = this.currentRotation.clone();
-               this.rewindChargeArmRotationR = this.rotArmR.clone();
-               this.rewindChargeForearmRotationR = this.rotForearmR.clone();
-               this.rewindChargeArmRotationL = this.rotArmL.clone();
-               this.rewindChargeForearmRotationL = this.rotForearmL.clone();
-
 
                this.destinationArmRotationL     = new THREE.Vector3(0, 110, 0);
                this.destinationForearmRotationL = new THREE.Vector3(0, -90, 0);
@@ -369,11 +332,6 @@ class Avispa extends Insect{
        const leftPunchAnim = this.createTween(
            300,
            () => {
-               this.rewindPos = this.currentPos.clone();
-               this.rewindRotation = this.currentRotation.clone();
-               this.rewindArmRotation = this.rotArmL.clone();
-               this.rewindForearmRotation = this.rotForearmL.clone();
-
 
                this.currentPosCopy.copy(this.currentPos);
                if (this.team === "white"){
@@ -409,7 +367,19 @@ class Avispa extends Insect{
            }
        );
 
+       // LAST STEP - UNDO MOVEMENTS
+       const rewind = this.createTween(
+           1000,
+           () => {
 
+           },
+           (t) => {
+
+           },
+       );
+
+
+        /*
        const leftRewindPunchAnim = this.createTween(
            300,
            () => {
@@ -440,7 +410,6 @@ class Avispa extends Insect{
                this.currentPos.lerpVectors(this.currentPosCopy, this.destinationPos, t);
            },
        )
-
 
        const leftRewindChargeAnim = this.createTween(
            450,
@@ -478,7 +447,6 @@ class Avispa extends Insect{
            },
        )
 
-
        const originalRewindAnim = this.createTween(
            600,
            () => {
@@ -495,18 +463,12 @@ class Avispa extends Insect{
                this.rotation.set(this.currentRotation.x, this.currentRotation.y, this.rotation.z);
            },
        )
-       // LAST STEP - UNDO MOVEMENTS
-      
-       this.combatAnim.chain(chargeRightArmAnim);
-       chargeRightArmAnim.chain(rightPunchAnim);
-       rightPunchAnim.chain(rightRewindPunchAnim);
-       rightRewindPunchAnim.chain(rightRewindChargeAnim);
-       rightRewindChargeAnim.chain(chargeLeftArmAnim);
+       */
+
        chargeLeftArmAnim.chain(leftPunchAnim);
-       leftPunchAnim.chain(leftRewindPunchAnim);
-       leftRewindPunchAnim.chain(leftRewindChargeAnim);
-       leftRewindChargeAnim.chain(originalRewindAnim);
-       // volver a posición original
+       rightPunchAnim.chain(chargeLeftArmAnim);
+       chargeRightArmAnim.chain(rightPunchAnim);
+       this.combatAnim.chain(chargeRightArmAnim);
    }
 
 
@@ -1071,7 +1033,7 @@ class Avispa extends Insect{
    moveCombat(from, to, to90, time=1000, promise=null){
        // Encadenar animaciones
        this.straightMoveP2.chain(this.rotationMoveEnd);
-       //this.leftPunchAnim.chain(this.straightMoveP2);
+       this.combatAnim.chain(this.straightMoveP2);
        this.straightMove.chain(this.combatAnim);
        this.rotationMoveStart.chain(this.straightMove);
        super.move(from, to, to90, time, promise);
