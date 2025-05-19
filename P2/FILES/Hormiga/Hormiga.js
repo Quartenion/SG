@@ -17,6 +17,8 @@ class Hormiga extends Insect {
         this.rotateY(Math.PI / 2);
         this.translateY(0.028);
 
+        this.halo.scale.set(5,5,5);
+
         // Cuerpo
         this.Abdomen = new Abdomen(this.OriginalMaterial);
         this.Abdomen.translateX(-0.7);

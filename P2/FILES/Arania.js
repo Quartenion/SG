@@ -21,6 +21,8 @@ class Arania extends Insect {
         this.add(ass);
 
         this.scale.set(0.09,0.09,0.09);
+        //this.halo.set.scale(1,1,1);
+        this.halo.translateZ(-0.3);
     }
 
     createLeg(){

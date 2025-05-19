@@ -12,6 +12,8 @@ class EscarabajoPelotero extends Insect {
 
         // Transformaciones iniciales
         this.scale.set(0.5, 0.5, 0.5);
+        this.halo.scale.set(0.2,0.2,0.2);
+        this.halo.translateZ(-0.03);
 
         this.Escarabajo = new Escarabajo(this.OriginalMaterial);
         this.Escarabajo.scale.set(0.05, 0.05, 0.05);
