@@ -206,6 +206,7 @@ class MyScene extends THREE.Scene {
             await this.gameBoard.makeMovement(pos);
             this.animationFlag = false;
             await this.nextTurn();
+            // this.remove(this.spotLightWhite); opcional -> Quitar la luz al final del movimiento
           }
         }
         else {
@@ -358,7 +359,6 @@ class MyScene extends THREE.Scene {
     this.spotLightWhite = new THREE.SpotLight(0xffffff, 15);
     this.spotLightWhite.angle = Math.PI / 100;
     this.spotLightWhite.position.set(0,2.1,0);
-    this.spotLightWhite.castShadow = true;
 
 
     this.pointLightRed.power = this.guiControls.lightPowerRed;
