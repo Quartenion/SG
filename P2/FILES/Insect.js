@@ -112,7 +112,8 @@ class Insect extends THREE.Object3D{
                 this.currentRotation = new THREE.Vector3(this.rotation.x,
                     this.rotation.y, this.rotation.z);
                 this.currentRotationCopy.set(this.currentRotation.x, this.currentRotation.y, this.currentRotation.z);
-                if (this.team === 'white' || this.type === 'bishop'){
+                if (this.team === 'white' || this.type === 'bishop' || this.type === 'rook'
+                    || this.type === 'king' || this.type === 'queen'){
                     this.destinationRotation = new THREE.Vector3(
                         this.rotation.x,
                         this.rotation.y + (Math.PI / 180) * this.rotationTo,
@@ -138,7 +139,8 @@ class Insect extends THREE.Object3D{
                 // Establecer parámetros para rotar
                 this.currentRotation = new THREE.Vector3(this.rotation.x,
                     this.rotation.y, this.rotation.z);
-                if (this.team === 'white' || this.type === 'bishop'){
+                if (this.team === 'white' || this.type === 'bishop' || this.type === 'rook'
+                    || this.type === 'king' || this.type === 'queenblancas'){
                     this.destinationRotation = new THREE.Vector3(
                         this.rotation.x,
                         this.rotation.y + (Math.PI / 180) * -this.rotationTo,
@@ -197,7 +199,7 @@ class Insect extends THREE.Object3D{
                   '-1_1': +135,  // Atrás izquierda
                 };
             }
-            else{ // Las blancas están al revés, su funcionamiento de keys es opuesto
+            else{ // Las negras están al revés, su funcionamiento de keys es opuesto
                 rotationMap = {
                   '1_-1': -135,  // Atrás izquierda
                   '1_0': 180,    // Frente
