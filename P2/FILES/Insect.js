@@ -48,7 +48,13 @@ class Insect extends THREE.Object3D{
             clearcoat: 0.5,
             clearcoatRoughness: 0.1,
         });
-
+        this.boxingGloveMaterial = new THREE.MeshPhysicalMaterial({
+            color: 0x4a0d0d,
+            roughness: 0.5,
+            metalness: 0.0,
+            clearcoat: 0.2,
+            clearcoatRoughness: 0.1,
+        });
 
         this.promise = null;
         this.createTween = (duration, onStart, onUpdate, resolve=null) => {
