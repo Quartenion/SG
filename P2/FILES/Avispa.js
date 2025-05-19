@@ -112,6 +112,13 @@ class Avispa extends Insect{
                 this.rotArmCopyL      = this.rotArmL.clone();
                 this.rotForearmCopyL  = this.rotForearmL.clone();
 
+                if (this.team === "white"){
+                    this.destinationRotation = new THREE.Vector3(this.rotation.x,this.rotation.y + (Math.PI / 180) * -30,this.rotation.z);
+                }
+                else{
+                    this.destinationRotation = new THREE.Vector3(this.rotation.x,this.rotation.y + (Math.PI / 180) * 30,this.rotation.z);
+                }
+
                 // Modificar sumando o restando lo que se quiera
                 this.destinationArmRotationR      = new THREE.Vector3    (0,  -110,0 );
                 this.destinationForearmRotationR  = new THREE.Vector3(0,  90,  0 );
@@ -119,8 +126,7 @@ class Avispa extends Insect{
                 this.destinationForearmRotationL  = new THREE.Vector3(90, 0,   0 );
 
                 this.currentRotationCopy.set(this.currentRotation.x, this.currentRotation.y, this.currentRotation.z);
-                this.destinationRotation = new THREE.Vector3(this.rotation.x,this.rotation.y + (Math.PI / 180) * -30,this.rotation.z);
-            },
+                    },
             (t) => {
                 // BRAZO DERECHO
                 this.rotArmR.lerpVectors(this.rotArmCopyR, this.destinationArmRotationR, t);
