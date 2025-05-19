@@ -89,11 +89,31 @@ class Avispa extends Insect{
         this.currentPosCopy = new THREE.Vector3(0, 0, 0);
         this.destinationPos = null;
 
+        // POSICIONES INICIALES ANIMACIÓN BACK-UP
+        this.originalRewindPos = new THREE.Vector3(0, 0, 0);
+        this.originalRewindRotation = null;
+
+        // POSICIONES INICIALES ANIMACIÓN PUNCH
+        this.rewindPos = new THREE.Vector3(0, 0, 0);
+        this.rewindRotation = null;
+        this.rewindArmRotation = null;
+        this.rewindForearmRotation = null;
+
+        // POSICIONES INICIALES ANIMACIÓN CHARGE
+        this.rewindChargeRotationR = null;
+        this.rewindChargeArmRotationR = null;
+        this.rewindChargeArmRotationL = null;
+        this.rewindChargeForearmRotationL = null;
+
         // STEP 1 - BACKING UP
         this.combatAnim = this.createTween(
             600,
             () => {
                 this.currentPos = this.from;
+                this.originalRewindPos = this.currentPos.clone();
+                this.originalRewindRotation = this.rotation.clone();
+
+
                 this.currentPosCopy.set(this.currentPos.x, this.currentPos.y, this.currentPos.z);
                 if (this.team === "white"){
                     this.destinationPos = new THREE.Vector3(this.currentPos.x,this.currentPos.y + 0.07,this.currentPos.z + 0.05);
@@ -120,6 +140,12 @@ class Avispa extends Insect{
                 this.rotForearmCopyR  = this.rotForearmR.clone();
                 this.rotArmCopyL      = this.rotArmL.clone();
                 this.rotForearmCopyL  = this.rotForearmL.clone();
+
+                this.rewindChargeRotationR = this.currentRotation.clone();
+                this.rewindChargeArmRotationR = this.rotArmR.clone();
+                this.rewindChargeForearmRotationR = this.rotForearmR.clone();
+                this.rewindChargeArmRotationL = this.rotArmL.clone();
+                this.rewindChargeForearmRotationL = this.rotForearmL.clone();
 
                 // Modificar sumando o restando lo que se quiera
                 this.destinationArmRotationR      = new THREE.Vector3    (0,  -110,0 );
@@ -151,6 +177,11 @@ class Avispa extends Insect{
         const rightPunchAnim = this.createTween(
             300,
             () => {
+                this.rewindPos = this.currentPos.clone();
+                this.rewindRotation = this.currentRotation.clone();
+                this.rewindArmRotation = this.rotArmR.clone();
+                this.rewindForearmRotation = this.rotForearmR.clone();
+
                 this.currentPosCopy.set(this.currentPos.x, this.currentPos.y, this.currentPos.z);
                 if (this.team === "white"){
                     this.destinationPos = new THREE.Vector3(this.currentPos.x,this.currentPos.y - 0.07,this.currentPos.z - 0.07);
@@ -183,6 +214,67 @@ class Avispa extends Insect{
             },
         )
 
+        const rightRewindPunchAnim = this.createTween(
+            300,
+            () => {
+                this.currentPosCopy.set(this.currentPos.x, this.currentPos.y, this.currentPos.z);
+                this.currentRotationCopy = this.currentRotation.clone();
+                this.rotArmCopyR = this.rotArmR.clone();
+                this.rotForearmCopyR = this.rotForearmR.clone();
+
+                this.destinationPos = this.rewindPos.clone();
+                this.destinationRotation = this.rewindRotation.clone();
+                this.destinationArmRotationR = this.rewindArmRotation.clone();
+                this.destinationForearmRotationR = this.rewindForearmRotation.clone(); 
+            },
+            (t) => {
+                // BRAZO
+                this.rotArmR.lerpVectors(this.rotArmCopyR, this.destinationArmRotationR, t);
+                this.rotForearmR.lerpVectors(this.rotForearmCopyR, this.destinationForearmRotationR, t);
+                this.moveArm(this.armRight, this.rotArmR, this.rotForearmR);
+
+                // CUERPO
+                this.currentRotation.lerpVectors(this.currentRotationCopy,this.destinationRotation, t);
+                this.rotation.set(this.currentRotation.x, this.currentRotation.y,this.rotation.z);
+
+                // POSICION
+                this.currentPos.lerpVectors(this.currentPosCopy, this.destinationPos, t);
+            },
+        )
+
+        const rightRewindChargeAnim = this.createTween(
+            450,
+            () => {
+                this.rotArmCopyR      = this.rotArmR.clone();
+                this.rotForearmCopyR  = this.rotForearmR.clone();
+                this.rotArmCopyL      = this.rotArmL.clone();
+                this.rotForearmCopyL  = this.rotForearmL.clone();
+                this.currentRotationCopy.set(this.currentRotation.x, this.currentRotation.y, this.currentRotation.z);
+
+                // Modificar sumando o restando lo que se quiera
+                this.destinationArmRotationR      = this.rewindChargeArmRotationR.clone();
+                this.destinationForearmRotationR  = this.rewindChargeForearmRotationR.clone();
+                this.destinationArmRotationL      = this.rewindChargeArmRotationL.clone();
+                this.destinationForearmRotationL  = this.rewindChargeForearmRotationL.clone();
+                this.destinationRotation = this.rewindChargeRotationR.clone();
+            },
+            (t) => {
+                // BRAZO DERECHO
+                this.rotArmR.lerpVectors(this.rotArmCopyR, this.destinationArmRotationR, t);
+                this.rotForearmR.lerpVectors(this.rotForearmCopyR, this.destinationForearmRotationR, t);
+                this.moveArm(this.armRight, this.rotArmR, this.rotForearmR);
+
+                // BRAZO IZQUIERDO
+                this.rotArmL.lerpVectors(this.rotArmCopyL, this.destinationArmRotationL, t);
+                this.rotForearmL.lerpVectors(this.rotForearmCopyL, this.destinationForearmRotationL, t);
+                this.moveArm(this.armLeft, this.rotArmL, this.rotForearmL);
+
+                // CUERPO
+                this.currentRotation.lerpVectors(this.currentRotationCopy,this.destinationRotation, t);
+                this.rotation.set(this.currentRotation.x, this.currentRotation.y,this.currentRotation.z);
+            },
+        )
+
         // STEP 4 - CHARGING LEFT ARM
         const chargeLeftArmAnim = this.createTween(
             450,
@@ -191,6 +283,12 @@ class Avispa extends Insect{
                 this.rotForearmCopyL = this.rotForearmL.clone();
                 this.rotArmCopyR     = this.rotArmR.clone();
                 this.rotForearmCopyR = this.rotForearmR.clone();
+
+                this.rewindChargeRotationR = this.currentRotation.clone();
+                this.rewindChargeArmRotationR = this.rotArmR.clone();
+                this.rewindChargeForearmRotationR = this.rotForearmR.clone();
+                this.rewindChargeArmRotationL = this.rotArmL.clone();
+                this.rewindChargeForearmRotationL = this.rotForearmL.clone();
 
                 this.destinationArmRotationL     = new THREE.Vector3(0, 110, 0);
                 this.destinationForearmRotationL = new THREE.Vector3(0, -90, 0);
@@ -223,9 +321,14 @@ class Avispa extends Insect{
         );
 
         // STEP 5 - LEFT PUNCH
-        this.leftPunchAnim = this.createTween(
+        const leftPunchAnim = this.createTween(
             300,
             () => {
+                this.rewindPos = this.currentPos.clone();
+                this.rewindRotation = this.currentRotation.clone();
+                this.rewindArmRotation = this.rotArmL.clone();
+                this.rewindForearmRotation = this.rotForearmL.clone();
+
                 this.currentPosCopy.copy(this.currentPos);
                 if (this.team === "white"){
                     this.destinationPos.set(this.currentPos.x,this.currentPos.y - 0.07,this.currentPos.z - 0.07);
@@ -255,14 +358,94 @@ class Avispa extends Insect{
             }
         );
 
+        const leftRewindPunchAnim = this.createTween(
+            300,
+            () => {
+                this.currentPosCopy.set(this.currentPos.x, this.currentPos.y, this.currentPos.z);
+                this.currentRotationCopy = this.currentRotation.clone();
+                this.rotArmCopyL = this.rotArmL.clone();
+                this.rotForearmCopyL = this.rotForearmL.clone();
+
+                this.destinationPos = this.rewindPos.clone();
+                this.destinationRotation = this.rewindRotation.clone();
+                this.destinationArmRotationL = this.rewindArmRotation.clone();
+                this.destinationForearmRotationL = this.rewindForearmRotation.clone(); 
+            },
+            (t) => {
+                // BRAZO
+                this.rotArmL.lerpVectors(this.rotArmCopyL, this.destinationArmRotationL, t);
+                this.rotForearmL.lerpVectors(this.rotForearmCopyL, this.destinationForearmRotationL, t);
+                this.moveArm(this.armLeft, this.rotArmL, this.rotForearmL);
+
+                // CUERPO
+                this.currentRotation.lerpVectors(this.currentRotationCopy,this.destinationRotation, t);
+                this.rotation.set(this.currentRotation.x, this.currentRotation.y,this.rotation.z);
+
+                // POSICION
+                this.currentPos.lerpVectors(this.currentPosCopy, this.destinationPos, t);
+            },
+        )
+
+        const leftRewindChargeAnim = this.createTween(
+            450,
+            () => {
+                this.rotArmCopyL     = this.rotArmL.clone();
+                this.rotForearmCopyL = this.rotForearmL.clone();
+                this.rotArmCopyR     = this.rotArmR.clone();
+                this.rotForearmCopyR = this.rotForearmR.clone();
+                this.currentRotationCopy.set(this.currentRotation.x, this.currentRotation.y, this.currentRotation.z);
+
+                // Modificar sumando o restando lo que se quiera
+                this.destinationArmRotationL     = this.rewindChargeArmRotationL.clone();
+                this.destinationForearmRotationL = this.rewindChargeForearmRotationL.clone();
+                this.destinationArmRotationR     = this.rewindChargeArmRotationR.clone();
+                this.destinationForearmRotationR = this.rewindChargeForearmRotationR.clone();
+                this.destinationRotation = this.rewindChargeRotationR.clone();
+            },
+            (t) => {
+                // BRAZO DERECHO
+                this.rotArmR.lerpVectors(this.rotArmCopyR, this.destinationArmRotationR, t);
+                this.rotForearmR.lerpVectors(this.rotForearmCopyR, this.destinationForearmRotationR, t);
+                this.moveArm(this.armRight, this.rotArmR, this.rotForearmR);
+
+                // BRAZO IZQUIERDO
+                this.rotArmL.lerpVectors(this.rotArmCopyL, this.destinationArmRotationL, t);
+                this.rotForearmL.lerpVectors(this.rotForearmCopyL, this.destinationForearmRotationL, t);
+                this.moveArm(this.armLeft, this.rotArmL, this.rotForearmL);
+
+                // CUERPO
+                this.currentRotation.lerpVectors(this.currentRotationCopy,this.destinationRotation, t);
+                this.rotation.set(this.currentRotation.x, this.currentRotation.y,this.rotation.z);
+            },
+        )
+
+        const originalRewindAnim = this.createTween(
+            600,
+            () => {
+                this.currentPosCopy.set(this.currentPos.x, this.currentPos.y, this.currentPos.z);
+                this.currentRotationCopy.set(this.currentRotation.x, this.currentRotation.y, this.currentRotation.z);
+
+                this.destinationPos = this.originalRewindPos.clone();
+                this.destinationRotation = this.originalRewindRotation.clone();
+            },
+            (t) => {
+                this.currentPos.lerpVectors(this.currentPosCopy, this.destinationPos, t);
+                this.currentRotation.lerpVectors(this.currentRotationCopy, this.destinationRotation, t);
+                this.rotation.set(this.currentRotation.x, this.currentRotation.y, this.rotation.z);
+            },
+        )
         // LAST STEP - UNDO MOVEMENTS
-        const undoAnim = null;
-
-
-        chargeLeftArmAnim.chain(this.leftPunchAnim);
-        rightPunchAnim.chain(chargeLeftArmAnim);
-        chargeRightArmAnim.chain(rightPunchAnim);
+        
         this.combatAnim.chain(chargeRightArmAnim);
+        chargeRightArmAnim.chain(rightPunchAnim);
+        rightPunchAnim.chain(rightRewindPunchAnim);
+        rightRewindPunchAnim.chain(rightRewindChargeAnim);
+        rightRewindChargeAnim.chain(chargeLeftArmAnim);
+        chargeLeftArmAnim.chain(leftPunchAnim);
+        leftPunchAnim.chain(leftRewindPunchAnim);
+        leftRewindPunchAnim.chain(leftRewindChargeAnim);
+        leftRewindChargeAnim.chain(originalRewindAnim);
+        // volver a posición original
     }
 
     createHead(){
@@ -725,7 +908,7 @@ class Avispa extends Insect{
     moveCombat(from, to, to90, time=1000, promise=null){
         // Encadenar animaciones
         this.straightMoveP2.chain(this.rotationMoveEnd);
-        this.leftPunchAnim.chain(this.straightMoveP2);
+        //this.leftPunchAnim.chain(this.straightMoveP2);
         this.straightMove.chain(this.combatAnim);
         this.rotationMoveStart.chain(this.straightMove);
         super.move(from, to, to90, time, promise);
