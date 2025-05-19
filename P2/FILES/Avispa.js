@@ -38,11 +38,11 @@ class Avispa extends Insect{
         this.rotArmL =      new THREE.Vector3(-40,-0,-30);
         this.rotForearmL =  new THREE.Vector3( 30,-0,-0);
 
-       this.armRight = this.createArm();
-       this.armRight.name = "right";
-       this.armRight.position.x += 0.17;
-       this.armRight.position.y += 0.31;
-       this.armRight.position.z += 0;
+        this.armRight = this.createArm();
+        this.armRight.name = "right";
+        this.armRight.position.x += 0.17;
+        this.armRight.position.y += 0.31;
+        this.armRight.position.z += 0;
 
         this.armLeft = this.createArm();
         this.armLeft.name = "left";
@@ -250,14 +250,44 @@ class Avispa extends Insect{
 
         // STEP 6 - CHARGING STINGER
         const chargeStingerAnim = this.createTween(
-            300,
+            500, // duración
             () => {
-                
+                this.moveSting(
+                    {x: 0, y: 0, z: 0},   
+                    {x: 0, y: 0, z: 0},   
+                    {x: 0, y: 0, z: 0}    
+                );
             },
             (t) => {
-                this.moveSting();
+                let angle = -50 * t;
+                this.moveSting(
+                    {x: angle, y: 0, z: 0},   
+                    {x: angle, y: 0, z: 0},   
+                    {x: angle, y: 0, z: 0} 
+                );
             }
         );
+
+        // STEP 7 - SHOOTING STINGER
+        const shootStingerAnim = this.createTween(
+            100, 
+            () => {
+                this.moveSting(
+                    {x: -50, y: 0, z: 0},   
+                    {x: -50, y: 0, z: 0},   
+                    {x: -50, y: 0, z: 0}    
+                );
+            },
+            (t) => {
+                let angle = 50 * t; 
+                this.moveSting(
+                    {x: angle, y: 0, z: 0},  
+                    {x: angle, y: 0, z: 0},   
+                    {x: angle, y: 0, z: 0} 
+                );
+            }
+        );
+
 
         // LAST STEP - UNDO MOVEMENTS
         this.undoAnim = this.createTween(
@@ -273,7 +303,9 @@ class Avispa extends Insect{
 
                 // CUERPO
                 this.currentRotationCopy = this.currentRotation.clone();
-               
+
+                // AGUIJÓN
+                this.rotStingCopy = this.sting.rotation.clone();
             },
             (t) => {
                 // BRAZO DERECHO
@@ -289,12 +321,16 @@ class Avispa extends Insect{
                 // CUERPO
                 this.currentRotation.lerpVectors(this.currentRotationCopy, this.originalRotation, t);
                 this.rotation.set(this.currentRotation.x, this.currentRotation.y, this.rotation.z);
+
+                // AGUIJÓN
+                this.moveSting(this.originalRotStinger, 0, 0);
             },
             () => {if (this.promise) this.promise()},
         )
 
-        leftPunchAnim.chain(this.undoAnim);
-        //leftPunchAnim.chain(chargeStingerAnim);
+        shootStingerAnim.chain(this.undoAnim);
+        chargeStingerAnim.chain(shootStingerAnim);
+        leftPunchAnim.chain(chargeStingerAnim);
         chargeLeftArmAnim.chain(leftPunchAnim);
         rightPunchAnim.chain(chargeLeftArmAnim);
         chargeRightArmAnim.chain(rightPunchAnim);
@@ -613,24 +649,36 @@ class Avispa extends Insect{
         return result;
     }
 
-    moveSting(){
-        // Las transformaciones se aplican luego, a el grupo general para mover la pieza
-        // se aplican aa temp3 que tiene name="part2" para la segunda parte
-        // luego dentro de temp3 se puede buscar "stinguer" para moverlo
+    moveSting(rot1 = {x:0, y:0, z:0}, rot2 = {x:0, y:0, z:0}, rot3 = {x:0, y:0, z:0}) {
+       // Rotación de toda la pieza
+       this.sting.rotation.set(
+           (Math.PI/180) * rot1.x,
+           (Math.PI/180) * rot1.y,
+           (Math.PI/180) * rot1.z
+       );
 
-        // Rotación de toda la pieza
-        this.sting.rotation.set((Math.PI/180)*this.rot1.x, (Math.PI/180)*this.rot1.y, (Math.PI/180)*this.rot1.z);
 
-        // Rotación part2
-        let part2 = this.sting.getObjectByName("part2");
-        part2.rotation.set((Math.PI/180)*this.rot2.x, (Math.PI/180)*this.rot2.y, (Math.PI/180)*this.rot2.z);
+       // Rotación de la segunda parte
+       let part2 = this.sting.getObjectByName("part2");
+       if (part2) {
+           part2.rotation.set(
+               (Math.PI/180) * rot2.x,
+               (Math.PI/180) * rot2.y,
+               (Math.PI/180) * rot2.z
+           );
 
-        // Rotación stinger
-        let st = part2.getObjectByName("stinger");
-        st.rotateX((Math.PI/180) * this.rot3.x);
-        st.rotateY((Math.PI/180) * this.rot3.y);
-        st.rotateZ((Math.PI/180) * this.rot3.z);
-    }
+
+           // Rotación del stinger
+           let st = part2.getObjectByName("stinger");
+           if (st) {
+               st.rotation.set(
+                   (Math.PI/180) * rot3.x,
+                   (Math.PI/180) * rot3.y,
+                   (Math.PI/180) * rot3.z
+               );
+           }
+       }
+   }
 
     createSting(){
         // El aguijón se compone de 6 partes distintas, 3 principales
@@ -749,7 +797,6 @@ class Avispa extends Insect{
 
         return piezas;
     }
-
 
     move(from, to, to90,time=1000, promise=null) {
         // Encadenar animaciones
