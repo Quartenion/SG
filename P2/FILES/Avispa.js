@@ -323,7 +323,7 @@ class Avispa extends Insect{
                 this.rotation.set(this.currentRotation.x, this.currentRotation.y, this.rotation.z);
 
                 // AGUIJÓN
-                this.moveSting(this.originalRotStinger, 0, 0);
+                this.moveSting(this.originalRotStinger, this.originalRotStinger, this.originalRotStinger);
             },
             () => {if (this.promise) this.promise()},
         )
