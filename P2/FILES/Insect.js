@@ -112,10 +112,18 @@ class Insect extends THREE.Object3D{
                 this.currentRotation = new THREE.Vector3(this.rotation.x,
                     this.rotation.y, this.rotation.z);
                 this.currentRotationCopy.set(this.currentRotation.x, this.currentRotation.y, this.currentRotation.z);
-                this.destinationRotation = new THREE.Vector3(
-                    this.rotation.x,
-                    this.rotation.y + (Math.PI / 180) * this.rotationTo,
-                    this.rotation.z);
+                if (this.team === 'white' || this.type === 'bishop'){
+                    this.destinationRotation = new THREE.Vector3(
+                        this.rotation.x,
+                        this.rotation.y + (Math.PI / 180) * this.rotationTo,
+                        this.rotation.z);
+                }
+                else{
+                    this.destinationRotation = new THREE.Vector3(
+                        this.rotation.x,
+                        this.rotation.y + (Math.PI / 180) * -this.rotationTo,
+                        this.rotation.z);
+                }
             },
             (t) => {
                  this.currentRotation.lerpVectors(this.currentRotationCopy,this.destinationRotation, t);
@@ -130,10 +138,18 @@ class Insect extends THREE.Object3D{
                 // Establecer parámetros para rotar
                 this.currentRotation = new THREE.Vector3(this.rotation.x,
                     this.rotation.y, this.rotation.z);
-                this.destinationRotation = new THREE.Vector3(
-                    this.rotation.x,
-                    this.rotation.y + (Math.PI / 180) * -this.rotationTo,
-                    this.rotation.z);
+                if (this.team === 'white' || this.type === 'bishop'){
+                    this.destinationRotation = new THREE.Vector3(
+                        this.rotation.x,
+                        this.rotation.y + (Math.PI / 180) * -this.rotationTo,
+                        this.rotation.z);
+                }
+                else{
+                    this.destinationRotation = new THREE.Vector3(
+                        this.rotation.x,
+                        this.rotation.y + (Math.PI / 180) * this.rotationTo,
+                        this.rotation.z);
+                }
             },
             (t) => {
                 this.currentRotation.lerpVectors(this.currentRotation,this.destinationRotation, t);
