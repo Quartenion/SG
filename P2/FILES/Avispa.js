@@ -256,6 +256,17 @@ class Avispa extends Insect{
             }
         );
 
+        // STEP 6 - CHARGING STINGER
+        const chargeStingerAnim = this.createTween(
+            300,
+            () => {
+                
+            },
+            (t) => {
+                this.moveSting();
+            }
+        );
+
         // LAST STEP - UNDO MOVEMENTS
         this.undoAnim = this.createTween(
             700,
@@ -270,6 +281,8 @@ class Avispa extends Insect{
 
                 // CUERPO
                 this.currentRotationCopy = this.currentRotation.clone();
+                console.log(this.currentRotation);
+               
             },
             (t) => {
                 // BRAZO DERECHO
@@ -290,6 +303,7 @@ class Avispa extends Insect{
         )
 
         leftPunchAnim.chain(this.undoAnim);
+        //leftPunchAnim.chain(chargeStingerAnim);
         chargeLeftArmAnim.chain(leftPunchAnim);
         rightPunchAnim.chain(chargeLeftArmAnim);
         chargeRightArmAnim.chain(rightPunchAnim);
