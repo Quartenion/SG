@@ -7,6 +7,14 @@ class Avispa extends Insect{
     constructor(name, type, team){
         super(name, type, team);
 
+        this.boxingGloveMaterial = new THREE.MeshPhysicalMaterial({
+            color: 0x4a0d0d,
+            roughness: 0.5,
+            metalness: 0.0,
+            clearcoat: 0.2,
+            clearcoatRoughness: 0.1,
+        });
+
         this.radialSegments = 20;
         this.evaluator = new CSG.Evaluator();
         this.ratioScale = new THREE.Vector3(10,10,10);
