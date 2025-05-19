@@ -1,3 +1,4 @@
+
 import * as THREE from '../../libs/three.module.js'
 import * as CSG from '../../libs/three-bvh-csg.js';
 import TWEEN from "../../libs/tween.module.js";
@@ -11,9 +12,15 @@ class Arania extends Insect {
         const core = this.createCore();
         this.add(core);
 
+        const head = this.createHead();
+        head.translateY(0.2+ 1/5 * 0.7);
+        head.translateZ(-1/5 -0.02);
+        this.add(head);
 
+        const ass = this.createAss();
+        this.add(ass);
 
-        this.scale.set(10,10,10);
+        this.scale.set(0.09,0.09,0.09);
     }
 
     createLeg(){
@@ -57,11 +64,9 @@ class Arania extends Insect {
     createCore(){
         // Creamos el torso
         let width = 1;
-        let height = 1;
 
         const torso = new THREE.SphereGeometry(width/5, this.radialSegments);
         torso.scale(0.85, 0.7, 1);
-
 
         torso.translate(0,0.2 + (width/5 * 0.7),0);
 
@@ -81,26 +86,49 @@ class Arania extends Insect {
     }
 
     createHead(){
-        const height = 0.2;
+
+        const head = new THREE.Group();
         const width = 0.15;
 
-
         // Creamos la base de la cabeza
+        const headBase = new THREE.SphereGeometry(width/2, this.radialSegments);
+        headBase.scale(1, 0.9, 0.95);
 
-
+        const headBaseMesh = new THREE.Mesh(headBase, this.OriginalMaterial);
+        head.add(headBaseMesh);
 
         // Creamos los ojos
-        const geoOjo = new THREE.SphereGeometry(width/5, this.radialSegments);
+        const geoOjo = new THREE.SphereGeometry(width/6, this.radialSegments);
+        geoOjo.scale(1,0.7,0.7);
 
         // Esta la opción de mover la geometría antes de crear el mesh para cada uno pero
         // mejor creo que es compartir la geometría y luego mover el mesh
         const ojoIzqUp = new THREE.Mesh(geoOjo, this.boxingGloveMaterial);
+        ojoIzqUp.translateZ(-width/6 * 0.7 - width/2 * 0.95 + width/5);
+        ojoIzqUp.translateY(width/6 * 1.1);
+        ojoIzqUp.translateX(width/6* 1.4);
+        ojoIzqUp.rotateY(Math.PI/180*-25);
+
         const ojoDrchUp = new THREE.Mesh(geoOjo, this.boxingGloveMaterial);
+        ojoDrchUp.translateZ(-width/6 * 0.7 - width/2 * 0.95 + width/5);
+        ojoDrchUp.translateY(width/6 * 1.1);
+        ojoDrchUp.translateX(-width/6 * 1.4);
+        ojoDrchUp.rotateY(Math.PI/180*25);
+
         const ojoIzqD = new THREE.Mesh(geoOjo, this.boxingGloveMaterial);
+        ojoIzqD.scale.set(0.7,0.7,0.7);
+        ojoIzqD.translateZ(-width/6 * 0.7 - width/2 * 0.95 + width/5);
+        ojoIzqD.translateY(-width/7 * 0.3);
+        ojoIzqD.translateX(width/6);
+        ojoIzqD.rotateY(Math.PI/180*-25);
+
         const ojoDrchD = new THREE.Mesh(geoOjo, this.boxingGloveMaterial);
+        ojoDrchD.scale.set(0.7,0.7,0.7);
+        ojoDrchD.translateZ(-width/6 * 0.7 - width/2 * 0.95 + width/5);
+        ojoDrchD.translateY(-width/7 * 0.3);
+        ojoDrchD.translateX(-width/6);
+        ojoDrchD.rotateY(Math.PI/180*25);
 
-
-        const head = new THREE.Group();
         head.add(ojoIzqUp);
         head.add(ojoIzqD);
         head.add(ojoDrchD);
@@ -110,7 +138,17 @@ class Arania extends Insect {
     }
 
     createAss(){
+        let width = 1;
 
+        const torso = new THREE.SphereGeometry(width/4, this.radialSegments);
+        torso.scale(0.8, 0.7, 1.2);
+
+        torso.translate(0,0.2 + (width/4 * 0.7),width/4*1.2 + width/6);
+
+        return new THREE.Mesh(torso, this.OriginalMaterial);
+    }
+
+    update() {
     }
 
 }

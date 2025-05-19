@@ -256,6 +256,9 @@ class MyScene extends THREE.Scene {
     this.camera.lookAt(this.lookPoint);
     this.add (this.camera);
 
+    // Crear la otra cámara??
+
+
     /*
     // Por ahora quitado el control del ratón (si se pone hay que descomentar una cosa de update también)
     // TrackballControls (mover con el ratón)
