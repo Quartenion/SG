@@ -87,7 +87,7 @@ class Insect extends THREE.Object3D{
 
         // ANIMACIÓN MOVIMIENTO RECTILINEO
         this.straightMove = this.createTween(
-            1000,
+            500,
             () => {
             },
             (t) => {
@@ -96,7 +96,7 @@ class Insect extends THREE.Object3D{
         )
 
         this.straightMoveP2 = this.createTween(
-            1000,
+            100,
             () => {
                 this.fromRef.set(this.from.x, this.from.y, this.from.z);
             },
@@ -106,45 +106,8 @@ class Insect extends THREE.Object3D{
         )
         // ANIMACIÓN ROTACIÓN PARA DIRIGIRSE
         this.rotationMoveStart = this.createTween(
-            1000,
+            300,
             () =>{
-                // Determinar el sentido al que debe mirar
-                const dz = Math.sign(this.from.z - this.to.z); // -1, 0, +1
-                const dx = Math.sign(this.from.x - this.to.x); // -1, 0, +1
-
-                const key = `${dz}_${dx}`;
-
-                let rotationMap;
-                if (this.team === 'white'){
-                    rotationMap = {
-                      '1_-1': -45,   // Frente derecha
-                      '1_0': 0,      // Frente
-                      '1_1': +45,    // Frente izquierda
-                      '0_-1': -90,   // Derecha
-                      '0_0': 0,      // Nada
-                      '0_1': +90,    // Izquierda
-                      '-1_-1': -135, // Atrás derecha
-                      '-1_0': 180,   // Atrás
-                      '-1_1': +135,  // Atrás izquierda
-                    };
-                }
-                else{ // Las blancas están al revés, su funcionamiento de keys es opuesto
-                    rotationMap = {
-                      '1_-1': -135,  // Atrás izquierda
-                      '1_0': 180,    // Frente
-                      '1_1': +135,   // Atrás derecha
-                      '0_-1': -90,   // Izquierda
-                      '0_0': 0,      // Nada
-                      '0_1': +90,    // Derecha
-                      '-1_-1': -45,  // Frente izquierda
-                      '-1_0': 0,     // Atrás
-                      '-1_1': +45,   // Frente derecha
-                    };
-                }
-
-                this.rotationTo = rotationMap[key];
-
-
                 // Establecer parámetros para rotar
                 this.currentRotation = new THREE.Vector3(this.rotation.x,
                     this.rotation.y, this.rotation.z);
@@ -162,7 +125,7 @@ class Insect extends THREE.Object3D{
 
         // ANIMACIÓN ROTACIÓN PARA VOLVER A ESTADO INICIAL
         this.rotationMoveEnd = this.createTween(
-            1000,
+            300,
             () =>{
                 // Establecer parámetros para rotar
                 this.currentRotation = new THREE.Vector3(this.rotation.x,
@@ -176,7 +139,7 @@ class Insect extends THREE.Object3D{
                 this.currentRotation.lerpVectors(this.currentRotation,this.destinationRotation, t);
                 this.rotation.set(this.currentRotation.x, this.currentRotation.y,this.rotation.z);
             },
-            () => this.promise(),
+            () => {if (this.promise) this.promise()},
         )
 
         this.straightMove.chain(this.rotationMoveEnd);
@@ -196,8 +159,44 @@ class Insect extends THREE.Object3D{
             this.fromRef.set(this.from.x, this.from.y, this.from.z);
             this.to90 = to90;
             this.to = to;
-            this.rotationMoveStart.duration = time;
             this.promise = promise;
+
+            // Determinar el sentido al que debe mirar
+            const dz = Math.sign(this.from.z - this.to.z); // -1, 0, +1
+            const dx = Math.sign(this.from.x - this.to.x); // -1, 0, +1
+
+            const key = `${dz}_${dx}`;
+
+            let rotationMap;
+            if (this.team === 'white'){
+                rotationMap = {
+                  '1_-1': -45,   // Frente derecha
+                  '1_0': 0,      // Frente
+                  '1_1': +45,    // Frente izquierda
+                  '0_-1': -90,   // Derecha
+                  '0_0': 0,      // Nada
+                  '0_1': +90,    // Izquierda
+                  '-1_-1': -135, // Atrás derecha
+                  '-1_0': 180,   // Atrás
+                  '-1_1': +135,  // Atrás izquierda
+                };
+            }
+            else{ // Las blancas están al revés, su funcionamiento de keys es opuesto
+                rotationMap = {
+                  '1_-1': -135,  // Atrás izquierda
+                  '1_0': 180,    // Frente
+                  '1_1': +135,   // Atrás derecha
+                  '0_-1': -90,   // Izquierda
+                  '0_0': 0,      // Nada
+                  '0_1': +90,    // Derecha
+                  '-1_-1': -45,  // Frente izquierda
+                  '-1_0': 0,     // Atrás
+                  '-1_1': +45,   // Frente derecha
+                };
+            }
+
+            this.rotationTo = rotationMap[key];
+
 
             this.rotationMoveStart.start();
         }

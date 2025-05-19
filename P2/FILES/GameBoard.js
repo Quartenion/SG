@@ -704,12 +704,12 @@ class GameBoard extends THREE.Object3D {
             finPos.z = pos["pos"].z;
 
             let to90 = new THREE.Vector3(
-                this.lastSelectedPiece.position.x+(finPos.x-this.lastSelectedPiece.position.x)*0.75,
-                this.lastSelectedPiece.position.y+(finPos.y-this.lastSelectedPiece.position.y)*0.75,
-                this.lastSelectedPiece.position.z+(finPos.z-this.lastSelectedPiece.position.z)*0.75);
+                this.lastSelectedPiece.position.x+(finPos.x-this.lastSelectedPiece.position.x)*0.90,
+                this.lastSelectedPiece.position.y+(finPos.y-this.lastSelectedPiece.position.y)*0.90,
+                this.lastSelectedPiece.position.z+(finPos.z-this.lastSelectedPiece.position.z)*0.90);
 
            
-            if (!(this.tableroPiezas[pos["row"]][pos["col"]] === undefined)){
+            if (!(this.tableroPiezas[pos["row"]][pos["col"]] === undefined) && this.lastSelectedPiece.type=== "bishop"){
                 this.lastSelectedPiece.moveCombat(this.lastSelectedPiece.position, finPos, to90, t, resolve);
             }
             else{

@@ -126,7 +126,7 @@ class MyScene extends THREE.Scene {
   }
 
   async funcionA() {
-    await this.avispa.combatAnimation(this.avispa.position);
+    await this.avispa.moveCombat(this.avispa.position, this.avispa.position, this.avispa.position);
   }
   // Interfaz para la escena (controles)
   createGUI() {
