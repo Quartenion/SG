@@ -5,6 +5,9 @@ import { Insect } from '../Insect.js';
 class EscarabajoRinoceronte extends Insect {
     constructor(name, type, team) {
         super(name, type, team);
+
+        this.halo.scale.set(0.1, 0.1, 0.1);
+        this.halo.translateZ(-0.03);
        
         const objectLoader = new OBJLoader();
 
