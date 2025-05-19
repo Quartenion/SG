@@ -38,11 +38,11 @@ class Avispa extends Insect{
         this.rotArmL =      new THREE.Vector3(-40,-0,-30);
         this.rotForearmL =  new THREE.Vector3( 30,-0,-0);
 
-       this.armRight = this.createArm();
-       this.armRight.name = "right";
-       this.armRight.position.x += 0.17;
-       this.armRight.position.y += 0.31;
-       this.armRight.position.z += 0;
+        this.armRight = this.createArm();
+        this.armRight.name = "right";
+        this.armRight.position.x += 0.17;
+        this.armRight.position.y += 0.31;
+        this.armRight.position.z += 0;
 
         this.armLeft = this.createArm();
         this.armLeft.name = "left";
@@ -680,7 +680,6 @@ class Avispa extends Insect{
        }
    }
 
-
     createSting(){
         // El aguijón se compone de 6 partes distintas, 3 principales
 
@@ -798,7 +797,6 @@ class Avispa extends Insect{
 
         return piezas;
     }
-
 
     move(from, to, to90,time=1000, promise=null) {
         // Encadenar animaciones

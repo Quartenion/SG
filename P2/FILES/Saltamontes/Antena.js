@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 class Antena extends THREE.Object3D {
-    constructor() {
+    constructor(material = null) {
         super();
 
         const shape = new THREE.Shape();
@@ -13,7 +13,6 @@ class Antena extends THREE.Object3D {
         );
 
         const geometry = new THREE.TubeGeometry(curve, 100, 0.02, 16, false);
-        const material = new THREE.MeshPhysicalMaterial({ color: 0x9ACD32 });
         const mesh = new THREE.Mesh(geometry, material);
 
         this.add(mesh);
