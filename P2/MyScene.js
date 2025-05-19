@@ -40,6 +40,7 @@ class MyScene extends THREE.Scene {
     this.gameBoard = new GameBoard();
     this.add (this.gameBoard);
 
+
     this.suelo = new Suelo();
     this.add (this.suelo);
 
@@ -102,13 +103,13 @@ class MyScene extends THREE.Scene {
           startPowerBlue =  this.guiControls.lightPowerBlue;
           startPowerRed =  this.guiControls.lightPowerRed
           if (this.gameBoard.currentTurn === "white"){
-            objetiveLightValueBlue = 200.0;
+            objetiveLightValueBlue = 100.0;
             objetiveLightValueRed = 0.0;
             chosenCurve = cameraCurveBW;
           }
           else{
             objetiveLightValueBlue = 0.0;
-            objetiveLightValueRed = 200.0;
+            objetiveLightValueRed = 100.0;
             chosenCurve = cameraCurveWB;
           }
         })
@@ -146,7 +147,7 @@ class MyScene extends THREE.Scene {
     this.animationFlag = false;
 
     this.guiControls.lightPowerRed = 0.0;
-    this.guiControls.lightPowerBlue = 200.0;
+    this.guiControls.lightPowerBlue = 100.0;
 
     this.pointLightRed.power = this.guiControls.lightPowerRed;
     this.pointLightBlue.power = this.guiControls.lightPowerBlue;
@@ -192,6 +193,7 @@ class MyScene extends THREE.Scene {
         let tile_intersects;
 
         this.gameBoard.unselectPiece();
+        this.remove(this.spotLightWhite);
         if (this.objectSelected && intersects.length === 0) {
           // En caso de que no se haga select de otro object
           tile_intersects = this.raycaster.intersectObjects(this.gameBoard.ableMovements,);
@@ -200,6 +202,7 @@ class MyScene extends THREE.Scene {
             let tile = tile_intersects[0].object;
             let pos ={"pos" : tile.position, "row" : tile.row, "col" : tile.col};
             this.animationFlag = true;
+            this.add(this.spotLightWhite);
             await this.gameBoard.makeMovement(pos);
             this.animationFlag = false;
             await this.nextTurn();
@@ -208,6 +211,11 @@ class MyScene extends THREE.Scene {
         else {
           if (intersects.length > 0) {
             let object = intersects[0].object;
+            console.log(object);
+
+            this.spotLightWhite.target = object;
+            this.add(this.spotLightWhite);
+
             this.gameBoard.selectPiece(object);
             this.objectSelected = true;
           }
@@ -284,7 +292,7 @@ class MyScene extends THREE.Scene {
     this.guiControls = {
       // En el contexto de una función   this   alude a la función
       lightPowerRed : 0.0,  // La potencia de esta fuente de luz se mide en lúmenes
-      lightPowerBlue : 200.0,  // La potencia de esta fuente de luz se mide en lúmenes
+      lightPowerBlue : 100.0,  // La potencia de esta fuente de luz se mide en lúmenes
       ambientIntensity : 0.3,
       axisOnOff : true,
 
@@ -346,6 +354,12 @@ class MyScene extends THREE.Scene {
     // En este caso se declara como   this.atributo   para que sea un atributo accesible desde otros métodos.
     this.pointLightRed = new THREE.PointLight(new THREE.Color(1, 0.2, 0.3), 4);
     this.pointLightBlue = new THREE.PointLight(new THREE.Color(0.2, 0.3, 1), 4);
+
+    this.spotLightWhite = new THREE.SpotLight(0xffffff, 15);
+    this.spotLightWhite.angle = Math.PI / 100;
+    this.spotLightWhite.position.set(0,2.1,0);
+    this.spotLightWhite.castShadow = true;
+
 
     this.pointLightRed.power = this.guiControls.lightPowerRed;
     this.pointLightBlue.power = this.guiControls.lightPowerBlue;

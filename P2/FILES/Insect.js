@@ -203,11 +203,11 @@ class Insect extends THREE.Object3D{
     }
 
     select() {
-        this.add(this.halo);
+        //this.add(this.halo);
     }
 
     unselect() {
-        this.remove(this.halo);
+        //this.remove(this.halo);
     }
 }
 
