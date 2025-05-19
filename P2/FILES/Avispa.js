@@ -38,16 +38,6 @@ class Avispa extends Insect{
         this.rotArmL =      new THREE.Vector3(-40,-0,-30);
         this.rotForearmL =  new THREE.Vector3( 30,-0,-0);
 
-
-       // POSICIONES ORIGINALES, SOLO VARIABLES DE LECTURA
-       this.originalRotation = this.rotation.clone();
-       this.originalRotArmR  = this.rotArmR.clone();
-       this.originalRotArmL  = this.rotArmL.clone();
-       this.originalRotForearmR  = this.rotForearmR.clone();
-       this.originalRotForearmL  = this.rotForearmL.clone();
-       // this.originalPos Esto si que no puedes controlarlo desde aqui
-       // Esto no necesita corregirse, las animaciones ya le dejan en su sitio
-
        this.armRight = this.createArm();
        this.armRight.name = "right";
        this.armRight.position.x += 0.17;
@@ -155,9 +145,11 @@ class Avispa extends Insect{
                 this.currentPosCopy.set(this.currentPos.x, this.currentPos.y, this.currentPos.z);
                 if (this.team === "white"){
                     this.destinationPos = new THREE.Vector3(this.currentPos.x,this.currentPos.y - 0.07,this.currentPos.z - 0.07);
+                    this.destinationRotation = new THREE.Vector3(this.rotation.x,this.rotation.y+(Math.PI/180)*60,this.rotation.z);
                 }
                 else{
                     this.destinationPos = new THREE.Vector3(this.currentPos.x,this.currentPos.y - 0.07,this.currentPos.z + 0.07);
+                    this.destinationRotation = new THREE.Vector3(this.rotation.x,this.rotation.y+(Math.PI/180)*-60,this.rotation.z);
                 }
 
                 this.rotArmCopyR = this.rotArmR.clone();
@@ -167,7 +159,6 @@ class Avispa extends Insect{
                 this.destinationForearmRotationR = new THREE.Vector3(0,30,0 );
 
                 this.currentRotationCopy = this.currentRotation.clone();
-                this.destinationRotation = new THREE.Vector3(this.rotation.x,this.rotation.y+(Math.PI/180)*60,this.rotation.z);
             },
             (t) => {
                 // BRAZO
@@ -230,9 +221,11 @@ class Avispa extends Insect{
                 this.currentPosCopy.copy(this.currentPos);
                 if (this.team === "white"){
                     this.destinationPos.set(this.currentPos.x,this.currentPos.y - 0.07,this.currentPos.z - 0.07);
+                this.destinationRotation.set(this.rotation.x,this.rotation.y + (Math.PI / 180) * -60,this.rotation.z);
                 }
                 else{
                     this.destinationPos.set(this.currentPos.x,this.currentPos.y - 0.07,this.currentPos.z + 0.07);
+                this.destinationRotation.set(this.rotation.x,this.rotation.y + (Math.PI / 180) * +60,this.rotation.z);
                 }
 
                 this.rotArmCopyL = this.rotArmL.clone();
@@ -242,7 +235,6 @@ class Avispa extends Insect{
                 this.destinationForearmRotationL = new THREE.Vector3(0, -30, 0);
 
                 this.currentRotationCopy = this.currentRotation.clone();
-                this.destinationRotation.set(this.rotation.x,this.rotation.y + (Math.PI / 180) * -60,this.rotation.z);
             },
             (t) => {
                 this.rotArmL.lerpVectors(this.rotArmCopyL, this.destinationArmRotationL, t);
@@ -281,7 +273,6 @@ class Avispa extends Insect{
 
                 // CUERPO
                 this.currentRotationCopy = this.currentRotation.clone();
-                console.log(this.currentRotation);
                
             },
             (t) => {
@@ -768,6 +759,18 @@ class Avispa extends Insect{
     }
 
     moveCombat(from, to, to90, time=1000, promise=null){
+
+        if (!this.originalRotation){
+           // POSICIONES ORIGINALES, SOLO VARIABLES DE LECTURA
+           this.originalRotation = this.rotation.clone();
+           this.originalRotArmR  = this.rotArmR.clone();
+           this.originalRotArmL  = this.rotArmL.clone();
+           this.originalRotForearmR  = this.rotForearmR.clone();
+           this.originalRotForearmL  = this.rotForearmL.clone();
+           // this.originalPos Esto si que no puedes controlarlo desde aqui
+           // Esto no necesita corregirse, las animaciones ya le dejan en su sitio
+        }
+
         // Encadenar animaciones
         this.undoAnim.chain(this.straightMoveP2);
         this.straightMove.chain(this.combatAnim);

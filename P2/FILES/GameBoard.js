@@ -727,7 +727,6 @@ class GameBoard extends THREE.Object3D {
             const c = fila.findIndex(p =>  p !== undefined && p.name === this.lastSelectedPiece.name);
 
             await this.resolveMovement(pos);
-            console.log("me la pela");
             if (!(this.tableroPiezas[pos["row"]][pos["col"]] === undefined)){
                 if (this.tableroPiezas[pos["row"]][pos["col"]].team === "black")
                     this.black.remove(this.tableroPiezas[pos["row"]][pos["col"]]);
