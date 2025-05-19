@@ -144,9 +144,6 @@ class Insect extends THREE.Object3D{
 
                 this.rotationTo = rotationMap[key];
 
-                if (this.rotationTo === 0){
-
-                }
 
                 // Establecer parámetros para rotar
                 this.currentRotation = new THREE.Vector3(this.rotation.x,
@@ -182,6 +179,8 @@ class Insect extends THREE.Object3D{
             () => this.promise(),
         )
 
+        this.straightMove.chain(this.rotationMoveEnd);
+        this.rotationMoveStart.chain(this.straightMove);
 
         /*
         this.straightMoveP2.chain(this.rotationMoveEnd);
