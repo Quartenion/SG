@@ -98,8 +98,6 @@ class GameBoard extends THREE.Object3D {
         this.add(this.white);
         this.add(this.black);
 
-
-
     }
 
     // Hace el turno, espera a que se ejecute selectPiece

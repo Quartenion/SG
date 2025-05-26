@@ -833,11 +833,11 @@ class Avispa extends Insect{
     }
 
     combat(from, promise=null){
-        console.log(this);
         this.from = from;
         this.currentRotation = new THREE.Vector3(this.rotation.x,
                     this.rotation.y, this.rotation.z);
 
+        this.promise = promise;
         if (!this.originalRotation){
            // POSICIONES ORIGINALES, SOLO VARIABLES DE LECTURA
            this.originalRotation = this.rotation.clone();

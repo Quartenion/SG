@@ -7,13 +7,13 @@ class Pelota extends THREE.Object3D {
     const pelotaGeo = new THREE.SphereGeometry(0.05, 32, 32);
 
     // Cargar textura 
-    const texture = new THREE.TextureLoader().load('/P2/TEXTURES/pelota.jpg');
+    const texture = new THREE.TextureLoader().load('../../TEXTURES/pelota.jpg');
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
     texture.repeat.set(1, 1);
 
     // Cargar bump map
-    const bumpMap = new THREE.TextureLoader().load('/P2/TEXTURES/pelota_bump1.png');
+    const bumpMap = new THREE.TextureLoader().load('../../TEXTURES/pelota_bump1.png');
     bumpMap.wrapS = THREE.RepeatWrapping;
     bumpMap.wrapT = THREE.RepeatWrapping;
     bumpMap.repeat.set(1, 1);

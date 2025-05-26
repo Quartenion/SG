@@ -12,7 +12,7 @@ class EscarabajoRinoceronte extends Insect {
         const objectLoader = new OBJLoader();
 
         // Cargar y aplicar material
-        objectLoader.load('/P2/FILES/EscarabajoRinoceronte/15925_Rhinoceros_Beetle_v1.obj', (object) => {
+        objectLoader.load('../../FILES/EscarabajoRinoceronte/15925_Rhinoceros_Beetle_v1.obj', (object) => {
             object.traverse((child) => {
                 if (child instanceof THREE.Mesh) {
                     child.material = this.OriginalMaterial;

@@ -6,7 +6,7 @@ class Suelo extends THREE.Object3D {
 
     var geometryGround = new THREE.CylinderGeometry(5, 5, 0.01, 32);
 
-    var texture = new THREE.TextureLoader().load('/P2/TEXTURES/grass.jpg');
+    var texture = new THREE.TextureLoader().load('../../TEXTURES/grass.jpg');
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
     texture.repeat.set(10, 10); 

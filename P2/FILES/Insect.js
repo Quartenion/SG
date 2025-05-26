@@ -112,19 +112,11 @@ class Insect extends THREE.Object3D{
                 this.currentRotation = new THREE.Vector3(this.rotation.x,
                     this.rotation.y, this.rotation.z);
                 this.currentRotationCopy.set(this.currentRotation.x, this.currentRotation.y, this.currentRotation.z);
-                if (this.team === 'white' || this.type === 'bishop' || this.type === 'rook'
-                    || this.type === 'king' || this.type === 'queen'){
-                    this.destinationRotation = new THREE.Vector3(
-                        this.rotation.x,
-                        this.rotation.y + (Math.PI / 180) * this.rotationTo,
-                        this.rotation.z);
-                }
-                else{
-                    this.destinationRotation = new THREE.Vector3(
-                        this.rotation.x,
-                        this.rotation.y + (Math.PI / 180) * -this.rotationTo,
-                        this.rotation.z);
-                }
+                this.destinationRotation = new THREE.Vector3(
+                    this.rotation.x,
+                    this.rotation.y + (Math.PI / 180) * this.rotationTo,
+                    this.rotation.z);
+
             },
             (t) => {
                  this.currentRotation.lerpVectors(this.currentRotationCopy,this.destinationRotation, t);
@@ -139,19 +131,10 @@ class Insect extends THREE.Object3D{
                 // Establecer parámetros para rotar
                 this.currentRotation = new THREE.Vector3(this.rotation.x,
                     this.rotation.y, this.rotation.z);
-                if (this.team === 'white' || this.type === 'bishop' || this.type === 'rook'
-                    || this.type === 'king' || this.type === 'queenblancas'){
-                    this.destinationRotation = new THREE.Vector3(
-                        this.rotation.x,
-                        this.rotation.y + (Math.PI / 180) * -this.rotationTo,
-                        this.rotation.z);
-                }
-                else{
-                    this.destinationRotation = new THREE.Vector3(
-                        this.rotation.x,
-                        this.rotation.y + (Math.PI / 180) * this.rotationTo,
-                        this.rotation.z);
-                }
+                this.destinationRotation = new THREE.Vector3(
+                    this.rotation.x,
+                    this.rotation.y + (Math.PI / 180) * -this.rotationTo,
+                    this.rotation.z);
             },
             (t) => {
                 this.currentRotation.lerpVectors(this.currentRotation,this.destinationRotation, t);
@@ -180,10 +163,13 @@ class Insect extends THREE.Object3D{
             this.promise = promise;
 
             // Determinar el sentido al que debe mirar
-            const dz = Math.sign(this.from.z - this.to.z); // -1, 0, +1
-            const dx = Math.sign(this.from.x - this.to.x); // -1, 0, +1
+            const dz = Math.sign(parseFloat((this.from.z - this.to.z).toFixed(4))); // -1, 0, +1
+            const dx = Math.sign(parseFloat((this.from.x - this.to.x).toFixed(4))); // -1, 0, +1
 
             const key = `${dz}_${dx}`;
+
+            console.log(key);
+
 
             let rotationMap;
             if (this.team === 'white'){
@@ -199,17 +185,30 @@ class Insect extends THREE.Object3D{
                   '-1_1': +135,  // Atrás izquierda
                 };
             }
-            else{ // Las negras están al revés, su funcionamiento de keys es opuesto
+            else if (this.type !== 'horse') { // Las negras están al revés, su funcionamiento de keys es opuesto
                 rotationMap = {
-                  '1_-1': -135,  // Atrás izquierda
-                  '1_0': 180,    // Frente
-                  '1_1': +135,   // Atrás derecha
-                  '0_-1': -90,   // Izquierda
-                  '0_0': 0,      // Nada
-                  '0_1': +90,    // Derecha
-                  '-1_-1': -45,  // Frente izquierda
-                  '-1_0': 0,     // Atrás
-                  '-1_1': +45,   // Frente derecha
+                  '1_-1': -135,   // Atras derecha
+                  '1_0': 180,     // Atrás
+                  '1_1': 135,    // Atras izquierda
+                  '0_-1': -90,     // Derecha
+                  '0_0': 0,       // Nada
+                  '0_1': +90,     // Izquierda
+                  '-1_-1': -45,   // Frente izquierda
+                  '-1_0': 0,      // Frente
+                  '-1_1': +45,    // Frente derecha
+                };
+            }
+            else{
+                rotationMap = {
+                  '1_-1': 135,   // Atras derecha
+                  '1_0': 180,     // Atrás
+                  '1_1': -135,     // Atras izquierda
+                  '0_-1': +90,    // Derecha
+                  '0_0': 0,       // Nada
+                  '0_1': -90,     // Izquierda
+                  '-1_-1': +45,   // Frente izquierda
+                  '-1_0': 0,      // Frente
+                  '-1_1': -45,    // Frente derecha
                 };
             }
 
