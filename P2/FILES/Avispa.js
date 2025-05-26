@@ -150,11 +150,11 @@ class Avispa extends Insect{
             () => {
                 this.currentPosCopy.set(this.currentPos.x, this.currentPos.y, this.currentPos.z);
                 if (this.team === "white"){
-                    this.destinationPos = new THREE.Vector3(this.currentPos.x,this.currentPos.y - 0.07,this.currentPos.z - 0.07);
+                    this.destinationPos = new THREE.Vector3(this.currentPos.x,this.currentPos.y - 0.07,this.currentPos.z - 0.05);
                     this.destinationRotation = new THREE.Vector3(this.rotation.x,this.rotation.y+(Math.PI/180)*60,this.rotation.z);
                 }
                 else{
-                    this.destinationPos = new THREE.Vector3(this.currentPos.x,this.currentPos.y - 0.07,this.currentPos.z + 0.07);
+                    this.destinationPos = new THREE.Vector3(this.currentPos.x,this.currentPos.y - 0.07,this.currentPos.z + 0.05);
                     this.destinationRotation = new THREE.Vector3(this.rotation.x,this.rotation.y+(Math.PI/180)*-60,this.rotation.z);
                 }
 
@@ -197,10 +197,10 @@ class Avispa extends Insect{
 
                 this.currentPosCopy = this.currentPos.clone();
                 if (this.team === "white"){
-                    this.destinationPos = new THREE.Vector3(this.currentPos.x,this.currentPos.y + 0.07,this.currentPos.z + 0.07);
+                    this.destinationPos = new THREE.Vector3(this.currentPos.x,this.currentPos.y + 0.07,this.currentPos.z + 0.05);
                 }
                 else{
-                    this.destinationPos = new THREE.Vector3(this.currentPos.x,this.currentPos.y + 0.07,this.currentPos.z - 0.07);
+                    this.destinationPos = new THREE.Vector3(this.currentPos.x,this.currentPos.y + 0.07,this.currentPos.z - 0.05);
                 }
 
             },
@@ -226,11 +226,11 @@ class Avispa extends Insect{
             () => {
                 this.currentPosCopy.copy(this.currentPos);
                 if (this.team === "white"){
-                    this.destinationPos.set(this.currentPos.x,this.currentPos.y - 0.07,this.currentPos.z - 0.07);
+                    this.destinationPos.set(this.currentPos.x,this.currentPos.y - 0.07,this.currentPos.z - 0.05);
                 this.destinationRotation.set(this.rotation.x,this.rotation.y + (Math.PI / 180) * -60,this.rotation.z);
                 }
                 else{
-                    this.destinationPos.set(this.currentPos.x,this.currentPos.y - 0.07,this.currentPos.z + 0.07);
+                    this.destinationPos.set(this.currentPos.x,this.currentPos.y - 0.07,this.currentPos.z + 0.05);
                 this.destinationRotation.set(this.rotation.x,this.rotation.y + (Math.PI / 180) * +60,this.rotation.z);
                 }
 
@@ -256,7 +256,7 @@ class Avispa extends Insect{
 
         // STEP 6 - CHARGING STINGER
         const chargeStingerAnim = this.createTween(
-            500, // duración
+            700, // duración
             () => {
                 this.moveSting(
                     {x: 0, y: 0, z: 0},   
@@ -276,7 +276,7 @@ class Avispa extends Insect{
 
         // STEP 7 - SHOOTING STINGER
         const shootStingerAnim = this.createTween(
-            100, 
+            400,
             () => {
                 this.moveSting(
                     {x: -50, y: 0, z: 0},   
@@ -285,11 +285,11 @@ class Avispa extends Insect{
                 );
             },
             (t) => {
-                let angle = 50 * t; 
+                let angle = 100 * t;
                 this.moveSting(
-                    {x: angle, y: 0, z: 0},  
-                    {x: angle, y: 0, z: 0},   
-                    {x: angle, y: 0, z: 0} 
+                    {x: -50 + angle, y: 0, z: 0},
+                    {x: -50 + angle, y: 0, z: 0},
+                    {x: -50 + angle, y: 0, z: 0}
                 );
             }
         );
@@ -655,6 +655,7 @@ class Avispa extends Insect{
         return result;
     }
 
+
     moveSting(rot1 = {x:0, y:0, z:0}, rot2 = {x:0, y:0, z:0}, rot3 = {x:0, y:0, z:0}) {
        // Rotación de toda la pieza
        this.sting.rotation.set(
@@ -662,7 +663,6 @@ class Avispa extends Insect{
            (Math.PI/180) * rot1.y,
            (Math.PI/180) * rot1.z
        );
-
 
        // Rotación de la segunda parte
        let part2 = this.sting.getObjectByName("part2");
@@ -831,6 +831,28 @@ class Avispa extends Insect{
 
         super.move(from, to, to90, time, promise);
     }
+
+    combat(from, promise=null){
+        console.log(this);
+        this.from = from;
+        this.currentRotation = new THREE.Vector3(this.rotation.x,
+                    this.rotation.y, this.rotation.z);
+
+        if (!this.originalRotation){
+           // POSICIONES ORIGINALES, SOLO VARIABLES DE LECTURA
+           this.originalRotation = this.rotation.clone();
+           this.originalRotArmR  = this.rotArmR.clone();
+           this.originalRotArmL  = this.rotArmL.clone();
+           this.originalRotForearmR  = this.rotForearmR.clone();
+           this.originalRotForearmL  = this.rotForearmL.clone();
+           // this.originalPos Esto si que no puedes controlarlo desde aqui
+           // Esto no necesita corregirse, las animaciones ya le dejan en su sitio
+        }
+
+        // Encadenar animaciones
+        this.combatAnim.start();
+    }
+
     update() {
         TWEEN.update();
     }

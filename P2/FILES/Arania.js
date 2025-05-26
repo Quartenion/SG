@@ -142,10 +142,10 @@ class Arania extends Insect {
     createAss(){
         let width = 1;
 
-        const torso = new THREE.SphereGeometry(width/4, this.radialSegments);
+        const torso = new THREE.SphereGeometry(width/5, this.radialSegments);
         torso.scale(0.8, 0.7, 1.2);
 
-        torso.translate(0,0.2 + (width/4 * 0.7),width/4*1.2 + width/6);
+        torso.translate(0,0.2 + (width/5 * 0.7),width/5*1.2 + width/6);
 
         return new THREE.Mesh(torso, this.OriginalMaterial);
     }

@@ -1,24 +1,16 @@
 
 // Clases de la biblioteca
 
-import * as THREE from '../libs/three.module.js'
-import { GUI } from '../libs/dat.gui.module.js'
-import { TrackballControls } from '../libs/TrackballControls.js'
-import  Stats from '../libs/stats.module.js'
-import TWEEN from "../libs/tween.module.js";
+import * as THREE from '../../libs/three.module.js'
+import { GUI } from '../../libs/dat.gui.module.js'
+import { TrackballControls } from '../../libs/TrackballControls.js'
+import  Stats from '../../libs/stats.module.js'
+import TWEEN from "../../libs/tween.module.js";
 
 // Clases de mi proyecto
 
-import { Suelo } from './FILES/Suelo.js'
-import { GameBoard } from './FILES/GameBoard.js'
-import { Hormiga } from './FILES/Hormiga/Hormiga.js'
-import { Saltamontes } from './FILES/Saltamontes/Saltamontes.js'
-import { EscarabajoPelotero } from './FILES/EscarabajoPelotero/EscarabajoPelotero.js'
-import { EscarabajoRinoceronte } from './FILES/EscarabajoRinoceronte/EscarabajoRinoceronte.js'
-import { Arania } from './FILES/Arania.js'
-import { Torso } from './DEPRECATED/Torso.js'
-import { Avispa } from './FILES/Avispa.js';
-
+import { Suelo } from '../FILES/Suelo.js'
+import { GameBoard } from '../FILES/GameBoard.js'
 
 class MyScene extends THREE.Scene {
   constructor (myCanvas) {
