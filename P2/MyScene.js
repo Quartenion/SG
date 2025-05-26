@@ -15,7 +15,9 @@ import { Hormiga } from './FILES/Hormiga/Hormiga.js'
 import { Saltamontes } from './FILES/Saltamontes/Saltamontes.js'
 import { EscarabajoPelotero } from './FILES/EscarabajoPelotero/EscarabajoPelotero.js'
 import { EscarabajoRinoceronte } from './FILES/EscarabajoRinoceronte/EscarabajoRinoceronte.js'
+import { Arania } from './FILES/Arania.js'
 import { Torso } from './DEPRECATED/Torso.js'
+import { Avispa } from './FILES/Avispa.js';
 
 
 class MyScene extends THREE.Scene {
@@ -34,7 +36,7 @@ class MyScene extends THREE.Scene {
     this.add (this.axis);
 
     // Orientación inicial del juego es de +z a -z, que será primero turno de "blancas"
-
+   
     // Creamos el tablero y el suelo que se colocarán uno encima de otro y justo debajo de los ejes (las piezas
     // se tendrán que mover con un valor de y = 0 siempre y cuando estén justo por encima del eje)
     this.gameBoard = new GameBoard();
