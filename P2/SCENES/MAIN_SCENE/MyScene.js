@@ -187,10 +187,14 @@ class MyScene extends THREE.Scene {
         let tile_intersects;
 
         this.gameBoard.unselectPiece();
+
         this.remove(this.spotLightWhite);
+
+        // CASO DE QUE YA ESTÉ SELECCIONADA PIEZA Y SE HAYA CLICADO PERO NO EN UNA PIEZA
         if (this.objectSelected && intersects.length === 0) {
           // En caso de que no se haga select de otro object
-          tile_intersects = this.raycaster.intersectObjects(this.gameBoard.ableMovements,);
+          // SE COMPRUEBA SI ERA UNA CASILLA OBJETIVO
+          tile_intersects = this.raycaster.intersectObjects(this.gameBoard.ableMovements);
           this.objectSelected = false;
           if (tile_intersects.length > 0) {
             let tile = tile_intersects[0].object;
@@ -203,7 +207,7 @@ class MyScene extends THREE.Scene {
             // this.remove(this.spotLightWhite); opcional -> Quitar la luz al final del movimiento
           }
         }
-        else {
+        else { // CASO DE QUE SE HAYA SELECCIONADO UNA PIEZA
           if (intersects.length > 0) {
             let object = intersects[0].object;
             console.log(object);
@@ -213,6 +217,9 @@ class MyScene extends THREE.Scene {
 
             this.gameBoard.selectPiece(object);
             this.objectSelected = true;
+          }
+          else{
+            this.objectSelected = false;
           }
         }
       }
