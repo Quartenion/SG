@@ -1,50 +1,65 @@
 # SG · Sistemas Gráficos
 
-Prácticas y ejercicios de **Sistemas Gráficos** (Grado en Ingeniería Informática, Universidad de Granada), hechos con **Three.js** y ejecutables directamente en el navegador.
+Prácticas de la asignatura Sistemas Gráficos del Grado en Ingeniería Informática de la Universidad de Granada, hechas con Three.js, así que todo se ejecuta directamente en el navegador.
 
-El proyecto principal es la **Práctica 2: un ajedrez con insectos**. Es un tablero 3D en el que cada pieza es un insecto modelado y animado (hormigas, arañas, avispas, saltamontes y escarabajos). Las piezas se seleccionan con el ratón mediante *raycasting*, las casillas destino se iluminan y el turno pasa de un bando a otro con un cambio animado de luces.
+## Ajedrez de insectos (Práctica 2)
 
-![Ajedrez de insectos (Práctica 2)](docs/capturas/p2-ajedrez-insectos.jpg)
+El proyecto principal es un ajedrez en 3D en el que todas las piezas son insectos. Las hormigas son los peones, los escarabajos peloteros las torres, los saltamontes los caballos, las avispas los alfiles, la araña es la reina y el escarabajo rinoceronte es el rey. Cada insecto está modelado y animado por separado, y el tablero se coloca sobre un suelo de césped.
 
-## Galería
+Para mover una pieza, haces clic sobre ella y se iluminan las casillas a las que puede ir, y después haces clic en una de esas casillas. Para ello, se lanza un rayo desde la cámara hasta la posición del ratón (*raycasting*) y se comprueba qué pieza o casilla toca. Los movimientos de cada pieza se calculan sobre una matriz que representa el tablero, y al cambiar de turno las luces del tablero cambian de color con una animación para indicar a quién le toca.
+
+![Ajedrez de insectos](docs/capturas/p2-ajedrez-insectos.jpg)
 
 | | |
 |---|---|
-| ![Combate de avispas](docs/capturas/p2-combate-avispas.jpg) <br> *P2 · escena de combate* | ![Escarabajo rinoceronte](docs/capturas/p2-escarabajo-rinoceronte.jpg) <br> *P2 · escarabajo rinoceronte* |
-| ![Peón por revolución](docs/capturas/p1-peon-revolucion.jpg) <br> *P1 · peón por revolución* | ![Extrusión](docs/capturas/p1-extrusion-palos.jpg) <br> *P1 · palos de la baraja por extrusión* |
-| ![Grapadora](docs/capturas/grapadora.jpg) <br> *Grapadora articulada* | ![Examen](docs/capturas/examen.jpg) <br> *Examen* |
+| ![Combate de avispas](docs/capturas/p2-combate-avispas.jpg) | ![Escarabajo rinoceronte](docs/capturas/p2-escarabajo-rinoceronte.jpg) |
 
-Capturas tomadas ejecutando las escenas en Chrome.
+## Práctica 1 y ejercicios
 
-## Contenido
+Antes del ajedrez, la Práctica 1 fue ir probando las distintas formas de crear geometría en Three.js. Hay figuras básicas, un peón hecho por revolución a partir de su silueta, los palos de la baraja hechos por extrusión, objetos hechos con operaciones CSG (sumar y restar sólidos, como una taza o una tuerca) y la carga de modelos OBJ.
 
-| Carpeta | Qué hay |
+| | |
 |---|---|
-| `P2/` | **Práctica final: ajedrez de insectos.** `SCENES/MAIN_SCENE` es el juego; el resto de `SCENES/` muestra cada insecto por separado; `FILES/` tiene las clases (`GameBoard`, `Tablero`, `Insect`, `Avispa`, `Arania`…) y modelos OBJ. Incluye la documentación y el grafo de escena en PDF. |
-| `P1_FERNANDO/` | Práctica 1: geometrías básicas, revolución, extrusión, CSG, carga de modelos y el examen de la P1. |
-| `practica1_adam/` | La misma práctica 1, versión de Adam Navarro. |
-| `grapadora/`, `pendulos-ejemplo-teoria/`, `tween-reutilizando-animacion/`, `compartir-geometria/`, `introduccion/`, `examen/` | Ejemplos de clase y ejercicios sueltos. |
-| `libs/` | Three.js y sus complementos (controles, cargadores OBJ/MTL, CSG, tween, dat.gui), incluidos en el repo para que no haga falta instalar nada. |
+| ![Peón por revolución](docs/capturas/p1-peon-revolucion.jpg) | ![Palos de la baraja por extrusión](docs/capturas/p1-extrusion-palos.jpg) |
+| ![Grapadora](docs/capturas/grapadora.jpg) | ![Examen](docs/capturas/examen.jpg) |
+
+Las capturas están sacadas ejecutando las escenas en Chrome.
 
 ## Cómo ejecutarlo
 
-Las escenas usan módulos de JavaScript, así que hay que servirlas desde un servidor local (no funcionan abriendo el `index.html` con doble clic).
+Las escenas usan módulos de JavaScript, así que no funcionan abriendo el `index.html` con doble clic. Hay que servirlas desde un servidor local.
 
-1. Desde la raíz del repo, arranca el servidor que viene incluido (necesita Python 3):
+1. Desde la raíz del repositorio, arranca el servidor que viene incluido (necesita Python 3):
    ```bash
    python3 server-launcher.py
    ```
    También vale `python3 -m http.server 8880`.
 2. Abre en el navegador:
-   - Ajedrez de insectos: <http://localhost:8880/P2/SCENES/MAIN_SCENE/>
-   - Cualquier otra escena: `http://localhost:8880/<carpeta>/`, por ejemplo <http://localhost:8880/grapadora/>.
+   - Ajedrez de insectos: http://localhost:8880/P2/SCENES/MAIN_SCENE/
+   - Cualquier otra escena: `http://localhost:8880/<carpeta>/`, por ejemplo http://localhost:8880/grapadora/
 
-### Controles del ajedrez
+## Controles del ajedrez
 
-- En el panel de la derecha, **GameBoard → [ Start Game ]** coloca las piezas y empieza la partida.
-- **Clic** en una pieza de tu color para seleccionarla y **clic** en una casilla iluminada para moverla.
-- **[ Pass Turn ]** pasa el turno; **Luz y Ejes** ajusta las luces y muestra u oculta los ejes.
+- **GameBoard -> [ Start Game ]:** coloca las piezas y empieza la partida
+- **Clic en una pieza:** seleccionarla y ver sus movimientos
+- **Clic en una casilla iluminada:** mover la pieza
+- **[ Pass Turn ]:** pasar el turno
+- **Luz y Ejes:** cambiar la intensidad de las luces y mostrar u ocultar los ejes
 
-## Autoría
+## Estructura
 
-Trabajo de **Fernando Lanzarot Facio** y **Adam Navarro Megías**. Copia del repositorio original [Adman23/ejerciciosThree](https://github.com/Adman23/ejerciciosThree).
+```
+P2/
+├── SCENES/MAIN_SCENE/   <- el ajedrez
+├── SCENES/*Scene/       <- cada insecto por separado
+├── FILES/               <- clases del juego (GameBoard, Tablero, Insect...) y de cada insecto
+└── *.pdf                <- documentación y grafo de escena
+P1_FERNANDO/             <- Práctica 1: geometría básica, revolución, extrusión, CSG y modelos
+practica1_adam/          <- la Práctica 1 de Adam
+grapadora/, examen/...   <- ejemplos de clase y ejercicios sueltos
+libs/                    <- Three.js y sus complementos, incluidos para no tener que instalar nada
+```
+
+## Créditos
+
+Fernando Lanzarot Facio y Adam Navarro Megías. Copia del repositorio original [Adman23/ejerciciosThree](https://github.com/Adman23/ejerciciosThree).
