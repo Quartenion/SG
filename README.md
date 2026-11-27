@@ -12,9 +12,11 @@ Para mover una pieza, haces clic sobre ella y se iluminan las casillas a las que
 
 ![Ajedrez de insectos](docs/capturas/p2-ajedrez-insectos.jpg)
 
-| | |
+| Una partida | El combate de la avispa |
 |---|---|
-| ![Combate de avispas](docs/capturas/p2-combate-avispas.jpg) | ![Escarabajo rinoceronte](docs/capturas/p2-escarabajo-rinoceronte.jpg) |
+| ![Partida de Bichodrez: las blancas abren con el peón de rey, sacan el alfil y la avispa captura en f7](docs/capturas/ajedrez-partida.gif) | ![Dos avispas peleando: dos puñetazos y el aguijón](docs/capturas/avispa-combate.gif) |
+
+En la partida, las blancas mueven el peón de rey, sacan el alfil y, después de que las negras saquen el caballo, la avispa captura el peón de f7 con su animación de combate. Con cada turno, la cámara y las luces cambian de bando.
 
 ## Práctica 1 y ejercicios
 
@@ -25,7 +27,7 @@ Antes del ajedrez, la Práctica 1 fue ir probando las distintas formas de crear 
 | ![Peón por revolución](docs/capturas/p1-peon-revolucion.jpg) | ![Palos de la baraja por extrusión](docs/capturas/p1-extrusion-palos.jpg) |
 | ![Grapadora](docs/capturas/grapadora.jpg) | ![Examen](docs/capturas/examen.jpg) |
 
-Las capturas están sacadas ejecutando las escenas en Chrome.
+Las capturas y las animaciones están sacadas ejecutando las escenas en Chrome. Las animaciones están grabadas fotograma a fotograma, así que van a una velocidad parecida a la real aunque el ordenador que las grabó fuera más lento.
 
 ## Cómo ejecutarlo
 
